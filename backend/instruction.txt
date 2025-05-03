@@ -1,1 +1,0 @@
-Các mã nguồn liên quan đến backend sẽ nằm trong thư mục này.
