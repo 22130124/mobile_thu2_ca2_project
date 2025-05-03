@@ -1,5 +1,7 @@
 package com.onlinecourse.backend;
 
+import com.onlinecourse.backend.repository.CategoryRepository;
+import com.onlinecourse.backend.service.CategoryService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -40,12 +42,12 @@ public class BackendApplication {
     }
 
 	//test console
-//	@Bean
-//	public CommandLineRunner displayProducts(ProductRepository productService) {
-//		return args -> {
-//			System.out.println("Danh sách sản phẩm:");
-//			productService.findAll().forEach(product -> System.out.println(product.toString()));
-//		};
-//	}
+	@Bean
+	public CommandLineRunner displayCategories (CategoryService categoryService) {
+		return args -> {
+			System.out.println("Danh sách danh muc:");
+			categoryService.getAllcateogries().forEach(category -> System.out.println(category.getName()));
+		};
+	}
 
 }
