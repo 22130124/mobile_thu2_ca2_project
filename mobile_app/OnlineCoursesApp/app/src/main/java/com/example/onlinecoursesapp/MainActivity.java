@@ -22,7 +22,7 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
-        Intent intent = new Intent(MainActivity.this, CourseProgressActivity.class);
+        Intent intent = new Intent(MainActivity.this, DashboardActivity.class);
         startActivity(intent);
         finish();
     }
