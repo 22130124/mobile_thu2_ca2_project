@@ -15,7 +15,7 @@
 
         <ImageView
             android:id="@+id/img_course"
-            android:layout_width="72dp"
+            android:layout_width="120dp"
             android:layout_height="72dp"
             android:background="@color/neutral_light"
             android:scaleType="centerCrop"

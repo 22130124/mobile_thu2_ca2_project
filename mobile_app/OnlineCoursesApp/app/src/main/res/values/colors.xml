@@ -2,4 +2,27 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <!-- Primary Colors -->
+    <color name="primary">#E3562A</color>
+    <color name="primary_dark">#C04B24</color>
+    <color name="primary_light">#F47B53</color>
+
+    <!-- Neutral Colors -->
+    <color name="neutral_dark">#3C3A36</color>
+    <color name="neutral_grey">#78746D</color>
+    <color name="neutral_light">#BEBAB3</color>
+    <color name="neutral_lightest">#F8F2EE</color>
+
+    <!-- Background Colors -->
+    <color name="background_white">#FFFFFF</color>
+    <color name="background_light">#F2F3F7</color>
+
+    <!-- Status Colors -->
+    <color name="success">#5BA092</color>
+    <color name="error">#EA2B2B</color>
+    <color name="warning">#F2994A</color>
+
+    <!-- Progress Bar Background Colors -->
+    <color name="progress_bg">#F2F3F7</color>
 </resources>

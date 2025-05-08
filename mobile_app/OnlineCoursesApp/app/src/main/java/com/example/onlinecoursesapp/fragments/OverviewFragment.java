@@ -10,11 +10,6 @@ import android.view.ViewGroup;
 
 import com.example.onlinecoursesapp.R;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link OverviewFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class OverviewFragment extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
