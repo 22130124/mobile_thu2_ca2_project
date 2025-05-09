@@ -1,7 +1,6 @@
 package com.onlinecourse.backend;
 
-import com.onlinecourse.backend.repository.CategoryRepository;
-import com.onlinecourse.backend.service.CategoryService;
+import com.onlinecourse.backend.controller.UserContr;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -42,12 +41,28 @@ public class BackendApplication {
     }
 
 	//test console
-	@Bean
-	public CommandLineRunner displayCategories (CategoryService categoryService) {
-		return args -> {
-			System.out.println("Danh sách danh muc:");
-			categoryService.getAllcateogries().forEach(category -> System.out.println(category.getName()));
-		};
-	}
+//	@Bean
+//	public CommandLineRunner displayCategories (CategoryService categoryService) {
+//		return args -> {
+//			System.out.println("Danh sách danh muc:");
+//			categoryService.getAllCategories().forEach(category -> System.out.println(category.getName()));
+//		};
+//	}
+
+//	@Bean
+//	public CommandLineRunner displayCourse (CourseService c) {
+//		return args -> {
+//			System.out.println("Danh sách khoá học:");
+//			c.getAllCourse().forEach(course -> System.out.println(course.getTitle()));
+//		};
+//	}
+
+//	@Bean
+//	public CommandLineRunner displayCourse (UserContr u) {
+//		return args -> {
+//			System.out.println("Test:");
+//			u.getUserCourseProgress(1).forEach(course -> System.out.println(course.getCourseTitle()));
+//		};
+//	}
 
 }

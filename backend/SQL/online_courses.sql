@@ -22,7 +22,7 @@ USE `online_courses`;
 -- Dumping structure for table online_courses.categories
 CREATE TABLE IF NOT EXISTS `categories` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(100) NOT NULL,
+  `name` varchar(255) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
 ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -44,19 +44,21 @@ CREATE TABLE IF NOT EXISTS `courses` (
   `category_id` int(11) NOT NULL,
   `image_path` varchar(255) NOT NULL,
   `number_of_lessons` int(11) NOT NULL DEFAULT 0,
-  `difficulty` enum('D?','Trung bình','Khó') NOT NULL,
+  `difficulty` enum('EASY','MEDIUM','HARD') NOT NULL,
   `created_at` timestamp NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`id`),
   KEY `category_id` (`category_id`),
   CONSTRAINT `courses_ibfk_1` FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table online_courses.courses: ~3 rows (approximately)
+-- Dumping data for table online_courses.courses: ~5 rows (approximately)
 DELETE FROM `courses`;
 INSERT INTO `courses` (`id`, `title`, `description`, `category_id`, `image_path`, `number_of_lessons`, `difficulty`, `created_at`) VALUES
-	(1, 'Khóa học Java cơ bản', 'Học lập trình Java từ đầu cho người mới bắt đầu.', 1, '/images/java.png', 10, 'D?', '2025-05-03 13:48:10'),
-	(2, 'Thiết kế UI/UX nâng cao', 'Khóa học chuyên sâu về thiết kế giao diện.', 2, '/images/uiux.png', 8, 'Trung bình', '2025-05-03 13:48:10'),
-	(3, 'Kinh doanh online hiệu quả', 'Cách khởi nghiệp kinh doanh trên nền tảng số.', 3, '/images/biz.png', 12, 'Khó', '2025-05-03 13:48:10');
+	(1, 'Khóa học Java cơ bản', 'Học lập trình Java từ đầu cho người mới bắt đầu.', 1, '/images/java-co-ban.png', 10, 'MEDIUM', '2025-05-03 13:48:10'),
+	(2, 'Thiết kế UI/UX nâng cao', 'Khóa học chuyên sâu về thiết kế giao diện.', 2, '/images/thiet-ke-ui-ux-nang-cao.jpg', 8, 'HARD', '2025-05-03 13:48:10'),
+	(3, 'Kinh doanh online hiệu quả', 'Cách khởi nghiệp kinh doanh trên nền tảng số.', 3, '/images/kinh-doanh-online.jpg', 12, 'EASY', '2025-05-03 13:48:10'),
+	(5, 'Tiếng anh giao tiếp', 'Học Tiếng Anh giao tiếp cho người mới bắt đầu', 4, '/images/tieng-anh-giao-tiep.jpg', 6, 'EASY', '2025-05-08 01:59:52'),
+	(6, 'Kỹ năng thuyết trình', 'Kỹ năng thuyết trình hiệu quả giúp chinh phục đám đông', 5, '/images/ky-nang-thuyet-trinh.jpg', 5, 'EASY', '2025-05-08 02:08:05');
 
 -- Dumping structure for table online_courses.enrollments
 CREATE TABLE IF NOT EXISTS `enrollments` (
@@ -78,28 +80,6 @@ INSERT INTO `enrollments` (`id`, `user_id`, `course_id`, `enrolled_at`) VALUES
 	(2, 2, 1, '2025-05-03 14:12:17'),
 	(3, 3, 2, '2025-05-03 14:12:17');
 
--- Dumping structure for table online_courses.lession_progress
-CREATE TABLE IF NOT EXISTS `lession_progress` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `enrollment_id` int(11) NOT NULL,
-  `lesson_id` int(11) NOT NULL,
-  `is_completed` tinyint(1) NOT NULL DEFAULT 0,
-  `completed_at` timestamp NULL DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `enrollment_id` (`enrollment_id`,`lesson_id`),
-  KEY `lesson_id` (`lesson_id`),
-  CONSTRAINT `lession_progress_ibfk_1` FOREIGN KEY (`enrollment_id`) REFERENCES `enrollments` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `lession_progress_ibfk_2` FOREIGN KEY (`lesson_id`) REFERENCES `lessons` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- Dumping data for table online_courses.lession_progress: ~4 rows (approximately)
-DELETE FROM `lession_progress`;
-INSERT INTO `lession_progress` (`id`, `enrollment_id`, `lesson_id`, `is_completed`, `completed_at`) VALUES
-	(1, 1, 1, 1, '2025-05-03 14:15:01'),
-	(2, 1, 2, 0, NULL),
-	(3, 2, 1, 0, NULL),
-	(4, 3, 1, 0, NULL);
-
 -- Dumping structure for table online_courses.lessons
 CREATE TABLE IF NOT EXISTS `lessons` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -120,13 +100,35 @@ INSERT INTO `lessons` (`id`, `course_id`, `title`, `content`, `youtube_video_url
 	(1, 1, 'Giới thiệu về Java', 'lap_trinh/java_intro.html', 'https://youtu.be/abc123', 15, '2025-05-03 14:10:37'),
 	(2, 1, 'Cài đặt môi trường Java', 'lap_trinh/java_setup.text', 'https://youtu.be/def456', 20, '2025-05-03 14:10:37');
 
+-- Dumping structure for table online_courses.lesson_progress
+CREATE TABLE IF NOT EXISTS `lesson_progress` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `enrollment_id` int(11) NOT NULL,
+  `lesson_id` int(11) NOT NULL,
+  `is_completed` tinyint(1) NOT NULL DEFAULT 0,
+  `completed_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `enrollment_id` (`enrollment_id`,`lesson_id`),
+  KEY `lesson_id` (`lesson_id`),
+  CONSTRAINT `lesson_progress_ibfk_1` FOREIGN KEY (`enrollment_id`) REFERENCES `enrollments` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `lesson_progress_ibfk_2` FOREIGN KEY (`lesson_id`) REFERENCES `lessons` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Dumping data for table online_courses.lesson_progress: ~4 rows (approximately)
+DELETE FROM `lesson_progress`;
+INSERT INTO `lesson_progress` (`id`, `enrollment_id`, `lesson_id`, `is_completed`, `completed_at`) VALUES
+	(1, 1, 1, 1, '2025-05-03 14:15:01'),
+	(2, 1, 2, 0, NULL),
+	(3, 2, 1, 0, NULL),
+	(4, 3, 1, 0, NULL);
+
 -- Dumping structure for table online_courses.users
 CREATE TABLE IF NOT EXISTS `users` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
-  `email` varchar(100) NOT NULL,
+  `email` varchar(255) NOT NULL,
   `password` varchar(255) NOT NULL,
-  `role` enum('user','admin') DEFAULT 'user',
+  `role` enum('USER','ADMIN') DEFAULT 'USER',
   `is_active` tinyint(1) DEFAULT 1,
   `created_at` timestamp NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NULL DEFAULT NULL ON UPDATE current_timestamp(),
@@ -137,9 +139,9 @@ CREATE TABLE IF NOT EXISTS `users` (
 -- Dumping data for table online_courses.users: ~3 rows (approximately)
 DELETE FROM `users`;
 INSERT INTO `users` (`id`, `name`, `email`, `password`, `role`, `is_active`, `created_at`, `updated_at`) VALUES
-	(1, 'Nguyễn Văn A', 'a@example.com', 'hashed_password_1', 'user', 1, '2025-05-03 13:47:59', NULL),
-	(2, 'Trần Thị B', 'b@example.com', 'hashed_password_2', 'admin', 1, '2025-05-03 13:47:59', NULL),
-	(3, 'Lê Văn C', 'c@example.com', 'hashed_password_3', 'user', 1, '2025-05-03 13:47:59', NULL);
+	(1, 'Nguyễn Văn A', 'a@example.com', 'hashed_password_1', 'USER', 1, '2025-05-03 13:47:59', NULL),
+	(2, 'Trần Thị B', 'b@example.com', 'hashed_password_2', 'ADMIN', 1, '2025-05-03 13:47:59', NULL),
+	(3, 'Lê Văn C', 'c@example.com', 'hashed_password_3', 'USER', 1, '2025-05-03 13:47:59', NULL);
 
 /*!40103 SET TIME_ZONE=IFNULL(@OLD_TIME_ZONE, 'system') */;
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
