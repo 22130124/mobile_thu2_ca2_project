@@ -1,4 +1,4 @@
-package com.example.onlinecoursesapp;
+package com.example.onlinecoursesapp.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.onlinecoursesapp.R;
 import com.example.onlinecoursesapp.adapter.CourseProgressAdapter;
 import com.example.onlinecoursesapp.data.CourseRepository;
 import com.example.onlinecoursesapp.models.CourseProgress;
