@@ -39,6 +39,24 @@ public class UserService {
         return convertToDTO(savedUser);
     }
 
+    public UserProgress login(String email, String rawPassword) {
+        User user = userRepository.findByEmail(email);
+        if (user == null) {
+            throw new RuntimeException("Email không tồn tại");
+        }
+
+        if (!passwordEncoder.matches(rawPassword, user.getPassword())) {
+            throw new RuntimeException("Mật khẩu không chính xác");
+        }
+
+        if (!user.isActive()) {
+            throw new RuntimeException("Tài khoản đã bị khóa");
+        }
+
+        return convertToDTO(user);
+    }
+
+
     private UserProgress convertToDTO(User user) {
         return new UserProgress(
                 user.getId(),
@@ -48,6 +66,4 @@ public class UserService {
                 user.isActive()
         );
     }
-
-
 }
