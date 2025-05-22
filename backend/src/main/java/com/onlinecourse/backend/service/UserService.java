@@ -1,99 +1,69 @@
 package com.onlinecourse.backend.service;
 
-import com.onlinecourse.backend.dto.CourseProgress;
-import com.onlinecourse.backend.dto.StatisticsResponse;
-import com.onlinecourse.backend.model.Course;
-import com.onlinecourse.backend.model.Enrollment;
-import com.onlinecourse.backend.model.Lesson;
-import com.onlinecourse.backend.repository.EnrollmentRepository;
+import com.onlinecourse.backend.dto.UserProgress;
+import com.onlinecourse.backend.model.User;
+import com.onlinecourse.backend.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import java.time.LocalDateTime;
 
 @Service
 public class UserService {
+    private final UserRepository userRepository;
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
 
-    private final EnrollmentRepository enrollmentRepository;
-
-    public UserService(EnrollmentRepository enrollmentRepository) {
-        this.enrollmentRepository = enrollmentRepository;
+    public UserService(UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 
-    public StatisticsResponse getUserStatistics(int userId) {
-        List<CourseProgress> progresses = getUserCourseProgress(userId);
+    public UserProgress createUser(UserProgress userProgress) {
+        User user = new User();
 
-        int totalCourses = progresses.size();
-        int completedCourses = (int) progresses.stream()
-                .filter(p -> p.getCompletionPercentage() >= 100)
-                .count();
+        user.setName(userProgress.getName());
+        user.setEmail(userProgress.getEmail());
+        user.setRole(userProgress.getRole());
+        user.setActive(userProgress.isActive());
 
-        int inProgressCourses = totalCourses - completedCourses;
-        int totalLearningTime = progresses.stream()
-                .mapToInt(CourseProgress::getCompletedDurationMinutes)
-                .sum();
+        // Mã hoá mật khẩu
+        String encodedPassword = passwordEncoder.encode(userProgress.getPassword());
+        user.setPassword(encodedPassword);
 
-        float averageCompletionRate = totalCourses > 0
-                ? (float) progresses.stream().mapToDouble(CourseProgress::getCompletionPercentage).sum() / totalCourses
-                : 0;
+        user.setCreatedAt(LocalDateTime.now());
+        user.setUpdatedAt(LocalDateTime.now());
 
-        StatisticsResponse stats = new StatisticsResponse();
-        stats.setTotalCoursesEnrolled(totalCourses);
-        stats.setCompletedCourses(completedCourses);
-        stats.setInProgressCourses(inProgressCourses);
-        stats.setTotalLearningTimeMinutes(totalLearningTime);
-        stats.setAverageCompletionRate(averageCompletionRate);
-        stats.setTotalAchievements(completedCourses); // giả định mỗi khoá hoàn thành là 1 achievement
+        User savedUser = userRepository.save(user);
 
-        return stats;
+        return convertToDTO(savedUser);
     }
 
-    public List<CourseProgress> getUserCourseProgress(int userId) {
-        List<Enrollment> enrollments = enrollmentRepository.findByUserId(userId);
-
-        return enrollments.stream().map(enrollment -> {
-            Course course = enrollment.getCourse();
-            List<Lesson> lessons = course.getLessons();
-            List<Integer> completedLessonIds = enrollment.getCompletedLessonIds();
-
-            int totalLessons = lessons.size();
-            int completedLessons = (int) lessons.stream()
-                    .filter(lesson -> completedLessonIds.contains(lesson.getId()))
-                    .count();
-
-            int totalDuration = lessons.stream()
-                    .mapToInt(Lesson::getDurationMinutes)
-                    .sum();
-
-            int completedDuration = lessons.stream()
-                    .filter(lesson -> completedLessonIds.contains(lesson.getId()))
-                    .mapToInt(Lesson::getDurationMinutes)
-                    .sum();
-
-            float completionPercentage = totalLessons > 0 ? (completedLessons * 100f / totalLessons) : 0;
-
-            return new CourseProgress(
-                    course.getId(),
-                    course.getTitle(),
-                    course.getImagePath(),
-                    enrollment.getId(),
-                    totalLessons,
-                    completedLessons,
-                    totalDuration,
-                    completedDuration,
-                    completionPercentage
-            );
-        }).collect(Collectors.toList());
-    }
-
-    public CourseProgress getCourseProgressByUserAndCourse(int userId, int courseId) {
-        List<CourseProgress> allProgress = getUserCourseProgress(userId);
-        for (CourseProgress p : allProgress) {
-            if (p.getCourseId() == courseId) {
-                return p;
-            }
+    public UserProgress login(String email, String rawPassword) {
+        User user = userRepository.findByEmail(email);
+        if (user == null) {
+            throw new RuntimeException("Email không tồn tại");
         }
-        throw new RuntimeException("Không tìm thấy tiến độ cho khóa học " + courseId);
+
+        if (!passwordEncoder.matches(rawPassword, user.getPassword())) {
+            throw new RuntimeException("Mật khẩu không chính xác");
+        }
+
+        if (!user.isActive()) {
+            throw new RuntimeException("Tài khoản đã bị khóa");
+        }
+
+        return convertToDTO(user);
     }
 
+
+    private UserProgress convertToDTO(User user) {
+        return new UserProgress(
+                user.getId(),
+                user.getName(),
+                user.getEmail(),
+                user.getRole(),
+                user.isActive()
+        );
+    }
 }

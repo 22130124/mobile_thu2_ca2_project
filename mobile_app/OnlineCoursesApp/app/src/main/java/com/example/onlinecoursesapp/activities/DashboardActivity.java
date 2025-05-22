@@ -1,4 +1,4 @@
-package com.example.onlinecoursesapp;
+package com.example.onlinecoursesapp.activities;
 
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
+import com.example.onlinecoursesapp.R;
 import com.example.onlinecoursesapp.fragments.CoursesManagementFragment;
 import com.example.onlinecoursesapp.fragments.OverviewFragment;
 import com.example.onlinecoursesapp.fragments.SettingsFragment;
