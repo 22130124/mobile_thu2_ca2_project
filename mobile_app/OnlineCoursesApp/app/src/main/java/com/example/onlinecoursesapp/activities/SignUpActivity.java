@@ -1,5 +1,6 @@
 package com.example.onlinecoursesapp.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -26,7 +27,7 @@ import retrofit2.Response;
 // Trong Activity hoặc Fragment của bạn
 public class SignUpActivity extends AppCompatActivity {
     UserRepository userRepository;
-    private ImageView loginImgView;
+    private ImageView imgView;
     private TextView titleTextView;
     private EditText nameEditText;
     private EditText emailEditText;
@@ -42,7 +43,7 @@ public class SignUpActivity extends AppCompatActivity {
         userRepository = UserRepository.getInstance(this);
 
         // Ánh xạ các View từ layout XML
-        loginImgView = findViewById(R.id.loginImgView);
+        imgView = findViewById(R.id.imgView);
         titleTextView = findViewById(R.id.titleTextView);
         nameEditText = findViewById(R.id.nameEditText);
         emailEditText = findViewById(R.id.emailEditText);
@@ -65,7 +66,8 @@ public class SignUpActivity extends AppCompatActivity {
                 }
 
                 // Tạo đối tượng UserProgress (hoặc một lớp DTO khác cho request đăng ký)
-                UserProgress newUser = new UserProgress(0, name, email, "user", true);
+                UserProgress newUser = new UserProgress(0, name, email, password, "user", true);
+
                 newUser.setPassword(password);
 
                 // Gửi dữ liệu đăng ký đến Backend API
@@ -73,11 +75,9 @@ public class SignUpActivity extends AppCompatActivity {
             }
         });
 
-        loginButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Chuyển sang màn hình đăng nhập
-            }
+        loginButton.setOnClickListener(v -> {
+            Intent intent = new Intent(SignUpActivity.this, LoginActivity.class);
+            startActivity(intent);
         });
     }
 

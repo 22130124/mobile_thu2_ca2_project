@@ -19,7 +19,7 @@ public class UserContr {
     @Autowired
     private UserService userService;
 
-    @PostMapping
+    @PostMapping("/signup")
     public UserProgress createUser(@RequestBody UserProgress userProgress) {
         return userService.createUser(userProgress);
     }

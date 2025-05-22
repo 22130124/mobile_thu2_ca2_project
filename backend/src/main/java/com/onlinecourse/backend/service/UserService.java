@@ -20,6 +20,7 @@ public class UserService {
     }
 
     public UserProgress createUser(UserProgress userProgress) {
+
         User user = new User();
 
         user.setName(userProgress.getName());
@@ -30,10 +31,12 @@ public class UserService {
         // Mã hoá mật khẩu
         String encodedPassword = passwordEncoder.encode(userProgress.getPassword());
         user.setPassword(encodedPassword);
+        System.out.println("Mật khẩu đã mã hoá: " + encodedPassword);
 
         user.setCreatedAt(LocalDateTime.now());
         user.setUpdatedAt(LocalDateTime.now());
 
+        System.out.println("Giá trị isActive trước khi save: " + user.isActive());
         User savedUser = userRepository.save(user);
 
         return convertToDTO(savedUser);
@@ -45,7 +48,8 @@ public class UserService {
             throw new RuntimeException("Email không tồn tại");
         }
 
-        if (!passwordEncoder.matches(rawPassword, user.getPassword())) {
+        boolean match = passwordEncoder.matches(rawPassword, user.getPassword());
+        if (!match) {
             throw new RuntimeException("Mật khẩu không chính xác");
         }
 
@@ -55,7 +59,6 @@ public class UserService {
 
         return convertToDTO(user);
     }
-
 
     private UserProgress convertToDTO(User user) {
         return new UserProgress(
