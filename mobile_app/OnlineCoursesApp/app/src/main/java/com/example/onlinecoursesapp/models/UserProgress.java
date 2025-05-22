@@ -1,4 +1,4 @@
-package com.onlinecourse.backend.dto;
+package com.example.onlinecoursesapp.models;
 
 public class UserProgress {
     private int id;
@@ -7,19 +7,6 @@ public class UserProgress {
     private String password;
     private String role;
     private boolean isActive;
-
-    // Constructor mặc định (THÊM CÁI NÀY VÀO)
-    public UserProgress() {
-    }
-
-    // Constructor cho việc tạo mới user (khi đăng ký)
-    public UserProgress(String name, String email, String password, String role, boolean isActive) {
-        this.name = name;
-        this.email = email;
-        this.password = password;
-        this.role = role;
-        this.isActive = isActive;
-    }
 
     public UserProgress(int id, String name, String email, String role, boolean isActive) {
         this.id = id;
