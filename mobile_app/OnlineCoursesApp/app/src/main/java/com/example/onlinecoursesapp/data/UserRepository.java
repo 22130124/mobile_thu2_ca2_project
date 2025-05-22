@@ -33,24 +33,32 @@ public class UserRepository {
         return instance;
     }
 
-    public void registerUser(UserProgress user, RegisterCallback callback) {
-        apiService.registerUser(user).enqueue(new Callback<UserProgress>() {
+    public void registerUser(UserProgress userProgress, RegisterCallback callback) {
+        apiService.registerUser(userProgress).enqueue(new Callback<UserProgress>() {
             @Override
             public void onResponse(Call<UserProgress> call, Response<UserProgress> response) {
-                if (response.isSuccessful()) {
+                if (response.isSuccessful() && response.body() != null) {
                     callback.onSuccess(response.body());
                 } else {
                     try {
-                        callback.onFailure(response.errorBody().string());
-                    } catch (IOException e) {
-                        callback.onFailure("Lỗi không xác định");
+                        // Lấy chuỗi JSON từ response lỗi
+                        String errorBody = response.errorBody().string();
+
+                        // Parse chuỗi JSON để lấy message
+                        JSONObject jsonObject = new JSONObject(errorBody);
+                        String message = jsonObject.getString("message");
+
+                        callback.onFailure(message);
+                    } catch (Exception e) {
+                        callback.onFailure("Lỗi không xác định khi đăng ký");
+                        e.printStackTrace();
                     }
                 }
             }
 
             @Override
             public void onFailure(Call<UserProgress> call, Throwable t) {
-                callback.onFailure(t.getMessage());
+                callback.onFailure("Lỗi kết nối: " + t.getMessage());
             }
         });
     }

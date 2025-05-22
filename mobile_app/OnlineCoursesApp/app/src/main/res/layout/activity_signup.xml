@@ -63,9 +63,20 @@
         android:background="@drawable/rounded_stroke_border"
         android:ems="10"
         android:hint="Password"
-        android:inputType="text"
+        android:inputType="textPassword"
         android:minWidth="48dp"
         android:minHeight="48dp" />
+
+    <TextView
+        android:id="@+id/errorTextView"
+        android:layout_width="350dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:paddingTop="8dp"
+        android:text=""
+        android:textColor="@android:color/holo_red_dark"
+        android:textSize="18sp"
+        android:visibility="gone" />
 
     <Button
         android:id="@+id/signupButton"

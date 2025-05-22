@@ -20,7 +20,7 @@ import com.example.onlinecoursesapp.utils.LoginCallback;
 public class LoginActivity extends AppCompatActivity {
     UserRepository userRepository;
     private ImageView imgView;
-    private TextView titleTextView;
+    private TextView titleTextView, errorTextView;
     private EditText nameEditText;
     private EditText emailEditText;
     private EditText passwordEditText;
@@ -36,6 +36,7 @@ public class LoginActivity extends AppCompatActivity {
         // Ánh xạ các View từ layout XML
         imgView = findViewById(R.id.imgView);
         titleTextView = findViewById(R.id.titleTextView);
+        errorTextView = findViewById(R.id.errorTextView);
         emailEditText = findViewById(R.id.emailEditText);
         passwordEditText = findViewById(R.id.passwordEditText);
         signupButton = findViewById(R.id.signupButton);
@@ -48,7 +49,8 @@ public class LoginActivity extends AppCompatActivity {
                 String password = passwordEditText.getText().toString().trim();
 
                 if (email.isEmpty() || password.isEmpty()) {
-                    Toast.makeText(LoginActivity.this, "Vui lòng điền đầy đủ thông tin", Toast.LENGTH_SHORT).show();
+                    errorTextView.setText("Vui lòng điền đầy đủ thông tin");
+                    errorTextView.setVisibility(View.VISIBLE);
                     return;
                 }
 
@@ -56,11 +58,13 @@ public class LoginActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(UserProgress user) {
                         Toast.makeText(LoginActivity.this, "Đăng nhập thành công!", Toast.LENGTH_SHORT).show();
+                        errorTextView.setVisibility(View.GONE);
                     }
 
                     @Override
                     public void onFailure(String message) {
-                        Toast.makeText(LoginActivity.this, "Lỗi: " + message, Toast.LENGTH_SHORT).show();
+                        errorTextView.setText(message);
+                        errorTextView.setVisibility(View.VISIBLE);
                     }
                 });
             }

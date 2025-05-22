@@ -28,7 +28,7 @@ import retrofit2.Response;
 public class SignUpActivity extends AppCompatActivity {
     UserRepository userRepository;
     private ImageView imgView;
-    private TextView titleTextView;
+    private TextView titleTextView, errorTextView;
     private EditText nameEditText;
     private EditText emailEditText;
     private EditText passwordEditText;
@@ -45,6 +45,7 @@ public class SignUpActivity extends AppCompatActivity {
         // Ánh xạ các View từ layout XML
         imgView = findViewById(R.id.imgView);
         titleTextView = findViewById(R.id.titleTextView);
+        errorTextView = findViewById(R.id.errorTextView);
         nameEditText = findViewById(R.id.nameEditText);
         emailEditText = findViewById(R.id.emailEditText);
         passwordEditText = findViewById(R.id.passwordEditText);
@@ -61,7 +62,8 @@ public class SignUpActivity extends AppCompatActivity {
 
                 // Kiểm tra dữ liệu đầu vào
                 if (name.isEmpty() || email.isEmpty() || password.isEmpty()) {
-                    Toast.makeText(SignUpActivity.this, "Vui lòng điền đầy đủ thông tin", Toast.LENGTH_SHORT).show();
+                    errorTextView.setText("Vui lòng điền đầy đủ thông tin");
+                    errorTextView.setVisibility(View.VISIBLE);
                     return;
                 }
 
@@ -86,11 +88,13 @@ public class SignUpActivity extends AppCompatActivity {
             @Override
             public void onSuccess(UserProgress user) {
                 Toast.makeText(SignUpActivity.this, "Đăng ký thành công!", Toast.LENGTH_SHORT).show();
+                errorTextView.setVisibility(View.GONE);
             }
 
             @Override
             public void onFailure(String message) {
-                Toast.makeText(SignUpActivity.this, "Lỗi: " + message, Toast.LENGTH_SHORT).show();
+                errorTextView.setText(message);
+                errorTextView.setVisibility(View.VISIBLE);
             }
         });
 

@@ -20,23 +20,23 @@ public class UserService {
     }
 
     public UserProgress createUser(UserProgress userProgress) {
+        // Kiểm tra email đã tồn tại chưa
+        if (userRepository.findByEmail(userProgress.getEmail()) != null) {
+            throw new RuntimeException("Email đã được sử dụng");
+        }
 
         User user = new User();
-
         user.setName(userProgress.getName());
         user.setEmail(userProgress.getEmail());
         user.setRole(userProgress.getRole());
-        user.setActive(userProgress.isActive());
+        user.setActive(true);
 
-        // Mã hoá mật khẩu
         String encodedPassword = passwordEncoder.encode(userProgress.getPassword());
         user.setPassword(encodedPassword);
-        System.out.println("Mật khẩu đã mã hoá: " + encodedPassword);
 
         user.setCreatedAt(LocalDateTime.now());
         user.setUpdatedAt(LocalDateTime.now());
 
-        System.out.println("Giá trị isActive trước khi save: " + user.isActive());
         User savedUser = userRepository.save(user);
 
         return convertToDTO(savedUser);

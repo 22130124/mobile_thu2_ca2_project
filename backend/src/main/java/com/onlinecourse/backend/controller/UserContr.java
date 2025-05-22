@@ -20,8 +20,18 @@ public class UserContr {
     private UserService userService;
 
     @PostMapping("/signup")
-    public UserProgress createUser(@RequestBody UserProgress userProgress) {
-        return userService.createUser(userProgress);
+    public ResponseEntity<?> createUser(@RequestBody UserProgress userProgress) {
+        try {
+            UserProgress createdUser = userService.createUser(userProgress);
+            Map<String, Object> response = new HashMap<>();
+            response.put("message", "Đăng ký thành công");
+            response.put("user", createdUser);
+            return ResponseEntity.ok(response);
+        } catch (RuntimeException e) {
+            Map<String, Object> error = new HashMap<>();
+            error.put("message", "Đăng ký thất bại: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+        }
     }
 
     @PostMapping("/login")
