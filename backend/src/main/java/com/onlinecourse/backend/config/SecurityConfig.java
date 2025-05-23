@@ -1,4 +1,4 @@
-package com.onlinecourse.backend.security;
+package com.onlinecourse.backend.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

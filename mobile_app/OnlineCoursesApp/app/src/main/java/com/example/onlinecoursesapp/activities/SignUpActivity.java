@@ -2,6 +2,7 @@ package com.example.onlinecoursesapp.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -12,19 +13,10 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.onlinecoursesapp.R;
-import com.example.onlinecoursesapp.api.ApiClient;
-import com.example.onlinecoursesapp.api.UserAPIService;
 import com.example.onlinecoursesapp.data.UserRepository;
 import com.example.onlinecoursesapp.models.UserProgress;
 import com.example.onlinecoursesapp.utils.RegisterCallback;
 
-import java.io.IOException;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-
-// Trong Activity hoặc Fragment của bạn
 public class SignUpActivity extends AppCompatActivity {
     UserRepository userRepository;
     private ImageView imgView;
@@ -87,14 +79,22 @@ public class SignUpActivity extends AppCompatActivity {
         userRepository.registerUser(newUser, new RegisterCallback() {
             @Override
             public void onSuccess(UserProgress user) {
-                Toast.makeText(SignUpActivity.this, "Đăng ký thành công!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(SignUpActivity.this, "Đăng ký thành công! Vui lòng kiểm tra email để xác minh.", Toast.LENGTH_SHORT).show();
                 errorTextView.setVisibility(View.GONE);
+
+                // Chuyển sang VerificationActivity và truyền email
+                Intent intent = new Intent(SignUpActivity.this, VerificationActivity.class);
+                Log.d("UserEmail", user.getEmail() != null ? user.getEmail() : "email is null");
+                intent.putExtra("email", user.getEmail());
+                startActivity(intent);
+                finish();
             }
 
             @Override
             public void onFailure(String message) {
                 errorTextView.setText(message);
                 errorTextView.setVisibility(View.VISIBLE);
+                System.out.println(message);
             }
         });
 

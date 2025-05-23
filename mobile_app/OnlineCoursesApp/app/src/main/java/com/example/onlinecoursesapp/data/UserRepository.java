@@ -5,6 +5,7 @@ import android.content.Context;
 import com.example.onlinecoursesapp.api.UserAPIService;
 import com.example.onlinecoursesapp.models.LoginRequest;
 import com.example.onlinecoursesapp.models.LoginResponse;
+import com.example.onlinecoursesapp.models.RegisterResponse;
 import com.example.onlinecoursesapp.models.UserProgress;
 import com.example.onlinecoursesapp.api.ApiClient;
 import com.example.onlinecoursesapp.utils.LoginCallback;
@@ -34,11 +35,12 @@ public class UserRepository {
     }
 
     public void registerUser(UserProgress userProgress, RegisterCallback callback) {
-        apiService.registerUser(userProgress).enqueue(new Callback<UserProgress>() {
+        apiService.registerUser(userProgress).enqueue(new Callback<RegisterResponse>() {
             @Override
-            public void onResponse(Call<UserProgress> call, Response<UserProgress> response) {
+            public void onResponse(Call<RegisterResponse> call, Response<RegisterResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    callback.onSuccess(response.body());
+                    UserProgress user = response.body().getUser();
+                    callback.onSuccess(user);
                 } else {
                     try {
                         // Lấy chuỗi JSON từ response lỗi
@@ -57,7 +59,7 @@ public class UserRepository {
             }
 
             @Override
-            public void onFailure(Call<UserProgress> call, Throwable t) {
+            public void onFailure(Call<RegisterResponse> call, Throwable t) {
                 callback.onFailure("Lỗi kết nối: " + t.getMessage());
             }
         });

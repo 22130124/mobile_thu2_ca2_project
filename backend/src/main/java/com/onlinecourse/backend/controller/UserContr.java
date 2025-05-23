@@ -2,12 +2,15 @@ package com.onlinecourse.backend.controller;
 
 import com.onlinecourse.backend.dto.LoginRequest;
 import com.onlinecourse.backend.dto.UserProgress;
+import com.onlinecourse.backend.dto.VerificationRequest;
+import com.onlinecourse.backend.model.User;
 import com.onlinecourse.backend.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -50,6 +53,37 @@ public class UserContr {
 
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
         }
+    }
+
+    @PostMapping("/verify")
+    public ResponseEntity<?> verifyEmail(@RequestBody VerificationRequest request) {
+        String expectedCode = userService.getVerificationCode(request.getEmail());
+
+        if (expectedCode != null && expectedCode.equals(request.getCode())) {
+            userService.activateUser(request.getEmail());
+            System.out.println("Corrected code!");
+            return ResponseEntity.ok(Collections.singletonMap("message", "Xác minh thành công"));
+        } else {
+            return ResponseEntity.badRequest().body(Collections.singletonMap("message", "Mã xác minh không đúng"));
+        }
+    }
+
+    @PostMapping("/resend")
+    public ResponseEntity<?> resendVerificationCode(@RequestBody Map<String, String> payload) {
+        String email = payload.get("email");
+
+        User user = userService.getUserByEmail(email);
+        if (user == null) {
+            return ResponseEntity.badRequest().body(Collections.singletonMap("message", "Email không tồn tại"));
+        }
+
+        if (user.isActive()) {
+            return ResponseEntity.badRequest().body(Collections.singletonMap("message", "Tài khoản đã được xác minh"));
+        }
+
+        // Gửi lại mã
+        userService.generateAndSendVerificationCode(email);
+        return ResponseEntity.ok(Collections.singletonMap("message", "Mã xác minh đã được gửi lại"));
     }
 
 }
