@@ -14,13 +14,19 @@ public class EmailService {
     private JavaMailSender mailSender;
 
     public void sendVerificationCode(String to, String code) {
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(to);
-        message.setSubject("Mã xác minh tài khoản");
-        message.setText("Xin chào,\n\nMã xác minh của bạn là: " + code + "\nVui lòng nhập mã để kích hoạt.");
-        message.setFrom("22130124@st.hcmuaf.edu.vn");
+        try {
+            SimpleMailMessage message = new SimpleMailMessage();
+            message.setTo(to);
+            message.setSubject("Mã xác minh tài khoản");
+            message.setText("Xin chào,\n\nMã xác minh của bạn là: " + code + "\nVui lòng nhập mã để kích hoạt.");
+            message.setFrom("22130124@st.hcmuaf.edu.vn");
 
-        mailSender.send(message);
+            mailSender.send(message);
+        } catch (Exception e) {
+            // In ra lỗi để dễ debug và ném lại ngoại lệ
+            e.printStackTrace();
+            throw new RuntimeException("Không thể gửi email xác minh. Vui lòng kiểm tra lại địa chỉ email.");
+        }
     }
 }
 

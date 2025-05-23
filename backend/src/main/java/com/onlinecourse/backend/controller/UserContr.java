@@ -61,7 +61,6 @@ public class UserContr {
 
         if (expectedCode != null && expectedCode.equals(request.getCode())) {
             userService.activateUser(request.getEmail());
-            System.out.println("Corrected code!");
             return ResponseEntity.ok(Collections.singletonMap("message", "Xác minh thành công"));
         } else {
             return ResponseEntity.badRequest().body(Collections.singletonMap("message", "Mã xác minh không đúng"));

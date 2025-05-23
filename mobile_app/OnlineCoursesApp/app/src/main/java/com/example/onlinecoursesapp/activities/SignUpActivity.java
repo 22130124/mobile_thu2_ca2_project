@@ -59,6 +59,12 @@ public class SignUpActivity extends AppCompatActivity {
                     return;
                 }
 
+                if(!isValidEmail(email)){
+                    errorTextView.setText("Email không hợp lệ");
+                    errorTextView.setVisibility(View.VISIBLE);
+                    return;
+                }
+
                 // Tạo đối tượng UserProgress (hoặc một lớp DTO khác cho request đăng ký)
                 UserProgress newUser = new UserProgress(0, name, email, password, "user", true);
 
@@ -97,6 +103,10 @@ public class SignUpActivity extends AppCompatActivity {
                 System.out.println(message);
             }
         });
+    }
 
+    public boolean isValidEmail(String email) {
+        String regex = "^[A-Za-z0-9+_.-]+@(.+)$";
+        return email != null && email.matches(regex);
     }
 }

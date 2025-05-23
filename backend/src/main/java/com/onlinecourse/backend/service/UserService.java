@@ -31,6 +31,17 @@ public class UserService {
             throw new RuntimeException("Email đã được sử dụng");
         }
 
+        // Tạo mã xác minh
+        String code = String.format("%06d", new Random().nextInt(999999));
+
+        // Thử gửi email trước
+        try {
+            emailService.sendVerificationCode(userProgress.getEmail(), code);
+        } catch (Exception e) {
+            throw new RuntimeException("Không thể gửi email xác minh. Vui lòng kiểm tra lại địa chỉ email.");
+        }
+
+        // Nếu gửi thành công → lưu user vào DB
         User user = new User();
         user.setName(userProgress.getName());
         user.setEmail(userProgress.getEmail());
@@ -45,11 +56,8 @@ public class UserService {
 
         User savedUser = userRepository.save(user);
 
-        // Tạo mã xác minh và gửi email
-        String code = String.format("%06d", new Random().nextInt(999999));
+        // Lưu code vào map
         verificationCodes.put(user.getEmail(), code);
-
-        emailService.sendVerificationCode(user.getEmail(), code);
 
         return convertToDTO(savedUser);
     }

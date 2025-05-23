@@ -43,27 +43,30 @@ public class UserRepository {
                     callback.onSuccess(user);
                 } else {
                     try {
-                        // Lấy chuỗi JSON từ response lỗi
-                        String errorBody = response.errorBody().string();
+                        // Đọc lỗi trả về từ server (ví dụ: "Email đã được sử dụng" hoặc "Không thể gửi email xác minh")
+                        String errorBody = response.errorBody() != null ? response.errorBody().string() : null;
 
-                        // Parse chuỗi JSON để lấy message
-                        JSONObject jsonObject = new JSONObject(errorBody);
-                        String message = jsonObject.getString("message");
-
-                        callback.onFailure(message);
+                        if (errorBody != null) {
+                            JSONObject jsonObject = new JSONObject(errorBody);
+                            String message = jsonObject.optString("message", "Đăng ký thất bại không rõ lý do");
+                            callback.onFailure(message);
+                        } else {
+                            callback.onFailure("Lỗi không rõ từ máy chủ");
+                        }
                     } catch (Exception e) {
-                        callback.onFailure("Lỗi không xác định khi đăng ký");
                         e.printStackTrace();
+                        callback.onFailure("Lỗi xử lý phản hồi từ máy chủ");
                     }
                 }
             }
 
             @Override
             public void onFailure(Call<RegisterResponse> call, Throwable t) {
-                callback.onFailure("Lỗi kết nối: " + t.getMessage());
+                callback.onFailure("Lỗi kết nối mạng: " + t.getMessage());
             }
         });
     }
+
 
     public void loginUser(String email, String password, LoginCallback callback) {
         LoginRequest request = new LoginRequest(email, password);
