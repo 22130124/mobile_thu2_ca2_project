@@ -8,10 +8,11 @@ public class UserProgress {
     private String role;
     private boolean isActive;
 
-    public UserProgress(int id, String name, String email, String role, boolean isActive) {
+    public UserProgress(int id, String name, String email, String password, String role, boolean isActive) {
         this.id = id;
         this.name = name;
         this.email = email;
+        this.password = password;
         this.role = role;
         this.isActive = isActive;
     }

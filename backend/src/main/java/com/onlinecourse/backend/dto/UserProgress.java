@@ -8,7 +8,6 @@ public class UserProgress {
     private String role;
     private boolean isActive;
 
-    // Constructor mặc định (THÊM CÁI NÀY VÀO)
     public UserProgress() {
     }
 
