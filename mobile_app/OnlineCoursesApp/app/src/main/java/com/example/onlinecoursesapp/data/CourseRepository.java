@@ -22,7 +22,7 @@ public class CourseRepository {
     private final int userId = 1; // Hoặc lấy từ SharedPreferences nếu đã login
     private StatisticsResponse statisticsCache;
 
-    private CourseRepository(Context context) {
+    CourseRepository(Context context) {
         apiService = ApiClient.getCourseApiService();
     }
 
