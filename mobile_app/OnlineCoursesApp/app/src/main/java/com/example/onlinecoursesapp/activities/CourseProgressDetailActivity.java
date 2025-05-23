@@ -1,4 +1,4 @@
-package com.example.onlinecoursesapp;
+package com.example.onlinecoursesapp.activities;
 
 import android.content.Context;
 import android.content.Intent;
@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import com.bumptech.glide.Glide;
+import com.example.onlinecoursesapp.R;
 import com.example.onlinecoursesapp.api.ApiClient;
 import com.example.onlinecoursesapp.data.CourseRepository;
 import com.example.onlinecoursesapp.models.CourseProgress;

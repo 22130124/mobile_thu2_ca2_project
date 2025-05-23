@@ -1,6 +1,7 @@
 package com.example.onlinecoursesapp.api;
 
 import com.example.onlinecoursesapp.models.Course;
+import com.example.onlinecoursesapp.models.CourseOverview;
 import com.example.onlinecoursesapp.models.CourseProgress;
 import com.example.onlinecoursesapp.models.StatisticsResponse;
 
@@ -14,7 +15,7 @@ public interface CourseApiService {
          * Lấy tất cả khóa học từ server
          */
         @GET("/courses")
-        Call<List<Course>> getAllCourses();
+        Call<List<CourseOverview>> getAllCourses();
 
         /**
          * Lấy khóa học theo ID

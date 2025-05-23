@@ -37,25 +37,25 @@ public class UserContr {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    // Lấy thống kê học tập theo user
-    @GetMapping("/{userId}/statistics")
-    public StatisticsResponse getUserStatistics(@PathVariable int userId) {
-        return userService.getUserStatistics(userId);
-    }
-
-    // Lấy danh sách tiến độ khoá học theo từng user
-    @GetMapping("/{userId}/progress")
-    public List<CourseProgress> getUserCourseProgress(@PathVariable int userId) {
-        return userService.getUserCourseProgress(userId);
-    }
-
-    // Lấy tiến độ của 1 khoá học theo từng user
-    @GetMapping("/{userId}/progress/{courseId}")
-    public CourseProgress getCourseProgressByUserAndCourse(
-            @PathVariable int userId,
-            @PathVariable int courseId) {
-        return userService.getCourseProgressByUserAndCourse(userId, courseId);
-    }
+//    // Lấy thống kê học tập theo user
+//    @GetMapping("/{userId}/statistics")
+//    public StatisticsResponse getUserStatistics(@PathVariable int userId) {
+//        return userService.getUserStatistics(userId);
+//    }
+//
+//    // Lấy danh sách tiến độ khoá học theo từng user
+//    @GetMapping("/{userId}/progress")
+//    public List<CourseProgress> getUserCourseProgress(@PathVariable int userId) {
+//        return userService.getUserCourseProgress(userId);
+//    }
+//
+//    // Lấy tiến độ của 1 khoá học theo từng user
+//    @GetMapping("/{userId}/progress/{courseId}")
+//    public CourseProgress getCourseProgressByUserAndCourse(
+//            @PathVariable int userId,
+//            @PathVariable int courseId) {
+//        return userService.getCourseProgressByUserAndCourse(userId, courseId);
+//    }
 
 
 

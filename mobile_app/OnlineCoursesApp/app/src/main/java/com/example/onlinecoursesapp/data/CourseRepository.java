@@ -4,8 +4,10 @@ import android.content.Context;
 
 import com.example.onlinecoursesapp.api.ApiClient;
 import com.example.onlinecoursesapp.api.CourseApiService;
+import com.example.onlinecoursesapp.models.CourseOverview;
 import com.example.onlinecoursesapp.models.CourseProgress;
 import com.example.onlinecoursesapp.models.StatisticsResponse;
+import com.example.onlinecoursesapp.utils.CourseOverviewCallback;
 import com.example.onlinecoursesapp.utils.ProgressCallback;
 import com.example.onlinecoursesapp.utils.StatisticsCallback;
 
@@ -93,6 +95,24 @@ public class CourseRepository {
         });
     }
 
+    // Lấy khóa học qua id
+    public void fetchGetCourseById(int courseId, CourseOverviewCallback.SingleCourse callback) {
+        apiService.getCourseById(courseId).enqueue(new Callback<CourseOverview>() {
+            @Override
+            public void onResponse(Call<CourseOverview> call, Response<CourseOverview> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    callback.onSuccess(response.body());
+                } else {
+                    callback.onFailure("Không lấy được thông tin khóa học.");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<CourseOverview> call, Throwable t) {
+                callback.onFailure(t.getMessage());
+            }
+        });
+    }
 
 
 }
