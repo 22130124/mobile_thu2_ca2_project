@@ -8,26 +8,46 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
 
 @Service
 public class UserService {
     private final UserRepository userRepository;
+    private final Map<String, String> verificationCodes = new HashMap<>();
+    private final EmailService emailService;
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
 
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, EmailService emailService) {
         this.userRepository = userRepository;
+        this.emailService = emailService;
     }
 
     public UserProgress createUser(UserProgress userProgress) {
-        User user = new User();
+        // Kiểm tra email đã tồn tại chưa
+        if (userRepository.findByEmail(userProgress.getEmail()) != null) {
+            throw new RuntimeException("Email đã được sử dụng");
+        }
 
+        // Tạo mã xác minh
+        String code = String.format("%06d", new Random().nextInt(999999));
+
+        // Thử gửi email trước
+        try {
+            emailService.sendVerificationCode(userProgress.getEmail(), code);
+        } catch (Exception e) {
+            throw new RuntimeException("Không thể gửi email xác minh. Vui lòng kiểm tra lại địa chỉ email.");
+        }
+
+        // Nếu gửi thành công → lưu user vào DB
+        User user = new User();
         user.setName(userProgress.getName());
         user.setEmail(userProgress.getEmail());
         user.setRole(userProgress.getRole());
-        user.setActive(userProgress.isActive());
+        user.setActive(false);
 
-        // Mã hoá mật khẩu
         String encodedPassword = passwordEncoder.encode(userProgress.getPassword());
         user.setPassword(encodedPassword);
 
@@ -35,6 +55,9 @@ public class UserService {
         user.setUpdatedAt(LocalDateTime.now());
 
         User savedUser = userRepository.save(user);
+
+        // Lưu code vào map
+        verificationCodes.put(user.getEmail(), code);
 
         return convertToDTO(savedUser);
     }
@@ -45,7 +68,8 @@ public class UserService {
             throw new RuntimeException("Email không tồn tại");
         }
 
-        if (!passwordEncoder.matches(rawPassword, user.getPassword())) {
+        boolean match = passwordEncoder.matches(rawPassword, user.getPassword());
+        if (!match) {
             throw new RuntimeException("Mật khẩu không chính xác");
         }
 
@@ -56,7 +80,6 @@ public class UserService {
         return convertToDTO(user);
     }
 
-
     private UserProgress convertToDTO(User user) {
         return new UserProgress(
                 user.getId(),
@@ -65,5 +88,28 @@ public class UserService {
                 user.getRole(),
                 user.isActive()
         );
+    }
+
+    public void activateUser(String email) {
+        User user = userRepository.findByEmail(email);
+        if (user != null) {
+            user.setActive(true);
+            user.setUpdatedAt(LocalDateTime.now());
+            userRepository.save(user);
+        }
+    }
+
+    public String getVerificationCode(String email) {
+        return verificationCodes.get(email);
+    }
+
+    public User getUserByEmail(String email) {
+        return userRepository.findByEmail(email);
+    }
+
+    public void generateAndSendVerificationCode(String email) {
+        String code = String.format("%06d", new Random().nextInt(999999));
+        verificationCodes.put(email, code);
+        emailService.sendVerificationCode(email, code);
     }
 }

@@ -39,6 +39,16 @@
         <activity
             android:name=".activities.SignUpActivity"
             android:exported="true">
+        </activity>
+
+        <activity
+            android:name=".activities.VerificationActivity"
+            android:exported="true">
+        </activity>
+
+        <activity
+            android:name=".activities.LoginActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
