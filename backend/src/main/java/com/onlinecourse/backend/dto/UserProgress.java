@@ -1,25 +1,32 @@
-package com.onlinecourse.backend.model;
+package com.onlinecourse.backend.dto;
 
-import jakarta.persistence.*;
-import java.time.LocalDateTime;
-
-@Entity
-@Table(name = "users")
-public class User {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class UserProgress {
     private int id;
-
     private String name;
     private String email;
     private String password;
     private String role;
     private boolean isActive;
 
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
+    public UserProgress() {
+    }
 
-    // Getter và Setter
+    // Constructor cho việc tạo mới user (khi đăng ký)
+    public UserProgress(String name, String email, String password, String role, boolean isActive) {
+        this.name = name;
+        this.email = email;
+        this.password = password;
+        this.role = role;
+        this.isActive = isActive;
+    }
+
+    public UserProgress(int id, String name, String email, String role, boolean isActive) {
+        this.id = id;
+        this.name = name;
+        this.email = email;
+        this.role = role;
+        this.isActive = isActive;
+    }
 
     public int getId() {
         return id;
@@ -68,27 +75,4 @@ public class User {
     public void setActive(boolean active) {
         isActive = active;
     }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
-    }
-
-    // Enum Role cho quyền người dùng
-    public enum Role {
-        USER,
-        ADMIN
-    }
 }
-
