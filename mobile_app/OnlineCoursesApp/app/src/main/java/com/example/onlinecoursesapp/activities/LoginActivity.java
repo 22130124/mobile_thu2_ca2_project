@@ -1,6 +1,7 @@
 package com.example.onlinecoursesapp.activities;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -57,8 +58,24 @@ public class LoginActivity extends AppCompatActivity {
                 userRepository.loginUser(email, password, new LoginCallback() {
                     @Override
                     public void onSuccess(UserProgress user) {
+                        // Lưu thông tin user vào SharedPreferences
+                        SharedPreferences sharedPref = getSharedPreferences("UserPrefs", MODE_PRIVATE);
+                        SharedPreferences.Editor editor = sharedPref.edit();
+
+                        editor.putInt("userId", user.getId());
+                        editor.putString("userName", user.getName());
+                        editor.putString("userEmail", user.getEmail());
+                        editor.putString("userRole", user.getRole());
+                        editor.putBoolean("isActive", user.isActive());
+
+                        editor.apply(); // lưu vào bộ nhớ
+
                         Toast.makeText(LoginActivity.this, "Đăng nhập thành công!", Toast.LENGTH_SHORT).show();
-                        errorTextView.setVisibility(View.GONE);
+
+                        // Chuyển sang MainActivity hoặc màn hình chính
+                        Intent intent = new Intent(LoginActivity.this, ProfileActivity.class);
+                        startActivity(intent);
+                        finish();
                     }
 
                     @Override
