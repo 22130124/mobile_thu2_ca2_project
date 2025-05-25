@@ -2,7 +2,9 @@ package com.example.onlinecoursesapp.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -13,6 +15,7 @@ import com.example.onlinecoursesapp.adapter.CourseProgressAdapter;
 import com.example.onlinecoursesapp.data.CourseRepository;
 import com.example.onlinecoursesapp.models.CourseProgress;
 import com.example.onlinecoursesapp.models.StatisticsResponse;
+import com.example.onlinecoursesapp.utils.FormatTime;
 import com.example.onlinecoursesapp.utils.ProgressCallback;
 import com.example.onlinecoursesapp.utils.StatisticsCallback;
 
@@ -65,23 +68,25 @@ public class CourseProgressActivity extends AppCompatActivity implements CourseP
             public void onStatisticsLoaded(StatisticsResponse statistics) {
                 runOnUiThread(() -> {
                     // Tổng thời gian học
-                    int totalMinutes = statistics.getTotalLearningTimeMinutes();
+                    double totalMinutes = statistics.getTotalLearningTimeMinutes();
                     System.out.println("Total minutes: " + totalMinutes);
-                    int hours = totalMinutes / 60;
-                    int minutes = totalMinutes % 60;
-                    String timeText = (hours > 0) ? hours + " giờ " + minutes + " phút" : minutes + " phút";
-                    System.out.println("Time text: " + timeText);
-                    tvTotalLearningTime.setText(timeText);
+                    tvTotalLearningTime.setText(FormatTime.formatDuration(totalMinutes));
 
                     // Tổng số khóa học đã đăng ký
                     int totalCourses = statistics.getTotalCoursesEnrolled();
-                    System.out.println("Tổng khoá học: " + totalCourses);
                     tvTotalCoursesEnrolled.setText(String.valueOf(totalCourses));
 
                     // Số khóa học đã hoàn thành
                     int completedCourses = statistics.getCompletedCourses();
-                    System.out.println("Số khoá học hoàn tất: " + completedCourses);
                     tvMostPopularCourse.setText(String.valueOf(completedCourses));
+                });
+            }
+
+            @Override
+            public void onFailure(String errorMessage) {
+                runOnUiThread(() -> {
+                    Log.e("API_ERROR", "Statistics error: " + errorMessage);
+                    Toast.makeText(CourseProgressActivity.this, "Lỗi tải thống kê", Toast.LENGTH_SHORT).show();
                 });
             }
         });
