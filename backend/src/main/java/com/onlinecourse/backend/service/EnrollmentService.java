@@ -28,8 +28,8 @@ public class EnrollmentService {
                 .count();
 
         int inProgressCourses = totalCourses - completedCourses;
-        int totalLearningTime = progresses.stream()
-                .mapToInt(CourseProgress::getCompletedDurationMinutes)
+        double totalLearningTime = progresses.stream()
+                .mapToDouble(CourseProgress::getCompletedDurationMinutes)
                 .sum();
 
         float averageCompletionRate = totalCourses > 0
@@ -60,13 +60,13 @@ public class EnrollmentService {
                     .filter(lesson -> completedLessonIds.contains(lesson.getId()))
                     .count();
 
-            int totalDuration = lessons.stream()
-                    .mapToInt(Lesson::getDurationMinutes)
+            double totalDuration = lessons.stream()
+                    .mapToDouble(Lesson::getDurationMinutes)
                     .sum();
 
-            int completedDuration = lessons.stream()
+            double completedDuration = lessons.stream()
                     .filter(lesson -> completedLessonIds.contains(lesson.getId()))
-                    .mapToInt(Lesson::getDurationMinutes)
+                    .mapToDouble(Lesson::getDurationMinutes)
                     .sum();
 
             float completionPercentage = totalLessons > 0 ? (completedLessons * 100f / totalLessons) : 0;

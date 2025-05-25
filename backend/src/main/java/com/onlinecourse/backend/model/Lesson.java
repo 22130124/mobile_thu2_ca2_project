@@ -24,7 +24,7 @@ public class Lesson {
     private String youtubeVideoUrl;
 
     @Column(name = "duration_minutes", nullable = false)
-    private int durationMinutes;
+    private double durationMinutes;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;
@@ -71,11 +71,11 @@ public class Lesson {
         this.youtubeVideoUrl = youtubeVideoUrl;
     }
 
-    public int getDurationMinutes() {
+    public double getDurationMinutes() {
         return durationMinutes;
     }
 
-    public void setDurationMinutes(int durationMinutes) {
+    public void setDurationMinutes(double durationMinutes) {
         this.durationMinutes = durationMinutes;
     }
 
