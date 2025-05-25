@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName;
 public class StatisticsResponse {
 
         @SerializedName("totalLearningTimeMinutes")
-        private int totalLearningTimeMinutes;
+        private double totalLearningTimeMinutes;
 
         @SerializedName("totalCoursesEnrolled")
         private int totalCoursesEnrolled;
@@ -23,11 +23,11 @@ public class StatisticsResponse {
         private int totalAchievements;
 
         // Getters and Setters
-        public int getTotalLearningTimeMinutes() {
+        public double getTotalLearningTimeMinutes() {
             return totalLearningTimeMinutes;
         }
 
-        public void setTotalLearningTimeMinutes(int totalLearningTimeMinutes) {
+        public void setTotalLearningTimeMinutes(double totalLearningTimeMinutes) {
             this.totalLearningTimeMinutes = totalLearningTimeMinutes;
         }
 
@@ -70,4 +70,16 @@ public class StatisticsResponse {
         public void setTotalAchievements(int totalAchievements) {
             this.totalAchievements = totalAchievements;
         }
+
+    @Override
+    public String toString() {
+        return "StatisticsResponse{" +
+                "totalLearningTimeMinutes=" + totalLearningTimeMinutes +
+                ", totalCoursesEnrolled=" + totalCoursesEnrolled +
+                ", completedCourses=" + completedCourses +
+                ", inProgressCourses=" + inProgressCourses +
+                ", averageCompletionRate=" + averageCompletionRate +
+                ", totalAchievements=" + totalAchievements +
+                '}';
+    }
 }

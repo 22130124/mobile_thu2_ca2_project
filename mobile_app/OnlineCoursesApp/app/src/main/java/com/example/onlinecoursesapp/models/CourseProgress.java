@@ -1,5 +1,7 @@
 package com.example.onlinecoursesapp.models;
 
+import com.example.onlinecoursesapp.utils.FormatTime;
+
 import java.io.Serializable;
 
 public class CourseProgress implements Serializable {
@@ -9,8 +11,8 @@ public class CourseProgress implements Serializable {
     private int enrollmentId;
     private int totalLessons;
     private int completedLessons;
-    private int totalDurationMinutes;
-    private int completedDurationMinutes;
+    private double totalDurationMinutes;
+    private double completedDurationMinutes;
     private float completionPercentage;
 
     public CourseProgress() {
@@ -66,19 +68,19 @@ public class CourseProgress implements Serializable {
         this.completedLessons = completedLessons;
     }
 
-    public int getTotalDurationMinutes() {
+    public double getTotalDurationMinutes() {
         return totalDurationMinutes;
     }
 
-    public void setTotalDurationMinutes(int totalDurationMinutes) {
+    public void setTotalDurationMinutes(double totalDurationMinutes) {
         this.totalDurationMinutes = totalDurationMinutes;
     }
 
-    public int getCompletedDurationMinutes() {
+    public double getCompletedDurationMinutes() {
         return completedDurationMinutes;
     }
 
-    public void setCompletedDurationMinutes(int completedDurationMinutes) {
+    public void setCompletedDurationMinutes(double completedDurationMinutes) {
         this.completedDurationMinutes = completedDurationMinutes;
     }
 
@@ -92,25 +94,11 @@ public class CourseProgress implements Serializable {
 
     // Helper methods
     public String getFormattedTotalDuration() {
-        int hours = totalDurationMinutes / 60;
-        int minutes = totalDurationMinutes % 60;
-
-        if (hours > 0) {
-            return hours + "h " + minutes + "m";
-        } else {
-            return minutes + "m";
-        }
+        return FormatTime.formatDuration(totalDurationMinutes);
     }
 
     public String getFormattedCompletedDuration() {
-        int hours = completedDurationMinutes / 60;
-        int minutes = completedDurationMinutes % 60;
-
-        if (hours > 0) {
-            return hours + "h " + minutes + "m";
-        } else {
-            return minutes + "m";
-        }
+        return FormatTime.formatDuration(completedDurationMinutes);
     }
 
     public String getFormattedProgressText() {

@@ -25,7 +25,7 @@ public interface CourseApiService {
         /**
          * Lấy tiến độ khóa học của người dùng
          */
-        @GET("/users/{userId}/progress")
+        @GET("/enrollments/{userId}/progress")
         Call<List<CourseProgress>> getUserCourseProgress(@Path("userId") int userId);
 
         /**
@@ -37,17 +37,14 @@ public interface CourseApiService {
         /**
          * Lấy thống kê của người dùng
          */
-        @GET("/users/{userId}/statistics")
+        @GET("/enrollments/{userId}/statistics")
         Call<StatisticsResponse> getUserStatistics(@Path("userId") int userId);
 
         /**
          * Lấy tiến độ học tập của user cho một khóa học cụ thể
          */
-        @GET("/users/{userId}/progress/{courseId}")
-        Call<CourseProgress> getCourseProgressByUserAndCourse(
-                @Path("userId") int userId,
-                @Path("courseId") int courseId
-        );
+        @GET("/enrollments/{userId}/progress/{courseId}")
+        Call<CourseProgress> getCourseProgressByUserAndCourse(@Path("userId") int userId,@Path("courseId") int courseId);
 
 
 }
