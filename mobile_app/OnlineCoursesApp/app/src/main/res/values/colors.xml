@@ -22,7 +22,7 @@
     <color name="success">#5BA092</color>
     <color name="error">#EA2B2B</color>
     <color name="warning">#F2994A</color>
-
+<color name="background_add">#6EB3E9</color>
     <!-- Progress Bar Background Colors -->
     <color name="progress_bg">#F2F3F7</color>
 </resources>

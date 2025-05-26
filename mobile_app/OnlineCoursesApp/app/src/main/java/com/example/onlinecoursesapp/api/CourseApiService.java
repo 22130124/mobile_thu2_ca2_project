@@ -49,5 +49,17 @@ public interface CourseApiService {
                 @Path("courseId") int courseId
         );
 
+        /**
+         * Cập nhật khóa học - Hương
+         */
+        @PUT("/courses/{id}")
+        Call<StatisticsResponse> updateCourse (@Path("id") int courseId, @Body Course course);
+
+        @DELETE("/courses/{id}")
+        Call<StatisticsResponse> deleteCourse (@Path("id") int courseId);
+
+        @POST("/courses")
+        Call<StatisticsResponse> addCourse(@Body Course course);
+
 
 }
