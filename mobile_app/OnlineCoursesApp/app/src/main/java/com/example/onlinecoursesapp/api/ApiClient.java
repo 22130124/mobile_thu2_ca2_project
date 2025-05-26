@@ -35,4 +35,12 @@ public class ApiClient {
     public static UserAPIService getUserApiService() {
         return getClient().create(UserAPIService.class);
     }
+
+    public static EnrollmentApiService getEnrollmentApiService() {
+        return getClient().create(EnrollmentApiService.class);
+    }
+
+    public static LessonProgressApiService getLessonProgressApiService() {
+        return getClient().create(LessonProgressApiService.class);
+    }
 }

@@ -66,4 +66,10 @@ public class Enrollment {
     public void setEnrolledAt(LocalDateTime enrolledAt) {
         this.enrolledAt = enrolledAt;
     }
+
+    public List<LessonProgress> getLessonProgresses() {
+        return lessonProgresses;
+    }
+
+
 }

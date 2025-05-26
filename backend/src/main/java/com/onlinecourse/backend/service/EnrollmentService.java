@@ -2,21 +2,32 @@ package com.onlinecourse.backend.service;
 
 import com.onlinecourse.backend.dto.CourseProgress;
 import com.onlinecourse.backend.dto.StatisticsResponse;
-import com.onlinecourse.backend.model.Course;
-import com.onlinecourse.backend.model.Enrollment;
-import com.onlinecourse.backend.model.Lesson;
+import com.onlinecourse.backend.model.*;
+import com.onlinecourse.backend.repository.CourseRepository;
 import com.onlinecourse.backend.repository.EnrollmentRepository;
+import com.onlinecourse.backend.repository.LessonProgressRepository;
+import com.onlinecourse.backend.repository.UserRepository;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 public class EnrollmentService {
 
     private final EnrollmentRepository enrollmentRepository;
+    private final UserRepository userRepository;
+    private final CourseRepository courseRepository;
+    private final LessonProgressRepository lessonProgressRepository;
 
-    public EnrollmentService(EnrollmentRepository enrollmentRepository) {
+    public EnrollmentService(EnrollmentRepository enrollmentRepository, UserRepository userRepository, CourseRepository courseRepository, LessonProgressRepository lessonProgressRepository) {
         this.enrollmentRepository = enrollmentRepository;
+        this.userRepository = userRepository;
+        this.courseRepository = courseRepository;
+        this.lessonProgressRepository = lessonProgressRepository;
     }
 
     public StatisticsResponse getUserStatistics(int userId) {
@@ -46,7 +57,6 @@ public class EnrollmentService {
 
         return stats;
     }
-
     public List<CourseProgress> getUserCourseProgress(int userId) {
         List<Enrollment> enrollments = enrollmentRepository.findByUserId(userId);
 
@@ -93,5 +103,39 @@ public class EnrollmentService {
             }
         }
         throw new RuntimeException("Không tìm thấy tiến độ cho khóa học " + courseId);
+    }
+
+    public ResponseEntity<?> enrollUser(int userId, int courseId) {
+        Optional<User> userOpt = userRepository.findById(userId);
+        Optional<Course> courseOpt = courseRepository.findById(courseId);
+
+        if (userOpt.isEmpty() || courseOpt.isEmpty()) {
+            return ResponseEntity.badRequest().body("Người dùng hoặc khóa học không tồn tại.");
+        }
+
+        User user = userOpt.get();
+        Course course = courseOpt.get();
+
+        Enrollment enrollment = new Enrollment();
+        enrollment.setUser(user);
+        enrollment.setCourse(course);
+        enrollment.setEnrolledAt(LocalDateTime.now());
+
+        enrollmentRepository.save(enrollment);
+
+        // Tạo LessonProgress cho mỗi bài học
+        List<LessonProgress> progressList = course.getLessons().stream()
+                .map(lesson -> {
+                    LessonProgress progress = new LessonProgress();
+                    progress.setEnrollment(enrollment);
+                    progress.setLesson(lesson);
+                    progress.setCompleted(false);
+                    progress.setCompletedAt(null); // chưa hoàn thành thì null
+                    return progress;
+                }).toList();
+
+        lessonProgressRepository.saveAll(progressList);
+
+        return ResponseEntity.ok("Đăng ký khóa học và lưu tiến trình thành công.");
     }
 }

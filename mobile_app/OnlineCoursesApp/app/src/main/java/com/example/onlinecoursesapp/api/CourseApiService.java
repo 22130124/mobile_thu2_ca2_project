@@ -1,6 +1,7 @@
 package com.example.onlinecoursesapp.api;
 
 import com.example.onlinecoursesapp.models.Course;
+import com.example.onlinecoursesapp.models.CourseOverview;
 import com.example.onlinecoursesapp.models.CourseProgress;
 import com.example.onlinecoursesapp.models.StatisticsResponse;
 
@@ -17,10 +18,10 @@ public interface CourseApiService {
         Call<List<Course>> getAllCourses();
 
         /**
-         * Lấy khóa học theo ID
+         * Thuy - Lấy khóa học theo ID
          */
         @GET("/courses/{id}")
-        Call<Course> getCourseById(@Path("id") int courseId);
+        Call<CourseOverview> getCourseById(@Path("id") int courseId);
 
         /**
          * Lấy tiến độ khóa học của người dùng
