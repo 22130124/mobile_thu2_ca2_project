@@ -43,4 +43,8 @@ public class ApiClient {
     public static LessonProgressApiService getLessonProgressApiService() {
         return getClient().create(LessonProgressApiService.class);
     }
+
+    public static DashboardApiService getDashboardApiService(){
+        return getClient().create(DashboardApiService.class);
+    }
 }

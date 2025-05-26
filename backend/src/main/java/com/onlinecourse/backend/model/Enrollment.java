@@ -1,11 +1,18 @@
 package com.onlinecourse.backend.model;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "enrollments")
 public class Enrollment {
@@ -34,42 +41,4 @@ public class Enrollment {
                 .map(lp -> lp.getLesson().getId())
                 .collect(Collectors.toList());
     }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public Course getCourse() {
-        return course;
-    }
-
-    public void setCourse(Course course) {
-        this.course = course;
-    }
-
-    public LocalDateTime getEnrolledAt() {
-        return enrolledAt;
-    }
-
-    public void setEnrolledAt(LocalDateTime enrolledAt) {
-        this.enrolledAt = enrolledAt;
-    }
-
-    public List<LessonProgress> getLessonProgresses() {
-        return lessonProgresses;
-    }
-
-
 }

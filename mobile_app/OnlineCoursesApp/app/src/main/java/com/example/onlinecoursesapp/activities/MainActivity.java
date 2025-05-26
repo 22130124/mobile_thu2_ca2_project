@@ -10,6 +10,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.onlinecoursesapp.R;
+import com.example.onlinecoursesapp.activities.dashboard.DashboardActivity;
 
 public class MainActivity extends AppCompatActivity {
 

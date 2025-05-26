@@ -6,15 +6,19 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.onlinecoursesapp.R;
+import com.example.onlinecoursesapp.data.DashboardRepository;
+import com.example.onlinecoursesapp.models.dashboard.DashboardStats;
+import com.example.onlinecoursesapp.models.dashboard.RegistrationData;
+import com.example.onlinecoursesapp.models.dashboard.StudentStatusData;
+import com.example.onlinecoursesapp.utils.DashboardCallback;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.XAxis;
@@ -28,9 +32,13 @@ import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import com.github.mikephil.charting.utils.ColorTemplate;
 
 import java.util.ArrayList;
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class OverviewFragment extends Fragment {
-
     // UI components
     private TextView tvTotalStudents;
     private TextView tvTotalCourses;
@@ -40,40 +48,30 @@ public class OverviewFragment extends Fragment {
     private TextView tvNewWeek;
     private LineChart registrationChart;
     private PieChart studentStatusChart;
-    private RecyclerView newCoursesRecyclerView;
-    private RecyclerView completedLessonsRecyclerView;
+    private DashboardRepository dashboardRepository;
 
     public OverviewFragment() {
         // Required empty public constructor
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_overview, container, false);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
+        // Initialize repository
+        dashboardRepository = DashboardRepository.getInstance();
         // Initialize UI components
         initViews(view);
-
         // Setup charts
         setupCharts();
-
-        // Load data
-        loadStatisticsData();
-        loadChartData();
-
-        if (newCoursesRecyclerView != null) {
-            newCoursesRecyclerView.setVisibility(View.GONE);
-        }
-
-        if (completedLessonsRecyclerView != null) {
-            completedLessonsRecyclerView.setVisibility(View.GONE);
-        }
+        // Load data from API
+        loadDashboardStats();
+        loadRegistrationData();
+        loadStudentStatusData();
     }
 
     private void initViews(View view) {
@@ -88,10 +86,6 @@ public class OverviewFragment extends Fragment {
         // Charts
         registrationChart = view.findViewById(R.id.chart_registrations);
         studentStatusChart = view.findViewById(R.id.chart_student_status);
-
-        // RecyclerViews (we'll disable these)
-        newCoursesRecyclerView = view.findViewById(R.id.rv_new_courses);
-        completedLessonsRecyclerView = view.findViewById(R.id.rv_completed_lessons);
     }
 
     private void setupCharts() {
@@ -119,64 +113,101 @@ public class OverviewFragment extends Fragment {
         studentStatusChart.setCenterText("Students");
         studentStatusChart.setRotationEnabled(true);
         studentStatusChart.setHighlightPerTapEnabled(true);
+        studentStatusChart.setEntryLabelColor(Color.TRANSPARENT);
     }
 
-    private void loadStatisticsData() {
-        // In a real app, these would come from a database or API
-        tvTotalStudents.setText("1,234");
-        tvTotalCourses.setText("42");
-        tvTotalHours.setText("560");
-        tvCompletionRate.setText("78%");
-        tvNewToday.setText("24");
-        tvNewWeek.setText("156");
+    private void loadDashboardStats() {
+        dashboardRepository.fetchDashboardStats(new DashboardCallback.DashboardStatsCallback() {
+            @Override
+            public void onSuccess(DashboardStats stats) {
+                if (getActivity() == null) return;
+                getActivity().runOnUiThread(() -> {
+                    tvTotalStudents.setText(String.valueOf(stats.getTotalStudents()));
+                    tvTotalCourses.setText(String.valueOf(stats.getTotalCourses()));
+                    tvTotalHours.setText(String.valueOf(stats.getTotalHours()));
+                    tvCompletionRate.setText(String.format("%.1f%%", stats.getCompletionRate()));
+                    tvNewToday.setText(String.valueOf(stats.getNewToday()));
+                    tvNewWeek.setText(String.valueOf(stats.getNewWeek()));
+                });
+            }
+
+            @Override
+            public void onFailure(String errorMessage) {
+                showError(errorMessage);
+            }
+        });
     }
 
-    private void loadChartData() {
-        // Load Registration Chart Data
-        ArrayList<Entry> registrationEntries = new ArrayList<>();
-        registrationEntries.add(new Entry(0, 45));
-        registrationEntries.add(new Entry(1, 32));
-        registrationEntries.add(new Entry(2, 38));
-        registrationEntries.add(new Entry(3, 42));
-        registrationEntries.add(new Entry(4, 56));
-        registrationEntries.add(new Entry(5, 68));
-        registrationEntries.add(new Entry(6, 75));
+    private void loadRegistrationData() {
+        dashboardRepository.fetchRegistrationData(new DashboardCallback.RegistrationDataCallback() {
+            @Override
+            public void onSuccess(List<RegistrationData.DailyRegistration> data) {
+                if (getActivity() == null) return;
+                getActivity().runOnUiThread(() -> updateRegistrationChart(data));
+            }
+            @Override
+            public void onFailure(String errorMessage) {
+                showError(errorMessage);
+            }
+        });
+    }
 
-        LineDataSet registrationDataSet = new LineDataSet(registrationEntries, "Weekly Registrations");
-        registrationDataSet.setColor(getResources().getColor(android.R.color.holo_blue_dark));
-        registrationDataSet.setLineWidth(2f);
-        registrationDataSet.setCircleColor(getResources().getColor(android.R.color.holo_blue_dark));
-        registrationDataSet.setCircleRadius(4f);
-        registrationDataSet.setDrawCircleHole(false);
-        registrationDataSet.setValueTextSize(10f);
-        registrationDataSet.setDrawFilled(true);
-        registrationDataSet.setFillColor(getResources().getColor(android.R.color.holo_blue_light));
+    private void loadStudentStatusData() {
+        dashboardRepository.fetchStudentStatusData(new DashboardCallback.StudentStatusDataCallback() {
+            @Override
+            public void onSuccess(List<StudentStatusData.Status> data) {
+                if (getActivity() == null) return;
+                getActivity().runOnUiThread(() -> updateStudentStatusChart(data));
+            }
 
-        ArrayList<String> xLabels = new ArrayList<>();
-        xLabels.add("Mon");
-        xLabels.add("Tue");
-        xLabels.add("Wed");
-        xLabels.add("Thu");
-        xLabels.add("Fri");
-        xLabels.add("Sat");
-        xLabels.add("Sun");
+            @Override
+            public void onFailure(String errorMessage) {
+                showError(errorMessage);
+            }
+        });
+    }
 
-        registrationChart.getXAxis().setValueFormatter(new IndexAxisValueFormatter(xLabels));
-        registrationChart.setData(new LineData(registrationDataSet));
-        registrationChart.invalidate();
+    private void updateRegistrationChart(List<RegistrationData.DailyRegistration> data) {
+        ArrayList<Entry> entries = new ArrayList<>();
+        ArrayList<String> labels = new ArrayList<>();
 
-        // Load Student Status Chart Data
-        ArrayList<PieEntry> statusEntries = new ArrayList<>();
-        statusEntries.add(new PieEntry(65, "In Progress"));
-        statusEntries.add(new PieEntry(25, "Completed"));
-        statusEntries.add(new PieEntry(10, "Not Started"));
+        for (int i = 0; i < data.size(); i++) {
+            RegistrationData.DailyRegistration reg = data.get(i);
+            entries.add(new Entry(i, reg.getCount()));
+            labels.add(reg.getDay());
+        }
 
-        PieDataSet statusDataSet = new PieDataSet(statusEntries, "");
-        statusDataSet.setColors(ColorTemplate.MATERIAL_COLORS);
-        statusDataSet.setValueTextColor(Color.WHITE);
-        statusDataSet.setValueTextSize(14f);
+        LineDataSet dataSet = new LineDataSet(entries, "Weekly Registrations");
+        dataSet.setColor(getResources().getColor(android.R.color.holo_blue_dark));
+        dataSet.setLineWidth(2f);
+        dataSet.setCircleColor(getResources().getColor(android.R.color.holo_blue_dark));
+        dataSet.setCircleRadius(4f);
+        dataSet.setDrawCircleHole(false);
+        dataSet.setValueTextSize(10f);
+        dataSet.setDrawFilled(true);
+        dataSet.setFillColor(getResources().getColor(android.R.color.holo_blue_light));
+        registrationChart.getXAxis().setValueFormatter(new IndexAxisValueFormatter(labels));
+        registrationChart.setData(new LineData(dataSet));
+    }
 
-        studentStatusChart.setData(new PieData(statusDataSet));
+    private void updateStudentStatusChart(List<StudentStatusData.Status> data) {
+        ArrayList<PieEntry> entries = new ArrayList<>();
+        for (StudentStatusData.Status status : data) {
+            entries.add(new PieEntry(status.getPercentage(), status.getStatus()));
+        }
+        PieDataSet dataSet = new PieDataSet(entries, "");
+        dataSet.setColors(ColorTemplate.MATERIAL_COLORS);
+        dataSet.setValueTextColor(Color.WHITE);
+        dataSet.setValueTextSize(14f);
+        studentStatusChart.setData(new PieData(dataSet));
         studentStatusChart.invalidate();
+    }
+
+    private void showError(String message) {
+        if (getActivity() != null) {
+            getActivity().runOnUiThread(() ->
+                    Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show()
+            );
+        }
     }
 }

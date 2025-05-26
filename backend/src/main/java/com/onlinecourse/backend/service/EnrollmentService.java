@@ -1,7 +1,7 @@
 package com.onlinecourse.backend.service;
 
-import com.onlinecourse.backend.dto.CourseProgress;
-import com.onlinecourse.backend.dto.StatisticsResponse;
+import com.onlinecourse.backend.dto.course_progress.CourseProgress;
+import com.onlinecourse.backend.dto.course_progress.StatisticsResponse;
 import com.onlinecourse.backend.model.*;
 import com.onlinecourse.backend.repository.CourseRepository;
 import com.onlinecourse.backend.repository.EnrollmentRepository;
@@ -57,6 +57,7 @@ public class EnrollmentService {
 
         return stats;
     }
+
     public List<CourseProgress> getUserCourseProgress(int userId) {
         List<Enrollment> enrollments = enrollmentRepository.findByUserId(userId);
 

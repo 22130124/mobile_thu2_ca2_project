@@ -1,9 +1,9 @@
 package com.example.onlinecoursesapp.api;
 
 import com.example.onlinecoursesapp.models.Course;
+import com.example.onlinecoursesapp.models.course_progress.CourseProgress;
+import com.example.onlinecoursesapp.models.course_progress.StatisticsResponse;
 import com.example.onlinecoursesapp.models.CourseOverview;
-import com.example.onlinecoursesapp.models.CourseProgress;
-import com.example.onlinecoursesapp.models.StatisticsResponse;
 
 import java.util.List;
 
