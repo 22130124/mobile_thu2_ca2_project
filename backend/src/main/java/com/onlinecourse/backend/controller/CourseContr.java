@@ -43,5 +43,34 @@ public class CourseContr {
         return courseRepository.findByTitleContainingIgnoreCase(query);
     }
 
+    //Chỉnh sửa khóa học - Huong
+    @PutMapping("/{id}")
+    public ResponseEntity<Course> updateCourse(@PathVariable int id, @RequestBody Course course) {
+        return courseRepository.findById(id)
+                .map(existingCourse -> {
+                   existingCourse.setCourse(course);
+                    Course updated = courseRepository.save(existingCourse);
+                    return ResponseEntity.ok(updated);
+                })
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+
+    //Xóa khóa học - Huong
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteCourse(@PathVariable int id) {
+        if (!courseRepository.existsById(id)) {
+            return ResponseEntity.notFound().build();
+        }
+        courseRepository.deleteById(id);
+        return ResponseEntity.noContent().build(); // HTTP 204
+    }
+
+    //Thêm khóa học - Hương
+    @PostMapping
+    public ResponseEntity<Course> addCourse(@RequestBody Course course) {
+        Course savedCourse = courseRepository.save(course);
+        return ResponseEntity.status(201).body(savedCourse);
+    }
 
 }
