@@ -15,12 +15,10 @@ public class User {
     private String password;
     private String role;
     private boolean isActive;
-
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
     // Getter và Setter
-
     public int getId() {
         return id;
     }

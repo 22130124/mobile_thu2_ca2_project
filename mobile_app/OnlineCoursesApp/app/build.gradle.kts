@@ -49,6 +49,7 @@ dependencies {
     implementation(libs.material)
     implementation(libs.activity)
     implementation(libs.constraintlayout)
+    implementation(libs.gridlayout)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
@@ -62,4 +63,5 @@ dependencies {
     implementation ("com.google.apis:google-api-services-youtube:v3-rev222-1.25.0")
     implementation ("com.google.http-client:google-http-client-gson:1.41.0")
     implementation ("com.google.http-client:google-http-client-android:1.41.0")
+    implementation ("com.github.PhilJay:MPAndroidChart:v3.1.0")
 }

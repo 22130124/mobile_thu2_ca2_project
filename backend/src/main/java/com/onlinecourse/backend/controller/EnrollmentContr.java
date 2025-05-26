@@ -53,9 +53,7 @@ public class EnrollmentContr {
 
     // Lấy tiến độ của 1 khoá học theo từng user
     @GetMapping("/{userId}/progress/{courseId}")
-    public CourseProgress getCourseProgressByUserAndCourse(
-            @PathVariable int userId,
-            @PathVariable int courseId) {
+    public CourseProgress getCourseProgressByUserAndCourse(@PathVariable int userId, @PathVariable int courseId) {
         return enrollmentService.getCourseProgressByUserAndCourse(userId, courseId);
     }
 
