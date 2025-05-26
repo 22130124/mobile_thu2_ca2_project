@@ -1,4 +1,4 @@
-package com.example.onlinecoursesapp.models;
+package com.example.onlinecoursesapp.models.course_progress;
 
 import com.google.gson.annotations.SerializedName;
 

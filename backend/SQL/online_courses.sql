@@ -49,7 +49,7 @@ CREATE TABLE IF NOT EXISTS `courses` (
   PRIMARY KEY (`id`),
   KEY `category_id` (`category_id`),
   CONSTRAINT `courses_ibfk_1` FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Dumping data for table online_courses.courses: ~5 rows (approximately)
 DELETE FROM `courses`;
@@ -71,14 +71,17 @@ CREATE TABLE IF NOT EXISTS `enrollments` (
   KEY `course_id` (`course_id`),
   CONSTRAINT `enrollments_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),
   CONSTRAINT `enrollments_ibfk_2` FOREIGN KEY (`course_id`) REFERENCES `courses` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table online_courses.enrollments: ~3 rows (approximately)
+-- Dumping data for table online_courses.enrollments: ~6 rows (approximately)
 DELETE FROM `enrollments`;
 INSERT INTO `enrollments` (`id`, `user_id`, `course_id`, `enrolled_at`) VALUES
 	(1, 1, 1, '2025-05-03 14:12:17'),
 	(2, 2, 1, '2025-05-03 14:12:17'),
-	(3, 3, 2, '2025-05-03 14:12:17');
+	(3, 3, 2, '2025-05-03 14:12:17'),
+	(4, 6, 2, '2025-05-25 06:40:01'),
+	(5, 6, 5, '2025-05-25 06:40:12'),
+	(6, 8, 1, '2025-05-25 09:01:57');
 
 -- Dumping structure for table online_courses.lessons
 CREATE TABLE IF NOT EXISTS `lessons` (
@@ -87,17 +90,17 @@ CREATE TABLE IF NOT EXISTS `lessons` (
   `title` varchar(255) NOT NULL,
   `content` varchar(255) NOT NULL DEFAULT '',
   `youtube_video_url` varchar(255) DEFAULT NULL,
-  `duration_minutes` int(11) NOT NULL,
+  `duration_minutes` double NOT NULL DEFAULT 0,
   `created_at` timestamp NULL DEFAULT current_timestamp(),
-  PRIMARY KEY (`id`),
-  KEY `course_id` (`course_id`),
+  PRIMARY KEY (`id`) USING BTREE,
+  KEY `course_id` (`course_id`) USING BTREE,
   CONSTRAINT `lessons_ibfk_1` FOREIGN KEY (`course_id`) REFERENCES `courses` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 -- Dumping data for table online_courses.lessons: ~2 rows (approximately)
 DELETE FROM `lessons`;
 INSERT INTO `lessons` (`id`, `course_id`, `title`, `content`, `youtube_video_url`, `duration_minutes`, `created_at`) VALUES
-	(1, 1, 'Giới thiệu về Java', 'lap_trinh/java_intro.html', 'https://youtu.be/abc123', 15, '2025-05-03 14:10:37'),
+	(1, 1, 'Giới thiệu về Java', 'lap_trinh/java_intro.html', 'https://www.youtube.com/watch?v=VQttXb6qE6k', 14.37, '2025-05-03 14:10:37'),
 	(2, 1, 'Cài đặt môi trường Java', 'lap_trinh/java_setup.text', 'https://youtu.be/def456', 20, '2025-05-03 14:10:37');
 
 -- Dumping structure for table online_courses.lesson_progress
@@ -112,15 +115,17 @@ CREATE TABLE IF NOT EXISTS `lesson_progress` (
   KEY `lesson_id` (`lesson_id`),
   CONSTRAINT `lesson_progress_ibfk_1` FOREIGN KEY (`enrollment_id`) REFERENCES `enrollments` (`id`) ON DELETE CASCADE,
   CONSTRAINT `lesson_progress_ibfk_2` FOREIGN KEY (`lesson_id`) REFERENCES `lessons` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table online_courses.lesson_progress: ~4 rows (approximately)
+-- Dumping data for table online_courses.lesson_progress: ~6 rows (approximately)
 DELETE FROM `lesson_progress`;
 INSERT INTO `lesson_progress` (`id`, `enrollment_id`, `lesson_id`, `is_completed`, `completed_at`) VALUES
 	(1, 1, 1, 1, '2025-05-03 14:15:01'),
 	(2, 1, 2, 0, NULL),
 	(3, 2, 1, 0, NULL),
-	(4, 3, 1, 0, NULL);
+	(4, 3, 1, 0, NULL),
+	(11, 6, 1, 1, NULL),
+	(12, 6, 2, 1, NULL);
 
 -- Dumping structure for table online_courses.users
 CREATE TABLE IF NOT EXISTS `users` (
@@ -128,20 +133,24 @@ CREATE TABLE IF NOT EXISTS `users` (
   `name` varchar(255) NOT NULL,
   `email` varchar(255) NOT NULL,
   `password` varchar(255) NOT NULL,
-  `role` enum('USER','ADMIN') DEFAULT 'USER',
+  `role` varchar(255) DEFAULT NULL,
   `is_active` tinyint(1) DEFAULT 1,
   `created_at` timestamp NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NULL DEFAULT NULL ON UPDATE current_timestamp(),
   PRIMARY KEY (`id`),
   UNIQUE KEY `email` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table online_courses.users: ~3 rows (approximately)
+-- Dumping data for table online_courses.users: ~7 rows (approximately)
 DELETE FROM `users`;
 INSERT INTO `users` (`id`, `name`, `email`, `password`, `role`, `is_active`, `created_at`, `updated_at`) VALUES
 	(1, 'Nguyễn Văn A', 'a@example.com', 'hashed_password_1', 'USER', 1, '2025-05-03 13:47:59', NULL),
 	(2, 'Trần Thị B', 'b@example.com', 'hashed_password_2', 'ADMIN', 1, '2025-05-03 13:47:59', NULL),
-	(3, 'Lê Văn C', 'c@example.com', 'hashed_password_3', 'USER', 1, '2025-05-03 13:47:59', NULL);
+	(3, 'Lê Văn C', 'c@example.com', 'hashed_password_3', 'USER', 1, '2025-05-03 13:47:59', NULL),
+	(4, 'kieu', 'thuykieu20040@gmail.com', '$2a$10$ywYvAbWfUI4.Dr4/bZFtZORNZKz3/g2VqQ.MRO5WnSg7mDaIQfxXS', 'user', 0, '2025-05-25 01:20:59', '2025-05-25 01:20:59'),
+	(6, 'kieu', '22130137@st.hcmuaf.edu.vn', '$2a$10$gk/Ei9h6ajZB4kLLSVdpX.oVLykZyFjsWg8XyCklLMsBMM/aRtRXi', 'user', 1, '2025-05-25 01:25:34', '2025-05-25 01:26:05'),
+	(7, 'kieu', 'kieu36830@gmail.com', '$2a$10$NAOM85zk/i7lB8BZAEjTAeJGlFPPgNjqw8IVMHdqfNwxxVcOWpPn2', 'user', 1, '2025-05-25 08:56:24', '2025-05-25 08:56:38'),
+	(8, 'thanh', 'tvu686021@gmail.com', '$2a$10$m8duEKLxBT7Rx5PsBXW0Ve8/vVnbCVmGquBPZehJGHBps6wMXPfxm', 'user', 1, '2025-05-25 08:59:07', '2025-05-25 08:59:28');
 
 /*!40103 SET TIME_ZONE=IFNULL(@OLD_TIME_ZONE, 'system') */;
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;

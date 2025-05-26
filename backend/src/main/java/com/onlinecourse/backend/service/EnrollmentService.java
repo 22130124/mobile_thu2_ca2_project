@@ -1,7 +1,7 @@
 package com.onlinecourse.backend.service;
 
-import com.onlinecourse.backend.dto.CourseProgress;
-import com.onlinecourse.backend.dto.StatisticsResponse;
+import com.onlinecourse.backend.dto.course_progress.CourseProgress;
+import com.onlinecourse.backend.dto.course_progress.StatisticsResponse;
 import com.onlinecourse.backend.model.Course;
 import com.onlinecourse.backend.model.Enrollment;
 import com.onlinecourse.backend.model.Lesson;

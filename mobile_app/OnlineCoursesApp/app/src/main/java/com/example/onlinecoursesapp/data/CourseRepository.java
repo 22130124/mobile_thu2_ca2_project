@@ -5,8 +5,8 @@ import android.content.SharedPreferences;
 
 import com.example.onlinecoursesapp.api.ApiClient;
 import com.example.onlinecoursesapp.api.CourseApiService;
-import com.example.onlinecoursesapp.models.CourseProgress;
-import com.example.onlinecoursesapp.models.StatisticsResponse;
+import com.example.onlinecoursesapp.models.course_progress.CourseProgress;
+import com.example.onlinecoursesapp.models.course_progress.StatisticsResponse;
 import com.example.onlinecoursesapp.utils.ProgressCallback;
 import com.example.onlinecoursesapp.utils.StatisticsCallback;
 

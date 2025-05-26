@@ -35,4 +35,8 @@ public class ApiClient {
     public static UserAPIService getUserApiService() {
         return getClient().create(UserAPIService.class);
     }
+
+    public static DashboardApiService getDashboardApiService(){
+        return getClient().create(DashboardApiService.class);
+    }
 }
