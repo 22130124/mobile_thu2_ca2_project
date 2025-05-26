@@ -7,16 +7,14 @@ public class CourseProgress {
     private int enrollmentId;
     private int totalLessons;
     private int completedLessons;
-    private int totalDurationMinutes;
-    private int completedDurationMinutes;
+    private double totalDurationMinutes;
+    private double completedDurationMinutes;
     private float completionPercentage;
 
     // Constructors
     public CourseProgress() {}
 
-    public CourseProgress(int courseId, String courseTitle, String courseImagePath, int enrollmentId,
-                          int totalLessons, int completedLessons,
-                          int totalDurationMinutes, int completedDurationMinutes, float completionPercentage) {
+    public CourseProgress(int courseId, String courseTitle, String courseImagePath, int enrollmentId, int totalLessons, int completedLessons, double totalDurationMinutes, double completedDurationMinutes, float completionPercentage) {
         this.courseId = courseId;
         this.courseTitle = courseTitle;
         this.courseImagePath = courseImagePath;
@@ -29,7 +27,6 @@ public class CourseProgress {
     }
 
     // Getters & Setters
-
     public int getCourseId() {
         return courseId;
     }
@@ -78,19 +75,19 @@ public class CourseProgress {
         this.completedLessons = completedLessons;
     }
 
-    public int getTotalDurationMinutes() {
+    public double getTotalDurationMinutes() {
         return totalDurationMinutes;
     }
 
-    public void setTotalDurationMinutes(int totalDurationMinutes) {
+    public void setTotalDurationMinutes(double totalDurationMinutes) {
         this.totalDurationMinutes = totalDurationMinutes;
     }
 
-    public int getCompletedDurationMinutes() {
+    public double getCompletedDurationMinutes() {
         return completedDurationMinutes;
     }
 
-    public void setCompletedDurationMinutes(int completedDurationMinutes) {
+    public void setCompletedDurationMinutes(double completedDurationMinutes) {
         this.completedDurationMinutes = completedDurationMinutes;
     }
 

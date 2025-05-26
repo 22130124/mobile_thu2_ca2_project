@@ -7,21 +7,26 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.onlinecoursesapp.R;
+import com.example.onlinecoursesapp.activities.VideoActivity;
 import com.example.onlinecoursesapp.models.LessonOverview;
 
 import java.util.List;
 
+// Thuy - Hien danh sach bai tuong ung voi khoa hoc
 public class LessonOverviewAdapter extends RecyclerView.Adapter<LessonOverviewAdapter.LessonViewHolder> {
 
     private List<LessonOverview> lessonList;
+    private boolean isEnrolled;
 
-    public LessonOverviewAdapter(List<LessonOverview> lessonList) {
+    public LessonOverviewAdapter(List<LessonOverview> lessonList, boolean isEnrolled) {
         this.lessonList = lessonList;
+        this.isEnrolled = isEnrolled;
     }
 
     @NonNull
@@ -38,10 +43,15 @@ public class LessonOverviewAdapter extends RecyclerView.Adapter<LessonOverviewAd
         holder.lessonDuration.setText(lesson.getFormattedDuration());
 
         holder.itemView.setOnClickListener(v -> {
-            String videoId = extractVideoId(lesson.getYoutubeVideoUrl());
+            if (!isEnrolled) {
+                Toast.makeText(v.getContext(), "Bạn cần đăng ký khóa học để xem bài học!", Toast.LENGTH_SHORT).show();
+                return;
+            }
 
+            String videoId = extractVideoId(lesson.getYoutubeVideoUrl());
             Intent intent = new Intent(v.getContext(), VideoActivity.class);
             intent.putExtra("videoId", videoId);
+            intent.putExtra("lessonId", lesson.getId());
             v.getContext().startActivity(intent);
         });
     }
@@ -66,5 +76,4 @@ public class LessonOverviewAdapter extends RecyclerView.Adapter<LessonOverviewAd
         Uri uri = Uri.parse(youtubeUrl);
         return uri.getQueryParameter("v");
     }
-
 }

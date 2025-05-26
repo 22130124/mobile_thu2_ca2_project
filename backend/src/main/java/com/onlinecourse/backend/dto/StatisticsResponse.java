@@ -1,18 +1,18 @@
 package com.onlinecourse.backend.dto;
 
 public class StatisticsResponse {
-    private int totalLearningTimeMinutes;
+    private double totalLearningTimeMinutes;
     private int totalCoursesEnrolled;
     private int completedCourses;
     private int inProgressCourses;
     private float averageCompletionRate;
     private int totalAchievements;
 
-    public int getTotalLearningTimeMinutes() {
+    public double getTotalLearningTimeMinutes() {
         return totalLearningTimeMinutes;
     }
 
-    public void setTotalLearningTimeMinutes(int totalLearningTimeMinutes) {
+    public void setTotalLearningTimeMinutes(double totalLearningTimeMinutes) {
         this.totalLearningTimeMinutes = totalLearningTimeMinutes;
     }
 

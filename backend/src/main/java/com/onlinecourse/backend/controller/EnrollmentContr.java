@@ -3,7 +3,7 @@ package com.onlinecourse.backend.controller;
 import com.onlinecourse.backend.dto.CourseProgress;
 import com.onlinecourse.backend.dto.StatisticsResponse;
 import com.onlinecourse.backend.model.User;
-import com.onlinecourse.backend.repository.UserRepository;
+import com.onlinecourse.backend.repository.*;
 import com.onlinecourse.backend.service.EnrollmentService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,10 +17,12 @@ public class EnrollmentContr {
 
     private final UserRepository userRepository;
     private final EnrollmentService enrollmentService;
+    private final EnrollmentRepository enrollmentRepository;
 
-    public EnrollmentContr(UserRepository userRepository, EnrollmentService enrollmentService) {
+    public EnrollmentContr(UserRepository userRepository, EnrollmentService enrollmentService, EnrollmentRepository enrollmentRepository) {
         this.userRepository = userRepository;
         this.enrollmentService = enrollmentService;
+        this.enrollmentRepository = enrollmentRepository;
     }
 
     //Lấy tất cả User
@@ -58,5 +60,19 @@ public class EnrollmentContr {
     }
 
 
+    // Thuy - Ghi danh người dùng (khi bấm nút Đăng ký học trong trang Tổng quan khóa học)
+    @PostMapping("/enrollUser")
+    public ResponseEntity<?> enrollUser(@RequestParam int userId, @RequestParam int courseId) {
+        return enrollmentService.enrollUser(userId, courseId);
+    }
 
+    // Thuy - Kiem tra user đã đăng ký học hay chưa
+    @GetMapping("/checkEnrollment")
+    public ResponseEntity<Boolean> checkEnrollment(
+            @RequestParam int userId,
+            @RequestParam int courseId) {
+
+        boolean exists = enrollmentRepository.existsByUserIdAndCourseId(userId, courseId);
+        return ResponseEntity.ok(exists);
+    }
 }

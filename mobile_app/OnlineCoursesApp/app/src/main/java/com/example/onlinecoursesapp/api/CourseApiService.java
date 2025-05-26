@@ -15,13 +15,13 @@ public interface CourseApiService {
          * Lấy tất cả khóa học từ server
          */
         @GET("/courses")
-        Call<List<CourseOverview>> getAllCourses();
+        Call<List<Course>> getAllCourses();
 
         /**
-         * Lấy khóa học theo ID
+         * Thuy - Lấy khóa học theo ID
          */
         @GET("/courses/{id}")
-        Call<Course> getCourseById(@Path("id") int courseId);
+        Call<CourseOverview> getCourseById(@Path("id") int courseId);
 
         /**
          * Lấy tiến độ khóa học của người dùng
