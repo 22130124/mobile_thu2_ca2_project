@@ -43,4 +43,8 @@ public class ApiClient {
     public static CourseApiService getCourseApiService() {
         return getClient().create(CourseApiService.class);
     }
+
+    public static UserAPIService getUserApiService() {
+        return getClient().create(UserAPIService.class);
+    }
 }

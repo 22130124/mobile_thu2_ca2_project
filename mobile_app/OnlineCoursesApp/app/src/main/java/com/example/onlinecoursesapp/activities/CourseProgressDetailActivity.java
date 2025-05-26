@@ -1,4 +1,4 @@
-package com.example.onlinecoursesapp;
+package com.example.onlinecoursesapp.activities;
 
 import android.content.Context;
 import android.content.Intent;
@@ -12,9 +12,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import com.bumptech.glide.Glide;
+import com.example.onlinecoursesapp.R;
 import com.example.onlinecoursesapp.api.ApiClient;
 import com.example.onlinecoursesapp.data.CourseRepository;
 import com.example.onlinecoursesapp.models.CourseProgress;
+import com.example.onlinecoursesapp.utils.FormatTime;
 import com.example.onlinecoursesapp.utils.ProgressCallback;
 
 public class CourseProgressDetailActivity extends AppCompatActivity {
@@ -22,7 +24,6 @@ public class CourseProgressDetailActivity extends AppCompatActivity {
 
     private CourseRepository courseRepository;
     private int courseId;
-    private int userId = 1; // bạn có thể lấy userId từ SharedPreferences nếu cần
     private Toolbar toolbar;
     private ImageView imgCourse;
     private TextView tvCourseTitle;
@@ -32,7 +33,6 @@ public class CourseProgressDetailActivity extends AppCompatActivity {
     private TextView tvProgressPercentage;
     private TextView tvCompletedTime;
     private TextView tvTotalTime;
-
     private Button btnContinueLearning;
 
     public static Intent newIntent(Context context, int courseId) {
@@ -106,13 +106,15 @@ public class CourseProgressDetailActivity extends AppCompatActivity {
         String lessonCountText = progress.getCompletedLessons() + " / " + progress.getTotalLessons() + " bài học đã hoàn thành";
         tvLessonCount.setText(lessonCountText);
 
-        int remainingMinutes = progress.getTotalDurationMinutes() - progress.getCompletedDurationMinutes();
-        String timeRemainingText = formatMinutes(remainingMinutes) + " còn lại";
+        double remainingMinutes = progress.getTotalDurationMinutes() - progress.getCompletedDurationMinutes();
+        if (remainingMinutes < 0) remainingMinutes = 0;
+        String timeRemainingText = FormatTime.formatDuration(remainingMinutes) + " còn lại";
         tvTimeRemaining.setText(timeRemainingText);
 
         int percentage = Math.round(progress.getCompletionPercentage());
         progressBar.setProgress(percentage);
-        tvProgressPercentage.setText(percentage + "%");
+        String percentageText=percentage+"%";
+        tvProgressPercentage.setText(percentageText);
 
         tvCompletedTime.setText(progress.getFormattedCompletedDuration());
         tvTotalTime.setText(progress.getFormattedTotalDuration());
@@ -122,17 +124,6 @@ public class CourseProgressDetailActivity extends AppCompatActivity {
                 .placeholder(R.drawable.placeholder_image) // ảnh mặc định nếu đang tải
                 .error(R.drawable.error_image) // ảnh nếu load thất bại
                 .into(imgCourse);
-    }
-
-    private String formatMinutes(int minutes) {
-        int hours = minutes / 60;
-        int mins = minutes % 60;
-
-        if (hours > 0) {
-            return hours + " giờ " + mins + " phút";
-        } else {
-            return mins + " phút";
-        }
     }
 
     @Override
