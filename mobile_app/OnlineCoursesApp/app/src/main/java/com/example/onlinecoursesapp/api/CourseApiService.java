@@ -3,6 +3,7 @@ package com.example.onlinecoursesapp.api;
 import com.example.onlinecoursesapp.models.Course;
 import com.example.onlinecoursesapp.models.course_progress.CourseProgress;
 import com.example.onlinecoursesapp.models.course_progress.StatisticsResponse;
+import com.example.onlinecoursesapp.models.CourseOverview;
 
 import java.util.List;
 
@@ -17,10 +18,10 @@ public interface CourseApiService {
         Call<List<Course>> getAllCourses();
 
         /**
-         * Lấy khóa học theo ID
+         * Thuy - Lấy khóa học theo ID
          */
         @GET("/courses/{id}")
-        Call<Course> getCourseById(@Path("id") int courseId);
+        Call<CourseOverview> getCourseById(@Path("id") int courseId);
 
         /**
          * Lấy tiến độ khóa học của người dùng

@@ -100,23 +100,31 @@ CREATE TABLE IF NOT EXISTS `lessons` (
 -- Dumping data for table online_courses.lessons: ~2 rows (approximately)
 DELETE FROM `lessons`;
 INSERT INTO `lessons` (`id`, `course_id`, `title`, `content`, `youtube_video_url`, `duration_minutes`, `created_at`) VALUES
-	(1, 1, 'Giới thiệu về Java', 'lap_trinh/java_intro.html', 'https://www.youtube.com/watch?v=VQttXb6qE6k', 14.37, '2025-05-03 14:10:37'),
-	(2, 1, 'Cài đặt môi trường Java', 'lap_trinh/java_setup.text', 'https://youtu.be/def456', 20, '2025-05-03 14:10:37');
-
+(1, 1, 'Java 01. Vì sao học lập trình Java', '', 'https://www.youtube.com/watch?v=xfOp0izFnu0&list=PLyxSzL3F748401hWFgJ8gKMnN6MM8QQ7F', 18.27, '2025-05-03 14:10:37'),
+(2, 1, 'Java 02. Cài đặt JDK và Eclipse', '', 'https://www.youtube.com/watch?v=ayA1Lz2qEZo&list=PLyxSzL3F748401hWFgJ8gKMnN6MM8QQ7F&index=2', 16.67, '2025-05-03 14:10:37'),
+(3, 1, 'Java 03. Cấu trúc của một lớp Java', '', 'https://www.youtube.com/watch?v=6Gbxt2Sox7k&list=PLyxSzL3F748401hWFgJ8gKMnN6MM8QQ7F&index=3', 10.72, '2025-05-23 04:58:18'),
+(4, 1, 'Java 04. Cách khai báo biến trong Java', '', 'https://www.youtube.com/watch?v=zEbraQ5vIaU&list=PLyxSzL3F748401hWFgJ8gKMnN6MM8QQ7F&index=4', 10.42, '2025-05-23 05:00:23'),
+(5, 1, 'Java 05 . Kiểu dữ liệu trong Java', '', 'https://www.youtube.com/watch?v=S29I8oXEXf8&list=PLyxSzL3F748401hWFgJ8gKMnN6MM8QQ7F&index=5', 8.98, '2025-05-23 05:01:04'),
+(6, 1, 'Java 06. Hằng số trong Java', '', 'https://www.youtube.com/watch?v=IrtwjVY18do&list=PLyxSzL3F748401hWFgJ8gKMnN6MM8QQ7F&index=6', 4.6, '2025-05-23 05:01:48'),
+(7, 1, 'Java 07 . Cách ghi chú trong Java', '', 'https://www.youtube.com/watch?v=jgzgkUbK35M&list=PLyxSzL3F748401hWFgJ8gKMnN6MM8QQ7F&index=7', 8.92, '2025-05-23 05:02:33'),
+(8, 1, 'Java 08. Cách kiểm tra và xử lý lỗi biên dịch', '', 'https://www.youtube.com/watch?v=2Zu17CS3288&list=PLyxSzL3F748401hWFgJ8gKMnN6MM8QQ7F&index=8', 5.93, '2025-05-23 05:03:21'),
+(9, 1, 'Java 09. Cách nhập dữ liệu từ bán phím', '', 'https://www.youtube.com/watch?v=ymFKMQSeodQ&list=PLyxSzL3F748401hWFgJ8gKMnN6MM8QQ7F&index=9', 11.32, '2025-05-23 05:05:14'),
+(12, 1, 'Java 10. Chuyển đổi kiểu dữ liệu trong Java', '', 'https://www.youtube.com/watch?v=BwOt3IeeP64&list=PLyxSzL3F748401hWFgJ8gKMnN6MM8QQ7F&index=10', 12.18, '2025-05-23 05:06:09');
 -- Dumping structure for table online_courses.lesson_progress
 CREATE TABLE IF NOT EXISTS `lesson_progress` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `enrollment_id` int(11) NOT NULL,
-  `lesson_id` int(11) NOT NULL,
-  `is_completed` tinyint(1) NOT NULL DEFAULT 0,
-  `completed_at` timestamp NULL DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `enrollment_id` (`enrollment_id`,`lesson_id`),
-  KEY `lesson_id` (`lesson_id`),
-  CONSTRAINT `lesson_progress_ibfk_1` FOREIGN KEY (`enrollment_id`) REFERENCES `enrollments` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `lesson_progress_ibfk_2` FOREIGN KEY (`lesson_id`) REFERENCES `lessons` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `enrollment_id` int(11) NOT NULL,
+    `lesson_id` int(11) NOT NULL,
+    `is_completed` tinyint(1) NOT NULL DEFAULT 0,
+    `completed_at` timestamp NULL DEFAULT NULL,
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `enrollment_id` (`enrollment_id`,`lesson_id`),
+    KEY `lesson_id` (`lesson_id`),
+    CONSTRAINT `lesson_progress_ibfk_1` FOREIGN KEY (`enrollment_id`) REFERENCES `enrollments` (`id`) ON DELETE CASCADE,
+    CONSTRAINT `lesson_progress_ibfk_2` FOREIGN KEY (`lesson_id`) REFERENCES `lessons` (`id`) ON DELETE CASCADE
+    ) ENGINE=InnoDB AUTO_INCREMENT=35 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- Dumping data for table online_courses.lesson_progress: ~4 rows (approximately)
 -- Dumping data for table online_courses.lesson_progress: ~6 rows (approximately)
 DELETE FROM `lesson_progress`;
 INSERT INTO `lesson_progress` (`id`, `enrollment_id`, `lesson_id`, `is_completed`, `completed_at`) VALUES
@@ -133,13 +141,13 @@ CREATE TABLE IF NOT EXISTS `users` (
   `name` varchar(255) NOT NULL,
   `email` varchar(255) NOT NULL,
   `password` varchar(255) NOT NULL,
-  `role` varchar(255) DEFAULT NULL,
+  `role` enum('USER','ADMIN') DEFAULT 'USER',
   `is_active` tinyint(1) DEFAULT 1,
   `created_at` timestamp NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NULL DEFAULT NULL ON UPDATE current_timestamp(),
   PRIMARY KEY (`id`),
   UNIQUE KEY `email` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Dumping data for table online_courses.users: ~7 rows (approximately)
 DELETE FROM `users`;
@@ -151,6 +159,7 @@ INSERT INTO `users` (`id`, `name`, `email`, `password`, `role`, `is_active`, `cr
 	(6, 'kieu', '22130137@st.hcmuaf.edu.vn', '$2a$10$gk/Ei9h6ajZB4kLLSVdpX.oVLykZyFjsWg8XyCklLMsBMM/aRtRXi', 'user', 1, '2025-05-25 01:25:34', '2025-05-25 01:26:05'),
 	(7, 'kieu', 'kieu36830@gmail.com', '$2a$10$NAOM85zk/i7lB8BZAEjTAeJGlFPPgNjqw8IVMHdqfNwxxVcOWpPn2', 'user', 1, '2025-05-25 08:56:24', '2025-05-25 08:56:38'),
 	(8, 'thanh', 'tvu686021@gmail.com', '$2a$10$m8duEKLxBT7Rx5PsBXW0Ve8/vVnbCVmGquBPZehJGHBps6wMXPfxm', 'user', 1, '2025-05-25 08:59:07', '2025-05-25 08:59:28');
+    (9, 'thuy', 'thuy@gmail.com', '$2a$10$vTaNImCI0hxLK/ci0tRC6uPvdBwU0eHF.wLMjWqDQEUN2ACcfkTZS', 'user', 1, '2025-05-23 14:48:20', '2025-05-23 15:05:40');
 
 /*!40103 SET TIME_ZONE=IFNULL(@OLD_TIME_ZONE, 'system') */;
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
