@@ -109,5 +109,26 @@ public class Course {
     public enum Difficulty {
         EASY, MEDIUM, HARD
     }
+    public void setCourse(Course course) {
+        if (course.getTitle() != null) {
+            this.title = course.getTitle();
+        }
+        if (course.getDescription() != null) {
+            this.description = course.getDescription();
+        }
+        if (course.getCategoryId() != 0) {
+            this.categoryId = course.getCategoryId();
+        }
+        if (course.getImagePath() != null) {
+            this.imagePath = course.getImagePath();
+        }
+        if (course.getNumberOfLessons() != 0) {
+            this.numberOfLessons = course.getNumberOfLessons();
+        }
+        if (course.getDifficulty() != null) {
+            this.difficulty = course.getDifficulty();
+        }
+    }
+
 }
 
