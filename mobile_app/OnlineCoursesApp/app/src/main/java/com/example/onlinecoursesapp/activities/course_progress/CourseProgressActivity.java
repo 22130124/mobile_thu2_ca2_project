@@ -1,4 +1,4 @@
-package com.example.onlinecoursesapp.activities;
+package com.example.onlinecoursesapp.activities.course_progress;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,8 +13,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.onlinecoursesapp.R;
 import com.example.onlinecoursesapp.adapter.CourseProgressAdapter;
 import com.example.onlinecoursesapp.data.CourseRepository;
-import com.example.onlinecoursesapp.models.CourseProgress;
-import com.example.onlinecoursesapp.models.StatisticsResponse;
+import com.example.onlinecoursesapp.models.course_progress.CourseProgress;
+import com.example.onlinecoursesapp.models.course_progress.StatisticsResponse;
 import com.example.onlinecoursesapp.utils.FormatTime;
 import com.example.onlinecoursesapp.utils.ProgressCallback;
 import com.example.onlinecoursesapp.utils.StatisticsCallback;

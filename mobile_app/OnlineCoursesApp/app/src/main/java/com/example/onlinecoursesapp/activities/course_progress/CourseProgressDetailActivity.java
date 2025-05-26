@@ -1,4 +1,4 @@
-package com.example.onlinecoursesapp.activities;
+package com.example.onlinecoursesapp.activities.course_progress;
 
 import android.content.Context;
 import android.content.Intent;
@@ -13,9 +13,10 @@ import androidx.appcompat.widget.Toolbar;
 
 import com.bumptech.glide.Glide;
 import com.example.onlinecoursesapp.R;
+import com.example.onlinecoursesapp.activities.MainActivity;
 import com.example.onlinecoursesapp.api.ApiClient;
 import com.example.onlinecoursesapp.data.CourseRepository;
-import com.example.onlinecoursesapp.models.CourseProgress;
+import com.example.onlinecoursesapp.models.course_progress.CourseProgress;
 import com.example.onlinecoursesapp.utils.FormatTime;
 import com.example.onlinecoursesapp.utils.ProgressCallback;
 
