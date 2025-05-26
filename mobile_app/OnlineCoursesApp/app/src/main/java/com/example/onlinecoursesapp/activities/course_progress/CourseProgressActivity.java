@@ -1,4 +1,4 @@
-package com.example.onlinecoursesapp.activities;
+package com.example.onlinecoursesapp.activities.course_progress;
 
 import android.content.Intent;
 import android.os.Bundle;

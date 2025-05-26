@@ -1,4 +1,4 @@
-package com.example.onlinecoursesapp.activities;
+package com.example.onlinecoursesapp.activities.dashboard;
 
 import android.os.Bundle;
 import android.view.MenuItem;

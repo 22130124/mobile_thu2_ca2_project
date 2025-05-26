@@ -18,13 +18,13 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
-            android:name=".activities.DashboardActivity"
+            android:name=".activities.dashboard.DashboardActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.CourseProgressDetailActivity"
+            android:name=".activities.course_progress.CourseProgressDetailActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.CourseProgressActivity"
+            android:name=".activities.course_progress.CourseProgressActivity"
             android:exported="false" />
         <activity
             android:name=".activities.MainActivity"

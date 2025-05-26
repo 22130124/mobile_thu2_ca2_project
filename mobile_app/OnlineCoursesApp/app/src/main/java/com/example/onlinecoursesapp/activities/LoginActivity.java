@@ -88,7 +88,7 @@ public class LoginActivity extends AppCompatActivity {
         });
 
         signupButton.setOnClickListener(v -> {
-            Intent intent = new Intent(LoginActivity.this, DashboardActivity.class);
+            Intent intent = new Intent(LoginActivity.this, SignUpActivity.class);
             startActivity(intent);
         });
     }
