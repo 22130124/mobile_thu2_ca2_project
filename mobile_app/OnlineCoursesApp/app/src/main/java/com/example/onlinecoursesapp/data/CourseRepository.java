@@ -5,8 +5,10 @@ import android.content.SharedPreferences;
 
 import com.example.onlinecoursesapp.api.ApiClient;
 import com.example.onlinecoursesapp.api.CourseApiService;
-import com.example.onlinecoursesapp.models.CourseProgress;
-import com.example.onlinecoursesapp.models.StatisticsResponse;
+import com.example.onlinecoursesapp.models.course_progress.CourseProgress;
+import com.example.onlinecoursesapp.models.course_progress.StatisticsResponse;
+import com.example.onlinecoursesapp.models.CourseOverview;
+import com.example.onlinecoursesapp.utils.CourseOverviewCallback;
 import com.example.onlinecoursesapp.utils.ProgressCallback;
 import com.example.onlinecoursesapp.utils.StatisticsCallback;
 
@@ -54,7 +56,6 @@ public class CourseRepository {
                     callback.onStatisticsLoaded(statisticsCache); // Gọi callback
                 }
             }
-
             @Override
             public void onFailure(Call<StatisticsResponse> call, Throwable t) {
                 t.printStackTrace();
@@ -77,7 +78,6 @@ public class CourseRepository {
                     callback.onFailure("Không lấy được tiến độ học.");
                 }
             }
-
             @Override
             public void onFailure(Call<List<CourseProgress>> call, Throwable t) {
                 callback.onFailure(t.getMessage());
@@ -100,7 +100,6 @@ public class CourseRepository {
                     callback.onFailure("Không lấy được tiến độ khóa học.");
                 }
             }
-
             @Override
             public void onFailure(Call<CourseProgress> call, Throwable t) {
                 callback.onFailure(t.getMessage());
@@ -108,7 +107,22 @@ public class CourseRepository {
         });
     }
 
-
-
+    // Lấy khóa học qua id
+    public void fetchGetCourseById(int courseId, CourseOverviewCallback.SingleCourse callback) {
+        apiService.getCourseById(courseId).enqueue(new Callback<CourseOverview>() {
+            @Override
+            public void onResponse(Call<CourseOverview> call, Response<CourseOverview> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    callback.onSuccess(response.body());
+                } else {
+                    callback.onFailure("Không lấy được thông tin khóa học.");
+                }
+            }
+            @Override
+            public void onFailure(Call<CourseOverview> call, Throwable t) {
+                callback.onFailure(t.getMessage());
+            }
+        });
+    }
 }
 

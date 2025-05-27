@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.onlinecoursesapp.R;
 import com.example.onlinecoursesapp.api.ApiClient;
-import com.example.onlinecoursesapp.models.CourseProgress;
+import com.example.onlinecoursesapp.models.course_progress.CourseProgress;
 
 import java.util.ArrayList;
 import java.util.List;

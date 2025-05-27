@@ -1,9 +1,15 @@
 package com.onlinecourse.backend.model;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "lesson_progress")
 public class LessonProgress {
@@ -30,39 +36,39 @@ public class LessonProgress {
         return isCompleted;
     }
 
-    public Lesson getLesson() {
-        return lesson;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public Enrollment getEnrollment() {
-        return enrollment;
-    }
-
-    public void setEnrollment(Enrollment enrollment) {
-        this.enrollment = enrollment;
-    }
-
-    public void setLesson(Lesson lesson) {
-        this.lesson = lesson;
-    }
-
-    public void setCompleted(boolean completed) {
-        isCompleted = completed;
-    }
-
-    public LocalDateTime getCompletedAt() {
-        return completedAt;
-    }
-
-    public void setCompletedAt(LocalDateTime completedAt) {
-        this.completedAt = completedAt;
-    }
+//    public Lesson getLesson() {
+//        return lesson;
+//    }
+//
+//    public int getId() {
+//        return id;
+//    }
+//
+//    public void setId(int id) {
+//        this.id = id;
+//    }
+//
+//    public Enrollment getEnrollment() {
+//        return enrollment;
+//    }
+//
+//    public void setEnrollment(Enrollment enrollment) {
+//        this.enrollment = enrollment;
+//    }
+//
+//    public void setLesson(Lesson lesson) {
+//        this.lesson = lesson;
+//    }
+//
+//    public void setCompleted(boolean completed) {
+//        isCompleted = completed;
+//    }
+//
+//    public LocalDateTime getCompletedAt() {
+//        return completedAt;
+//    }
+//
+//    public void setCompletedAt(LocalDateTime completedAt) {
+//        this.completedAt = completedAt;
+//    }
 }
