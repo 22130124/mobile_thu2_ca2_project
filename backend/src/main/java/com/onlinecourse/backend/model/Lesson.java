@@ -38,61 +38,29 @@ public class Lesson {
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
-//    // Getters and Setters
-//
-//    public int getId() {
-//        return id;
-//    }
-//
-//    public void setId(int id) {
-//        this.id = id;
-//    }
-//
-//    public Course getCourse() {
-//        return course;
-//    }
-//
-//    public void setCourse(Course course) {
-//        this.course = course;
-//    }
-//
-//    public String getTitle() {
-//        return title;
-//    }
-//
-//    public void setTitle(String title) {
-//        this.title = title;
-//    }
-//
-//    public String getContent() {
-//        return content;
-//    }
-//
-//    public void setContent(String content) {
-//        this.content = content;
-//    }
-//
-//    public String getYoutubeVideoUrl() {
-//        return youtubeVideoUrl;
-//    }
-//
-//    public void setYoutubeVideoUrl(String youtubeVideoUrl) {
-//        this.youtubeVideoUrl = youtubeVideoUrl;
-//    }
-//
-//    public double getDurationMinutes() {
-//        return durationMinutes;
-//    }
-//
-//    public void setDurationMinutes(double durationMinutes) {
-//        this.durationMinutes = durationMinutes;
-//    }
-//
-//    public LocalDateTime getCreatedAt() {
-//        return createdAt;
-//    }
-//
-//    public void setCreatedAt(LocalDateTime createdAt) {
-//        this.createdAt = createdAt;
-//    }
+    public void setLesson(Lesson lesson) {
+        if (lesson.getTitle() != null) {
+            this.title = lesson.getTitle();
+        }
+        if (lesson.getContent() != null) {
+            this.content = lesson.getContent();
+        }
+        if (lesson.getYoutubeVideoUrl() != null) {
+            this.youtubeVideoUrl = lesson.getYoutubeVideoUrl();
+        }
+        if (lesson.getDurationMinutes() > 0) {
+            this.durationMinutes = lesson.getDurationMinutes();
+        }
+
+    }
+    /*
+       Hương: Khi ngày có giá trị null, cập nhật giá trị là now
+        */
+    @PrePersist
+    protected void onCreate() {
+        if (createdAt == null) {
+            createdAt = LocalDateTime.now();
+        }
+    }
 }
+
