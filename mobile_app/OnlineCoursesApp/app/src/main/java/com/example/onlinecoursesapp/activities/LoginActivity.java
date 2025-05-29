@@ -14,7 +14,6 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.onlinecoursesapp.R;
-import com.example.onlinecoursesapp.activities.dashboard.DashboardActivity;
 import com.example.onlinecoursesapp.data.UserRepository;
 import com.example.onlinecoursesapp.models.UserProgress;
 import com.example.onlinecoursesapp.utils.LoginCallback;
@@ -74,7 +73,7 @@ public class LoginActivity extends AppCompatActivity {
                         Toast.makeText(LoginActivity.this, "Đăng nhập thành công!", Toast.LENGTH_SHORT).show();
 
                         // Chuyển sang MainActivity hoặc màn hình chính
-                        Intent intent = new Intent(LoginActivity.this, CourseOverViewActivity.class);
+                        Intent intent = new Intent(LoginActivity.this, ProfileActivity.class);
                         startActivity(intent);
                         finish();
                     }
