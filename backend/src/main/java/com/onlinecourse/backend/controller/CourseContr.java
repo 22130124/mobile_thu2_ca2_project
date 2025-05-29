@@ -29,13 +29,12 @@ public class CourseContr {
         return this.courseRepository.findAll();
     }
 
-    //Lấy khoá học theo ID
+    // Thủy - Lấy khoá học theo ID
     @GetMapping("/{id}")
     public ResponseEntity<CourseOverview> getCourseOverviewById(@PathVariable int id) {
         CourseOverview overview = courseService.getCourseOverviewById(id);
         return (overview != null) ? ResponseEntity.ok(overview) : ResponseEntity.notFound().build();
     }
-
 
     // Tìm kiếm khóa học theo từ khóa
     @GetMapping("/search")

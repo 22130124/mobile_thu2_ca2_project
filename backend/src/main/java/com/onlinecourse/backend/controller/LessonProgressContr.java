@@ -16,7 +16,7 @@ public class LessonProgressContr {
     }
 
     // Thuy - Cập nhật tiến trình isCompleted = 1 (khi bấm nút Hoàn thành)
-    @PutMapping("/complete")
+    @PutMapping("/isComplete")
     public ResponseEntity<?> completeLesson(
             @RequestParam int userId,
             @RequestParam int courseId,
@@ -25,4 +25,13 @@ public class LessonProgressContr {
         return lessonProgressService.completeLesson(userId, courseId, lessonId);
     }
 
+    // Thuy - Kiểm tra bài học có hoàn thành (isCompleted) chưa?
+    @GetMapping("/checkIsComplete")
+    public ResponseEntity<Boolean> checkLessonCompletion(
+            @RequestParam int userId,
+            @RequestParam int courseId,
+            @RequestParam int lessonId) {
+
+        return lessonProgressService.checkLessonCompletion(userId, courseId, lessonId);
+    }
 }

@@ -3,6 +3,7 @@ package com.example.onlinecoursesapp.activities;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -135,6 +136,9 @@ public class CourseOverViewActivity extends AppCompatActivity {
                     @Override
                     public void onResult(boolean enrolled) {
                         isEnrolled = enrolled;
+
+                        btnRegister.setVisibility(enrolled ? View.GONE : View.VISIBLE);
+
                         LessonOverviewAdapter adapter = new LessonOverviewAdapter(courseOverview.getLessons(), isEnrolled);
                         lessonsRecyclerView.setLayoutManager(new LinearLayoutManager(CourseOverViewActivity.this));
                         lessonsRecyclerView.setAdapter(adapter);

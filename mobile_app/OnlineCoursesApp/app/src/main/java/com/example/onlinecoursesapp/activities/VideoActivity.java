@@ -23,12 +23,11 @@ import retrofit2.Response;
 
 // Thuy - Tich Hop API Youtube
 public class VideoActivity extends AppCompatActivity {
-
     private WebView webView;
     private ProgressBar loadingIndicator;
     private Button btnComplete;
     private int userId, lessonId;
-    int courseId = 1; // gia su
+    private int courseId = 1; // giả sử
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,7 +38,6 @@ public class VideoActivity extends AppCompatActivity {
         loadingIndicator = findViewById(R.id.loadingIndicator);
         btnComplete = findViewById(R.id.btnComplete);
 
-        // Lấy videoId và thông tin người dùng
         String videoId = getIntent().getStringExtra("videoId");
         lessonId = getIntent().getIntExtra("lessonId", -1);
 
@@ -52,6 +50,13 @@ public class VideoActivity extends AppCompatActivity {
             return;
         }
 
+        setupWebView(videoId);
+        checkIfLessonCompleted();
+
+        btnComplete.setOnClickListener(v -> markLessonAsCompleted());
+    }
+
+    private void setupWebView(String videoId) {
         webView.setWebChromeClient(new WebChromeClient());
         webView.setWebViewClient(new WebViewClient() {
             @Override
@@ -69,23 +74,38 @@ public class VideoActivity extends AppCompatActivity {
         String html = "<html><body style='margin:0'><iframe width='100%' height='100%' src='https://www.youtube.com/embed/" +
                 videoId + "?autoplay=1&enablejsapi=1' frameborder='0' allowfullscreen></iframe></body></html>";
         webView.loadDataWithBaseURL(null, html, "text/html", "utf-8", null);
+    }
 
-        // Xử lý nút hoàn thành bài học
-        btnComplete.setOnClickListener(v -> markLessonAsCompleted());
+    private void checkIfLessonCompleted() {
+        LessonProgressApiService apiService = ApiClient.getLessonProgressApiService();
+        apiService.checkLessonCompletion(userId, courseId, lessonId).enqueue(new Callback<Boolean>() {
+            @Override
+            public void onResponse(Call<Boolean> call, Response<Boolean> response) {
+                if (response.isSuccessful() && response.body() != null && response.body()) {
+                    btnComplete.setVisibility(View.GONE);
+                } else {
+                    btnComplete.setVisibility(View.VISIBLE);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Boolean> call, Throwable t) {
+                Toast.makeText(VideoActivity.this, "Không thể kiểm tra tiến trình ❌", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void markLessonAsCompleted() {
         LessonProgressApiService apiService = ApiClient.getLessonProgressApiService();
-
         apiService.completeLesson(userId, courseId, lessonId).enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
                 if (response.isSuccessful()) {
-                    Toast.makeText(VideoActivity.this, "🎉 Bài học đã được đánh dấu hoàn thành!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(VideoActivity.this, "Đã hoàn thành bài học! 🎉", Toast.LENGTH_SHORT).show();
                     btnComplete.setEnabled(false);
                     btnComplete.setText("Đã hoàn thành");
                 } else {
-                    Toast.makeText(VideoActivity.this, "❌ Không thể cập nhật tiến trình", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(VideoActivity.this, "Không thể cập nhật tiến trình ❌", Toast.LENGTH_SHORT).show();
                 }
             }
 

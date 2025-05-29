@@ -107,7 +107,7 @@ public class CourseRepository {
         });
     }
 
-    // Lấy khóa học qua id
+    // Lấy khóa học qua id - Thủy
     public void fetchGetCourseById(int courseId, CourseOverviewCallback.SingleCourse callback) {
         apiService.getCourseById(courseId).enqueue(new Callback<CourseOverview>() {
             @Override
