@@ -4,13 +4,19 @@ import com.onlinecourse.backend.dto.UserProgress;
 import com.onlinecourse.backend.model.User;
 import com.onlinecourse.backend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 @Service
 public class UserService {
@@ -19,6 +25,9 @@ public class UserService {
     private final EmailService emailService;
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
+
+    @Value("${file.upload-base-dir}")
+    private String uploadBaseDir;
 
     public UserService(UserRepository userRepository, EmailService emailService) {
         this.userRepository = userRepository;
@@ -86,7 +95,8 @@ public class UserService {
                 user.getName(),
                 user.getEmail(),
                 user.getRole(),
-                user.isActive()
+                user.isActive(),
+                user.getImg()
         );
     }
 
@@ -111,5 +121,51 @@ public class UserService {
         String code = String.format("%06d", new Random().nextInt(999999));
         verificationCodes.put(email, code);
         emailService.sendVerificationCode(email, code);
+    }
+
+    @Transactional
+    public String uploadUserImage(int userId, MultipartFile file) throws IOException {
+        Optional<User> userOpt = userRepository.findById(userId);
+        User user = userOpt.get();
+
+        String userImgDir = uploadBaseDir + "/user_img";
+        Path uploadPath = Paths.get(userImgDir);
+
+        if (!Files.exists(uploadPath)) {
+            Files.createDirectories(uploadPath);
+        }
+
+        if (user.getImg() != null && !user.getImg().isEmpty()) {
+            try {
+                Path oldFilePath = Paths.get(uploadBaseDir, user.getImg());
+                Files.deleteIfExists(oldFilePath);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        String fileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
+        Path filePath = uploadPath.resolve(fileName);
+        Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+
+        String fileUrl = "/user_img/" + fileName;
+        user.setImg(fileUrl);
+        userRepository.save(user);
+        return fileUrl;
+    }
+
+    public User getUserProfile(int userId) {
+        Optional<User> userOpt = userRepository.findById(userId);
+        User user = userOpt.get();
+        return user;
+    }
+
+    @Transactional
+    public User updateUserProfile(int userId, User updatedUser) {
+        Optional<User> userOpt = userRepository.findById(userId);
+        User user = userOpt.get();
+        user.setName(updatedUser.getName());
+        user.setEmail(updatedUser.getEmail());
+        return user;
     }
 }
