@@ -13,4 +13,5 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 
     // Find users created after a specific date
     List<User> findByCreatedAtAfter(LocalDateTime date);
+
 }

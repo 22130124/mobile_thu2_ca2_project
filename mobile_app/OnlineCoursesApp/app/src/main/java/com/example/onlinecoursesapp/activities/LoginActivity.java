@@ -14,6 +14,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.onlinecoursesapp.R;
+import com.example.onlinecoursesapp.activities.dashboard.DashboardActivity;
 import com.example.onlinecoursesapp.data.UserRepository;
 import com.example.onlinecoursesapp.models.UserProgress;
 import com.example.onlinecoursesapp.utils.LoginCallback;
@@ -61,14 +62,14 @@ public class LoginActivity extends AppCompatActivity {
                         // Lưu thông tin user vào SharedPreferences
                         SharedPreferences sharedPref = getSharedPreferences("UserPrefs", MODE_PRIVATE);
                         SharedPreferences.Editor editor = sharedPref.edit();
-
                         editor.putInt("userId", user.getId());
                         editor.putString("userName", user.getName());
                         editor.putString("userEmail", user.getEmail());
                         editor.putString("userRole", user.getRole());
                         editor.putBoolean("isActive", user.isActive());
+                        editor.putString("img",user.getImg());
 
-                        editor.apply(); // lưu vào bộ nhớ
+                        editor.apply();
 
                         Toast.makeText(LoginActivity.this, "Đăng nhập thành công!", Toast.LENGTH_SHORT).show();
 

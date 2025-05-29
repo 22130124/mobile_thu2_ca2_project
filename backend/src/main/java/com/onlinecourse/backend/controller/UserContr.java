@@ -6,10 +6,17 @@ import com.onlinecourse.backend.dto.VerificationRequest;
 import com.onlinecourse.backend.model.User;
 import com.onlinecourse.backend.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -84,5 +91,41 @@ public class UserContr {
         userService.generateAndSendVerificationCode(email);
         return ResponseEntity.ok(Collections.singletonMap("message", "Mã xác minh đã được gửi lại"));
     }
+
+    // Hàm upload ảnh user
+    @PostMapping("/{id}/upload-image")
+    public ResponseEntity<?> uploadUserImage(@PathVariable int id, @RequestParam("file") MultipartFile file) {
+        try {
+            String imageUrl = userService.uploadUserImage(id, file);
+            return ResponseEntity.ok(Map.of("imageUrl", imageUrl));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Could not upload file: " + e.getMessage());
+        }
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getUserProfile(@PathVariable int id) {
+        try {
+            User user = userService.getUserProfile(id);
+            user.setPassword(null);
+            return ResponseEntity.ok(user);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateUserProfile(@PathVariable int id, @RequestBody User updatedUser) {
+        try {
+            User user = userService.updateUserProfile(id, updatedUser);
+            user.setPassword(null);
+            return ResponseEntity.ok(user);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+
 
 }
