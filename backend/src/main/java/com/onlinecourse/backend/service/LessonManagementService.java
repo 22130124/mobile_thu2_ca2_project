@@ -4,6 +4,7 @@ import com.onlinecourse.backend.dto.LessonManagement;
 import com.onlinecourse.backend.model.Lesson;
 import com.onlinecourse.backend.repository.LessonRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -57,8 +58,38 @@ public class LessonManagementService {
     public boolean existsById(int id) {
         return lessonRepository.existsById(id);
     }
+//
+//    public void deleteById(int id) {
+//        lessonRepository.deleteById(id);
+//    }
 
-    public void deleteById(int id) {
-        lessonRepository.deleteById(id);
+    @Transactional
+    public boolean deleteLesson(int id) {
+        try {
+            Optional<Lesson> lessonOpt = lessonRepository.findById(id);
+            if (lessonOpt.isPresent()) {
+                Lesson lesson = lessonOpt.get();
+                System.out.println("Found lesson to delete: " + lesson.getId() + " - " + lesson.getTitle());
+
+                // Sử dụng JPA repository để xóa lesson
+                lessonRepository.delete(lesson);
+
+                // Verify deletion
+                boolean stillExists = lessonRepository.existsById(id);
+                if (stillExists) {
+                    System.err.println("Lesson still exists after deletion attempt!");
+                    return false;
+                }
+
+                System.out.println("Lesson successfully deleted from database");
+                return true;
+            }
+            System.out.println("Lesson not found with ID: " + id);
+            return false;
+        } catch (Exception e) {
+            System.err.println("Error deleting lesson: " + e.getMessage());
+            e.printStackTrace();
+            return false;
+        }
     }
 }

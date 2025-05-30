@@ -2,6 +2,7 @@ package com.onlinecourse.backend.controller;
 
 import com.onlinecourse.backend.dto.LessonManagement;
 import com.onlinecourse.backend.model.Lesson;
+import com.onlinecourse.backend.repository.LessonRepository;
 import com.onlinecourse.backend.service.LessonManagementService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,9 +16,11 @@ import java.util.Optional;
 @CrossOrigin
 public class LessonManagementContr {
     private final LessonManagementService lessonService ;
+    private final LessonRepository lessonRepository;
 
-    public LessonManagementContr(LessonManagementService lessonService) {
+    public LessonManagementContr(LessonManagementService lessonService, LessonRepository lessonRepository) {
         this.lessonService = lessonService;
+        this.lessonRepository = lessonRepository;
     }
 
     //Lấy bài học theo khóa học - Hương
@@ -59,23 +62,39 @@ public class LessonManagementContr {
 
     // Xóa bài học - Hương
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteLesson(@PathVariable int id) {
+//    public ResponseEntity<String> deleteLesson(@PathVariable int id) {
+//        System.out.println("Request to delete lesson with ID: " + id);
+//        if (!lessonService.existsById(id)) {
+//            System.out.println("Lesson with ID " + id + " does not exist.");
+//            return ResponseEntity.notFound().build();
+//        }
+//        try {
+//            lessonRepository.deleteById(id);
+//            System.out.println("Successfully deleted lesson with ID: " + id);
+//            return ResponseEntity.noContent().build();
+//        } catch (Exception e) {
+//            // Log lỗi nếu quá trình xóa gặp vấn đề
+//            System.err.println("Error deleting lesson with ID " + id + ": " + e.getMessage());
+//            return ResponseEntity.internalServerError().build();
+//        }
+//    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteLesson(@PathVariable int id) {
         System.out.println("Request to delete lesson with ID: " + id);
-        if (!lessonService.existsById(id)) {
-            System.out.println("Lesson with ID " + id + " does not exist.");
-            return ResponseEntity.notFound().build();
-        }
         try {
-            lessonService.deleteById(id);
-            System.out.println("Successfully deleted lesson with ID: " + id);
-            return ResponseEntity.noContent().build();
+            if (lessonService.deleteLesson(id)) {
+                System.out.println("Successfully deleted lesson with ID: " + id);
+                return ResponseEntity.ok("Đã xóa bài học thành công");
+            } else {
+                System.out.println("Lesson not found with ID: " + id);
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Không tìm thấy bài học");
+            }
         } catch (Exception e) {
-            // Log lỗi nếu quá trình xóa gặp vấn đề
             System.err.println("Error deleting lesson with ID " + id + ": " + e.getMessage());
-            return ResponseEntity.internalServerError().build();
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Lỗi khi xóa bài học: " + e.getMessage());
         }
     }
-
 
     // Thêm bài học mới - Hương
     @PostMapping
