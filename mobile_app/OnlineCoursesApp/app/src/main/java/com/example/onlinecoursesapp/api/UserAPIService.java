@@ -1,5 +1,6 @@
 package com.example.onlinecoursesapp.api;
 
+import com.example.onlinecoursesapp.models.ChangePasswordRequest;
 import com.example.onlinecoursesapp.models.GenericResponse;
 import com.example.onlinecoursesapp.models.LoginRequest;
 import com.example.onlinecoursesapp.models.LoginResponse;
@@ -31,6 +32,9 @@ public interface UserAPIService {
 
     @POST("users/resend")
     Call<GenericResponse> resendVerificationCode(@Body Map<String, String> emailPayload);
+
+    @PUT("users/{id}/change-password")
+    Call<GenericResponse> changePassword(@Path("id") int userId, @Body ChangePasswordRequest request);
 
     @Multipart
     @POST("users/{id}/upload-image")

@@ -28,6 +28,7 @@ public class SettingsFragment extends Fragment {
     private LinearLayout layoutProfile;
     private LinearLayout layoutLanguage;
     private LinearLayout layoutLogout;
+    private LinearLayout layoutPassword;
     private static final String PREFS_NAME = "AppSettings";
     private static final String KEY_LANGUAGE = "language";
 
@@ -42,12 +43,21 @@ public class SettingsFragment extends Fragment {
         layoutProfile = view.findViewById(R.id.layout_profile);
         layoutLanguage = view.findViewById(R.id.layout_language);
         layoutLogout = view.findViewById(R.id.layout_logout);
+        layoutPassword = view.findViewById(R.id.layout_password);
 
         layoutProfile.setOnClickListener(v -> {
             FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
             fragmentManager.beginTransaction()
                     .replace(R.id.fragment_container, new InformationPersonalFragment())
                     .addToBackStack(null)
+                    .commit();
+        });
+
+        layoutPassword.setOnClickListener(v -> {
+            Fragment newFragment = new ChangePasswordFragment();
+            FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
+            fragmentManager.beginTransaction()
+                    .replace(R.id.fragment_container, newFragment)
                     .commit();
         });
 
