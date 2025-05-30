@@ -1,11 +1,14 @@
 package com.example.onlinecoursesapp.models;
 
+import com.google.gson.annotations.SerializedName;
+
 public class UserProgress {
     private int id;
     private String name;
     private String email;
     private String password;
     private String role;
+    @SerializedName("active")
     private boolean isActive;
     private String img;
 
@@ -75,5 +78,18 @@ public class UserProgress {
 
     public void setImg(String img) {
         this.img = img;
+    }
+
+    @Override
+    public String toString() {
+        return "UserProgress{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                ", role='" + role + '\'' +
+                ", isActive=" + isActive +
+                ", img='" + img + '\'' +
+                '}';
     }
 }

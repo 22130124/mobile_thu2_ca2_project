@@ -20,9 +20,12 @@ public class User {
     private String email;
     private String password;
     private String role;
-    private boolean isActive;
+    @Column(name = "is_active")
+    private int isActive;
     private String img;
+    @Column(name = "created_at")
     private LocalDateTime createdAt;
+    @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
     // Enum Role cho quyền người dùng
@@ -30,5 +33,13 @@ public class User {
         USER,
         ADMIN
     }
-}
 
+    public boolean isActive(){
+        return isActive == 1;
+    }
+
+    public void setActive(boolean active) {
+        this.isActive = active ? 1 : 0;
+    }
+
+}
