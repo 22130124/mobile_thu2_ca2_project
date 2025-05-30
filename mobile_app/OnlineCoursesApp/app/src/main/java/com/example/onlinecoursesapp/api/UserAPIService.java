@@ -7,6 +7,8 @@ import com.example.onlinecoursesapp.models.LoginResponse;
 import com.example.onlinecoursesapp.models.RegisterResponse;
 import com.example.onlinecoursesapp.models.UserProgress;
 import com.example.onlinecoursesapp.models.VerifyCodeRequest;
+
+import java.util.List;
 import java.util.Map;
 
 import okhttp3.MultipartBody;
@@ -19,6 +21,7 @@ import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Part;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
 
 public interface UserAPIService {
     @POST("users/signup")
@@ -45,4 +48,27 @@ public interface UserAPIService {
 
     @PUT("users/{id}")
     Call<UserProgress> updateUserProfile(@Path("id") int userId, @Body UserProgress user);
+
+    //Quản ly user
+    @GET("users")
+    Call<List<UserProgress>> getAllUsers();
+
+    @GET("users/byId{id}")
+    Call<UserProgress> getUserById(@Path("id") int id);
+
+    @POST("users/addUser")
+    Call<UserProgress> addUser(@Body UserProgress user);
+
+    @PUT("users/updateId{id}")
+    Call<UserProgress> updateUser(@Path("id") int id, @Body UserProgress user);
+
+    @PUT("users/updateId{id}/status")
+    Call<UserProgress> updateUserStatus(@Path("id") int id, @Query("is_active") boolean active);
+
+    @GET("users/search")
+    Call<List<UserProgress>> searchUsers(@Query("query") String query);
+
+    @GET("users/filter")
+    Call<List<UserProgress>> filterUsersByStatus(@Query("is_active") boolean active);
+
 }

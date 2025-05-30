@@ -142,25 +142,26 @@ CREATE TABLE IF NOT EXISTS `users` (
   `email` varchar(255) NOT NULL,
   `password` varchar(255) NOT NULL,
   `role` varchar(255) DEFAULT NULL,
-  `is_active` tinyint(1) DEFAULT 1,
+  `is_active` int(11) DEFAULT NULL,
   `img` varchar(255) DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NULL DEFAULT NULL ON UPDATE current_timestamp(),
   PRIMARY KEY (`id`),
   UNIQUE KEY `email` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table online_courses.users: ~8 rows (approximately)
+-- Dumping data for table online_courses.users: ~9 rows (approximately)
 DELETE FROM `users`;
 INSERT INTO `users` (`id`, `name`, `email`, `password`, `role`, `is_active`, `img`, `created_at`, `updated_at`) VALUES
-	(1, 'Nguyễn Văn A', 'a@example.com', 'hashed_password_1', 'USER', 1, NULL, '2025-05-03 13:47:59', NULL),
-	(2, 'Trần Thị B', 'b@example.com', 'hashed_password_2', 'USER', 1, NULL, '2025-05-03 13:47:59', '2025-05-28 05:38:58'),
-	(3, 'Lê Văn C', 'c@example.com', 'hashed_password_3', 'USER', 1, NULL, '2025-05-03 13:47:59', NULL),
-	(4, 'kieu', 'thuykieu20040@gmail.com', '$2a$10$ywYvAbWfUI4.Dr4/bZFtZORNZKz3/g2VqQ.MRO5WnSg7mDaIQfxXS', 'USER', 0, NULL, '2025-05-25 01:20:59', '2025-05-25 01:20:59'),
+	(1, 'Nguyễn Văn Sinh', 'a@example.com', 'hashed_password_1', 'USER', 0, NULL, '2025-05-03 13:47:59', '2025-05-30 07:13:40'),
+	(2, 'Trần Binh', 'b@example.com', 'hashed_password_2', 'USER', 0, NULL, '2025-05-03 13:47:59', '2025-05-30 07:13:11'),
+	(3, 'Lê Văn C', 'c@example.com', 'hashed_password_3', 'USER', 1, NULL, '2025-05-03 13:47:59', '2025-05-30 04:53:01'),
+	(4, 'kieu_', 'thuykieu20040@gmail.com', '$2a$10$ywYvAbWfUI4.Dr4/bZFtZORNZKz3/g2VqQ.MRO5WnSg7mDaIQfxXS', 'USER', 1, NULL, '2025-05-25 01:20:59', '2025-05-30 07:05:20'),
 	(6, 'kieu', '22130137@st.hcmuaf.edu.vn', '$2a$10$gk/Ei9h6ajZB4kLLSVdpX.oVLykZyFjsWg8XyCklLMsBMM/aRtRXi', 'USER', 1, NULL, '2025-05-25 01:25:34', '2025-05-25 01:26:05'),
 	(7, 'kieu', 'kieu36830@gmail.com', '$2a$10$NAOM85zk/i7lB8BZAEjTAeJGlFPPgNjqw8IVMHdqfNwxxVcOWpPn2', 'USER', 1, NULL, '2025-05-25 08:56:24', '2025-05-25 08:56:38'),
 	(8, 'Thuy Kieu', 'tvu686021@gmail.com', '$2a$10$m8duEKLxBT7Rx5PsBXW0Ve8/vVnbCVmGquBPZehJGHBps6wMXPfxm', 'ADMIN', 1, '/user_img/e9e511f5-ee42-4bc6-a273-1a349fe7d2b7_upload_17484499704591782483056.tmp', '2025-05-25 08:59:07', '2025-05-28 08:06:54'),
-	(10, 'thuy', 'thuy@gmail.com', '$2a$10$vTaNImCI0hxLK/ci0tRC6uPvdBwU0eHF.wLMjWqDQEUN2ACcfkTZS', 'USER', 1, NULL, '2025-05-23 14:48:20', '2025-05-26 12:48:29');
+	(10, 'thuy', 'thuy@gmail.com', '$2a$10$vTaNImCI0hxLK/ci0tRC6uPvdBwU0eHF.wLMjWqDQEUN2ACcfkTZS', 'USER', 1, NULL, '2025-05-23 14:48:20', '2025-05-26 12:48:29'),
+	(14, 'Binh Anh', 'anh@gmail.com', '$2a$10$g7IoWzF7hxFNgmHQ.UMGmOMyygAL8GrPqplBcINYFbCbW4lfUPwEK', 'USER', 1, NULL, '2025-05-30 05:50:14', '2025-05-30 08:21:14');
 
 /*!40103 SET TIME_ZONE=IFNULL(@OLD_TIME_ZONE, 'system') */;
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;

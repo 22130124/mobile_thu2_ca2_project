@@ -17,6 +17,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -120,6 +121,17 @@ public class UserService {
         );
     }
 
+    private User convertToUser(UserProgress userProgress) {
+        User user = new User();
+        user.setId(userProgress.getId());
+        user.setName(userProgress.getName());
+        user.setEmail(userProgress.getEmail());
+        user.setRole(userProgress.getRole());
+        user.setActive(userProgress.isActive());
+        user.setImg(userProgress.getImg());
+        return user;
+    }
+
     public void activateUser(String email) {
         User user = userRepository.findByEmail(email);
         if (user != null) {
@@ -143,6 +155,7 @@ public class UserService {
         emailService.sendVerificationCode(email, code);
     }
 
+    //upload va update hinh va thong tin user
     @Transactional
     public String uploadUserImage(int userId, MultipartFile file) throws IOException {
         Optional<User> userOpt = userRepository.findById(userId);
@@ -170,6 +183,7 @@ public class UserService {
 
         String fileUrl = "/user_img/" + fileName;
         user.setImg(fileUrl);
+        user.setUpdatedAt(LocalDateTime.now());
         userRepository.save(user);
         return fileUrl;
     }
@@ -186,6 +200,85 @@ public class UserService {
         User user = userOpt.get();
         user.setName(updatedUser.getName());
         user.setEmail(updatedUser.getEmail());
+        user.setUpdatedAt(LocalDateTime.now());
         return user;
+    }
+
+    //Quan ly user
+    public List<UserProgress> getAllUsers() {
+        List<User> users = userRepository.findAll();
+        // Sắp xếp theo createdAt giảm dần (mới nhất lên trước)
+        users.sort((u1, u2) -> u2.getCreatedAt().compareTo(u1.getCreatedAt()));
+        return users.stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
+    public UserProgress getUserById(int id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
+        return convertToDTO(user);
+    }
+
+    public UserProgress addUser(UserProgress userProgress) {
+        if (userRepository.findByEmail(userProgress.getEmail()) != null) {
+            throw new RuntimeException("Email already exists");
+        }
+        User user = convertToUser(userProgress);
+        // Mã hóa password nếu có truyền vào
+        if (userProgress.getPassword() != null && !userProgress.getPassword().isEmpty()) {
+            user.setPassword(passwordEncoder.encode(userProgress.getPassword()));
+        }
+        user.setRole(userProgress.getRole());
+        user.setActive(true);
+        user.setCreatedAt(LocalDateTime.now());
+        user.setUpdatedAt(LocalDateTime.now());
+        user = userRepository.save(user);
+        return convertToDTO(user);
+    }
+
+    @Transactional
+    public UserProgress updateUser(int id, UserProgress userProgress) {
+        User existingUser = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
+
+        existingUser.setName(userProgress.getName());
+        existingUser.setEmail(userProgress.getEmail());
+        existingUser.setRole(userProgress.getRole());
+        // Chỉ update password nếu có truyền
+        if (userProgress.getPassword() != null && !userProgress.getPassword().isEmpty()) {
+            existingUser.setPassword(passwordEncoder.encode(userProgress.getPassword()));
+        }
+        existingUser.setUpdatedAt(LocalDateTime.now());
+        existingUser = userRepository.save(existingUser);
+        return convertToDTO(existingUser);
+    }
+
+    @Transactional
+    public UserProgress updateUserStatus(int id, boolean active) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
+
+        user.setActive(active);
+        user.setUpdatedAt(LocalDateTime.now());
+        user = userRepository.save(user);
+        return convertToDTO(user);
+    }
+
+    public List<UserProgress> searchUsers(String query) {
+        List<User> users = userRepository.findAll();
+        return users.stream()
+                .filter(user -> user.getName().toLowerCase().contains(query.toLowerCase()) ||
+                        user.getEmail().toLowerCase().contains(query.toLowerCase()))
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
+    public List<UserProgress> filterUsersByStatus(boolean active) {
+        List<User> users = userRepository.findAll();
+        return users.stream()
+                .filter(user -> user.isActive() == active)
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
     }
 }

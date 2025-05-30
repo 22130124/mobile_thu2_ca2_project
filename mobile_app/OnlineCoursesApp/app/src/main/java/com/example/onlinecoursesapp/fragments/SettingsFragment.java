@@ -41,7 +41,6 @@ public class SettingsFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         layoutProfile = view.findViewById(R.id.layout_profile);
-        layoutLanguage = view.findViewById(R.id.layout_language);
         layoutLogout = view.findViewById(R.id.layout_logout);
         layoutPassword = view.findViewById(R.id.layout_password);
 
@@ -73,43 +72,5 @@ public class SettingsFragment extends Fragment {
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK); // Xóa stack
             startActivity(intent);
         });
-
-//        layoutLanguage.setOnClickListener(v -> {
-//            showLanguageSelectionDialog();
-//        });
     }
-
-//    private void showLanguageSelectionDialog() {
-//        final String[] languages = {"English", "Tiếng Việt"};
-//        final String[] languageCodes = {"en", "vi"};
-//
-//        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-//        builder.setTitle("Chọn ngôn ngữ");
-//        builder.setItems(languages, (dialog, which) -> {
-//            String selectedLanguageCode = languageCodes[which];
-//            setLocale(selectedLanguageCode);
-//            if (getActivity() != null) {
-//                getActivity().recreate();
-//            }
-//        });
-//        builder.show();
-//    }
-//
-//    private void setLocale(String languageCode) {
-//        Locale locale = new Locale(languageCode);
-//        Locale.setDefault(locale);
-//        android.content.res.Configuration config = new android.content.res.Configuration();
-//        config.locale = locale;
-//        getResources().updateConfiguration(config, getResources().getDisplayMetrics());
-//
-//        // Lưu lựa chọn ngôn ngữ vào SharedPreferences
-//        SharedPreferences prefs = requireActivity().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-//        SharedPreferences.Editor editor = prefs.edit();
-//        editor.putString(KEY_LANGUAGE, languageCode);
-//        editor.apply();
-//    }
-
-
-
-
 }
