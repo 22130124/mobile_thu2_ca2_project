@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import com.example.onlinecoursesapp.R;
+import com.example.onlinecoursesapp.fragments.CategoryFragment;
 import com.example.onlinecoursesapp.fragments.CoursesManagementFragment;
 import com.example.onlinecoursesapp.fragments.OverviewFragment;
 import com.example.onlinecoursesapp.fragments.SettingsFragment;
@@ -37,7 +38,7 @@ public class DashboardActivity extends AppCompatActivity implements BottomNaviga
         if (id == R.id.nav_overview) {
             fragment = new OverviewFragment();
         } else if (id == R.id.nav_courses) {
-            fragment = new CoursesManagementFragment();
+            fragment = new CategoryFragment();
         } else if (id == R.id.nav_users) {
             fragment = new UsersManagementFragment();
         } else if (id == R.id.nav_settings) {

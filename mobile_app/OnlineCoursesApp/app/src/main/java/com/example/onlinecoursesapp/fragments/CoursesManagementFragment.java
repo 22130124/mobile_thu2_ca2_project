@@ -164,10 +164,10 @@ public class CoursesManagementFragment extends Fragment implements CourseManagem
     }
 
     private void addCourse(Course newCourse) {
-        Call<StatisticsResponse> call = courseApiService.addCourse(newCourse);
-        call.enqueue(new Callback<StatisticsResponse>() {
+        Call<Course> call = courseApiService.addCourse(newCourse);
+        call.enqueue(new Callback<Course>() {
             @Override
-            public void onResponse(Call<StatisticsResponse> call, Response<StatisticsResponse> response) {
+            public void onResponse(Call<Course> call, Response<Course> response) {
                 if (response.isSuccessful()) {
                     Toast.makeText(getContext(), "Thêm khóa học thành công", Toast.LENGTH_SHORT).show();
                     loadCoursesFromApi();
@@ -177,17 +177,17 @@ public class CoursesManagementFragment extends Fragment implements CourseManagem
             }
 
             @Override
-            public void onFailure(Call<StatisticsResponse> call, Throwable t) {
+            public void onFailure(Call<Course> call, Throwable t) {
                 Toast.makeText(getContext(), "Lỗi kết nối: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
 
     private void updateCourse(int courseId, Course updatedCourse) {
-        Call<StatisticsResponse> call = courseApiService.updateCourse(courseId, updatedCourse);
-        call.enqueue(new Callback<StatisticsResponse>() {
+        Call<Course> call = courseApiService.updateCourse(courseId, updatedCourse);
+        call.enqueue(new Callback<Course>() {
             @Override
-            public void onResponse(Call<StatisticsResponse> call, Response<StatisticsResponse> response) {
+            public void onResponse(Call<Course> call, Response<Course> response) {
                 if (response.isSuccessful()) {
                     Toast.makeText(getContext(), "Cập nhật khóa học thành công", Toast.LENGTH_SHORT).show();
                     loadCoursesFromApi();
@@ -197,17 +197,17 @@ public class CoursesManagementFragment extends Fragment implements CourseManagem
             }
 
             @Override
-            public void onFailure(Call<StatisticsResponse> call, Throwable t) {
+            public void onFailure(Call<Course> call, Throwable t) {
                 Toast.makeText(getContext(), "Lỗi kết nối: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
 
     private void deleteCourse(int courseId) {
-        Call<StatisticsResponse> call = courseApiService.deleteCourse(courseId);
-        call.enqueue(new Callback<StatisticsResponse>() {
+        Call<Void> call = courseApiService.deleteCourse(courseId);
+        call.enqueue(new Callback<Void>() {
             @Override
-            public void onResponse(Call<StatisticsResponse> call, Response<StatisticsResponse> response) {
+            public void onResponse(Call<Void> call, Response<Void> response) {
                 if (response.isSuccessful()) {
                     Toast.makeText(getContext(), "Xóa khóa học thành công", Toast.LENGTH_SHORT).show();
                     loadCoursesFromApi();
@@ -217,11 +217,18 @@ public class CoursesManagementFragment extends Fragment implements CourseManagem
             }
 
             @Override
-            public void onFailure(Call<StatisticsResponse> call, Throwable t) {
+            public void onFailure(Call<Void> call, Throwable t) {
                 Toast.makeText(getContext(), "Lỗi kết nối: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
+
+//    @Override
+//            public void onFailure(Call<StatisticsResponse> call, Throwable t) {
+//                Toast.makeText(getContext(), "Lỗi kết nối: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+//            }
+//        });
+//    }
 
     @Override
     public void onEditClick(Course course) {

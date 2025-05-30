@@ -59,4 +59,7 @@ public class ApiClient {
     public static DashboardApiService getDashboardApiService(){
         return getClient().create(DashboardApiService.class);
     }
+    public static CategoryApiService getCategoryApiService() {
+        return getClient().create(CategoryApiService.class);
+    }
 }
