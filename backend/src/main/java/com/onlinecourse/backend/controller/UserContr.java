@@ -127,5 +127,88 @@ public class UserContr {
         }
     }
 
+    //----Quan ly user trong daskboard---------
+    // Get all users
+    @GetMapping
+    public ResponseEntity<?> getAllUsers() {
+        try {
+            List<UserProgress> users = userService.getAllUsers();
+            return ResponseEntity.ok(users);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Collections.singletonMap("message", "Failed to load users: " + e.getMessage()));
+        }
+    }
 
+    // Get user by ID
+    @GetMapping("/byId{id}")
+    public ResponseEntity<?> getUserById(@PathVariable int id) {
+        try {
+            UserProgress user = userService.getUserById(id);
+            return ResponseEntity.ok(user);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(Collections.singletonMap("message", e.getMessage()));
+        }
+    }
+
+    // Add user
+    @PostMapping("/addUser")
+    public ResponseEntity<?> addUser(@RequestBody UserProgress userProgress) {
+        try {
+            UserProgress createdUser = userService.addUser(userProgress);
+            return ResponseEntity.ok(createdUser);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(Collections.singletonMap("message", "Failed to create user: " + e.getMessage()));
+        }
+    }
+
+    // Update user
+    @PutMapping("/updateId{id}")
+    public ResponseEntity<?> updateUser(@PathVariable int id, @RequestBody UserProgress user) {
+        try {
+            UserProgress updatedUser = userService.updateUser(id, user);
+            return ResponseEntity.ok(updatedUser);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(Collections.singletonMap("message", e.getMessage()));
+        }
+    }
+
+    // Update user status
+    @PutMapping("/updateId{id}/status")
+    public ResponseEntity<?> updateUserStatus(@PathVariable int id, @RequestParam("is_active") boolean active) {
+        try {
+            UserProgress updatedUser = userService.updateUserStatus(id, active);
+            return ResponseEntity.ok(updatedUser);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(Collections.singletonMap("message", e.getMessage()));
+        }
+    }
+
+    // Search users
+    @GetMapping("/search")
+    public ResponseEntity<?> searchUsers(@RequestParam String query) {
+        try {
+            List<UserProgress> users = userService.searchUsers(query);
+            return ResponseEntity.ok(users);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Collections.singletonMap("message", "Failed to search users: " + e.getMessage()));
+        }
+    }
+
+    // Filter users by status
+    @GetMapping("/filter")
+    public ResponseEntity<?> filterUsersByStatus(@RequestParam("is_active") boolean active) {
+        try {
+            List<UserProgress> users = userService.filterUsersByStatus(active);
+            return ResponseEntity.ok(users);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Collections.singletonMap("message", "Failed to filter users: " + e.getMessage()));
+        }
+    }
 }
