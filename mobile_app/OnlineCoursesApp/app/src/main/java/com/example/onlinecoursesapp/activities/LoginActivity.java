@@ -15,12 +15,12 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.onlinecoursesapp.R;
 import com.example.onlinecoursesapp.data.UserRepository;
+import com.example.onlinecoursesapp.fragments.SettingsFragment;
 import com.example.onlinecoursesapp.models.UserProgress;
 import com.example.onlinecoursesapp.utils.LoginCallback;
 
 public class LoginActivity extends AppCompatActivity {
     UserRepository userRepository;
-    private ImageView imgView;
     private TextView titleTextView, errorTextView;
     private EditText nameEditText;
     private EditText emailEditText;
@@ -35,7 +35,6 @@ public class LoginActivity extends AppCompatActivity {
         userRepository = UserRepository.getInstance(this);
 
         // Ánh xạ các View từ layout XML
-        imgView = findViewById(R.id.imgView);
         titleTextView = findViewById(R.id.titleTextView);
         errorTextView = findViewById(R.id.errorTextView);
         emailEditText = findViewById(R.id.emailEditText);
@@ -73,7 +72,7 @@ public class LoginActivity extends AppCompatActivity {
                         Toast.makeText(LoginActivity.this, "Đăng nhập thành công!", Toast.LENGTH_SHORT).show();
 
                         // Chuyển sang MainActivity hoặc màn hình chính
-                        Intent intent = new Intent(LoginActivity.this, ProfileActivity.class);
+                        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                         startActivity(intent);
                         finish();
                     }
