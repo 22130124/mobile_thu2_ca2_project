@@ -54,7 +54,6 @@ public class ProfileActivity extends AppCompatActivity {
 
         imgView = findViewById(R.id.imgView);
         myCoursesButton = findViewById(R.id.myCoursesButton);
-        logoutButton = findViewById(R.id.logoutButton);
         ivEditIcon = findViewById(R.id.iv_edit_icon);
 
         nameTextDisplay = findViewById(R.id.nameText_display);
