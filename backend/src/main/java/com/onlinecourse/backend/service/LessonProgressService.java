@@ -18,7 +18,6 @@ public class LessonProgressService {
         this.enrollmentRepository = enrollmentRepository;
     }
 
-
     public ResponseEntity<?> completeLesson(int userId, int courseId, int lessonId) {
         Optional<Enrollment> enrollmentOpt = enrollmentRepository.findByUserIdAndCourseId(userId, courseId);
         if (enrollmentOpt.isEmpty()) {

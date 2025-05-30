@@ -51,7 +51,6 @@ public class Lesson {
         if (lesson.getDurationMinutes() > 0) {
             this.durationMinutes = lesson.getDurationMinutes();
         }
-
     }
     /*
        Hương: Khi ngày có giá trị null, cập nhật giá trị là now

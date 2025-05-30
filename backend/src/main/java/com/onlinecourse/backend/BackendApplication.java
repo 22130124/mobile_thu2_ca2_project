@@ -6,6 +6,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
+import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -38,14 +39,5 @@ public class BackendApplication {
             }
         };
     }
-
-	//test console
-//	@Bean
-//	public CommandLineRunner displayCourse (UserContr u) {
-//		return args -> {
-//			System.out.println("Test:");
-//			u.getUserCourseProgress(1).forEach(course -> System.out.println(course.getCourseTitle()));
-//		};
-//	}
 
 }

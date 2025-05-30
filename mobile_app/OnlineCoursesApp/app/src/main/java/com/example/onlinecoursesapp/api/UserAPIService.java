@@ -4,14 +4,20 @@ import com.example.onlinecoursesapp.models.GenericResponse;
 import com.example.onlinecoursesapp.models.LoginRequest;
 import com.example.onlinecoursesapp.models.LoginResponse;
 import com.example.onlinecoursesapp.models.RegisterResponse;
-import com.example.onlinecoursesapp.models.ResendCodeRequest;
 import com.example.onlinecoursesapp.models.UserProgress;
 import com.example.onlinecoursesapp.models.VerifyCodeRequest;
 import java.util.Map;
 
+import okhttp3.MultipartBody;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.GET;
+import retrofit2.http.Multipart;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
+import retrofit2.http.Part;
+import retrofit2.http.Path;
 
 public interface UserAPIService {
     @POST("users/signup")
@@ -25,4 +31,14 @@ public interface UserAPIService {
 
     @POST("users/resend")
     Call<GenericResponse> resendVerificationCode(@Body Map<String, String> emailPayload);
+
+    @Multipart
+    @POST("users/{id}/upload-image")
+    Call<ResponseBody> uploadUserImage(@Path("id") int userId, @Part MultipartBody.Part file);
+
+    @GET("users/{id}")
+    Call<UserProgress> getUserProfile(@Path("id") int userId);
+
+    @PUT("users/{id}")
+    Call<UserProgress> updateUserProfile(@Path("id") int userId, @Body UserProgress user);
 }
