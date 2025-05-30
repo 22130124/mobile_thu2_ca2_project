@@ -31,44 +31,7 @@ public class LessonProgress {
     @Column(name = "completed_at")
     private LocalDateTime completedAt;
 
-    // Getters và Setters
     public boolean isCompleted() {
         return isCompleted;
     }
-
-//    public Lesson getLesson() {
-//        return lesson;
-//    }
-//
-//    public int getId() {
-//        return id;
-//    }
-//
-//    public void setId(int id) {
-//        this.id = id;
-//    }
-//
-//    public Enrollment getEnrollment() {
-//        return enrollment;
-//    }
-//
-//    public void setEnrollment(Enrollment enrollment) {
-//        this.enrollment = enrollment;
-//    }
-//
-//    public void setLesson(Lesson lesson) {
-//        this.lesson = lesson;
-//    }
-//
-//    public void setCompleted(boolean completed) {
-//        isCompleted = completed;
-//    }
-//
-//    public LocalDateTime getCompletedAt() {
-//        return completedAt;
-//    }
-//
-//    public void setCompletedAt(LocalDateTime completedAt) {
-//        this.completedAt = completedAt;
-//    }
 }

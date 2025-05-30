@@ -7,15 +7,19 @@ public class UserProgress {
     private String password;
     private String role;
     private boolean isActive;
+    private String img;
 
-    public UserProgress(int id, String name, String email, String password, String role, boolean isActive) {
+    public UserProgress(int id, String name, String email, String password, String role, boolean isActive,String img) {
         this.id = id;
         this.name = name;
         this.email = email;
         this.password = password;
         this.role = role;
         this.isActive = isActive;
+        this.img= img;
     }
+
+    public UserProgress(){}
 
     public int getId() {
         return id;
@@ -63,5 +67,13 @@ public class UserProgress {
 
     public void setActive(boolean active) {
         isActive = active;
+    }
+
+    public String getImg() {
+        return img;
+    }
+
+    public void setImg(String img) {
+        this.img = img;
     }
 }

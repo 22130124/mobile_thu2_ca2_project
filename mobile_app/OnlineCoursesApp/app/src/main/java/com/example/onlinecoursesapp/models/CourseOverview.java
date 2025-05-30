@@ -2,6 +2,7 @@ package com.example.onlinecoursesapp.models;
 
 import java.util.List;
 
+// Thuy
 public class CourseOverview {
     private int courseId;
     private String title;
@@ -10,7 +11,6 @@ public class CourseOverview {
     private int numberOfLessons;
     private List<LessonOverview> lessons;
     private String totalFormattedDuration;
-
 
     // Getter và Setter
     public int getCourseId() {
