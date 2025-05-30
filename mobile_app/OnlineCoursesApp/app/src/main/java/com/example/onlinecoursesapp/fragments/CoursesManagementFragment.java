@@ -21,7 +21,7 @@ import com.example.onlinecoursesapp.adapter.CourseManagementAdapter;
 import com.example.onlinecoursesapp.api.ApiClient;
 import com.example.onlinecoursesapp.api.CourseApiService;
 import com.example.onlinecoursesapp.models.Course;
-import com.example.onlinecoursesapp.models.StatisticsResponse;
+import com.example.onlinecoursesapp.models.course_progress.StatisticsResponse;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.List;
