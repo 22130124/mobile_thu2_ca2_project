@@ -3,6 +3,7 @@ package com.example.onlinecoursesapp.activities;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -36,18 +37,14 @@ public class CourseOverViewActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_course_overview);
 
-        //        t
-        SharedPreferences prefs = getSharedPreferences("UserSession", MODE_PRIVATE);
-        String username = prefs.getString("username", "Khách");
-        //   int userId = prefs.getInt("userId", -1);
-        int userId = 4;
-
-        TextView tvWelcome = findViewById(R.id.tvWelcome);
-        tvWelcome.setText("Xin chào, " + username + "!" + userId);
-        //        t
-
         courseRepository = CourseRepository.getInstance(this);
 
+        SharedPreferences prefs = getSharedPreferences("UserPrefs", MODE_PRIVATE);
+        String username = prefs.getString("userName", "Khách");
+        int userId = prefs.getInt("userId", -1);
+        int courseId = 1; // giả sử cố định là 1
+
+        TextView tvWelcome = findViewById(R.id.tvWelcome);
         title = findViewById(R.id.title);
         description = findViewById(R.id.description);
         numberOfLessons = findViewById(R.id.numberOfLessons);
@@ -56,10 +53,14 @@ public class CourseOverViewActivity extends AppCompatActivity {
         lessonsRecyclerView = findViewById(R.id.lessons);
         btnRegister = findViewById(R.id.btnRegister);
 
-        getCourseById(1);
-        int courseId = 1;
+
+        tvWelcome.setText("Xin chào, " + username + " ! " + userId);
+
+        getCourseById(courseId);
+
         btnRegister.setOnClickListener(v -> handleEnrollment(userId, courseId));
     }
+
 
     // Xử lý nút Đăng ký học
     private void handleEnrollment(int userId, int courseId) {
@@ -73,6 +74,22 @@ public class CourseOverViewActivity extends AppCompatActivity {
             @Override
             public void onSuccess() {
                 Toast.makeText(CourseOverViewActivity.this, "Đăng ký khóa học thành công!", Toast.LENGTH_SHORT).show();
+
+                // Gọi lại kiểm tra user có đăng ký học
+                enrollmentRepo.checkEnrollment(userId, courseId, new EnrollmentCallback() {
+                    @Override
+                    public void onResult(boolean enrolled) {
+                        // Cập nhật lại trạng thái isEnrolled sau khi user đăng ký
+                        isEnrolled = enrolled;
+                        getCourseById(courseId);
+                    }
+
+                    @Override
+                    public void onSuccess() {}
+
+                    @Override
+                    public void onFailure(String message) {}
+                });
             }
 
             @Override
@@ -81,11 +98,10 @@ public class CourseOverViewActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onResult(boolean isEnrolled) {
-
-            }
+            public void onResult(boolean isEnrolled) {}
         });
     }
+
 
     private void getCourseById(int courseId) {
         courseRepository.fetchGetCourseById(courseId, new CourseOverviewCallback.SingleCourse() {
@@ -120,6 +136,9 @@ public class CourseOverViewActivity extends AppCompatActivity {
                     @Override
                     public void onResult(boolean enrolled) {
                         isEnrolled = enrolled;
+
+                        btnRegister.setVisibility(enrolled ? View.GONE : View.VISIBLE);
+
                         LessonOverviewAdapter adapter = new LessonOverviewAdapter(courseOverview.getLessons(), isEnrolled);
                         lessonsRecyclerView.setLayoutManager(new LinearLayoutManager(CourseOverViewActivity.this));
                         lessonsRecyclerView.setAdapter(adapter);

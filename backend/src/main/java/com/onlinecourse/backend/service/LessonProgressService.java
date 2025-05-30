@@ -31,17 +31,26 @@ public class LessonProgressService {
                 .findFirst()
                 .orElse(null);
 
-        if (progress.isCompleted()) {
-            return ResponseEntity.ok("Bài học đã được hoàn thành trước đó.");
-        }
-
         progress.setCompleted(true);
         progress.setCompletedAt(LocalDateTime.now());
 
         enrollmentRepository.save(enrollment);
-
         return ResponseEntity.ok("Đã hoàn thành bài học.");
     }
 
+    public ResponseEntity<Boolean> checkLessonCompletion(int userId, int courseId, int lessonId) {
+        Optional<Enrollment> enrollmentOpt = enrollmentRepository.findByUserIdAndCourseId(userId, courseId);
+        if (enrollmentOpt.isEmpty()) {
+            return ResponseEntity.badRequest().body(false);
+        }
+
+        LessonProgress progress = enrollmentOpt.get().getLessonProgresses().stream()
+                .filter(p -> p.getLesson().getId() == lessonId)
+                .findFirst()
+                .orElse(null);
+
+        if (progress == null) return ResponseEntity.badRequest().body(false);
+        return ResponseEntity.ok(progress.isCompleted());
+    }
 }
 

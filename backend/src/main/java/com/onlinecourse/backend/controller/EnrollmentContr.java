@@ -57,14 +57,14 @@ public class EnrollmentContr {
         return enrollmentService.getCourseProgressByUserAndCourse(userId, courseId);
     }
 
-
     // Thuy - Ghi danh người dùng (khi bấm nút Đăng ký học trong trang Tổng quan khóa học)
     @PostMapping("/enrollUser")
     public ResponseEntity<?> enrollUser(@RequestParam int userId, @RequestParam int courseId) {
         return enrollmentService.enrollUser(userId, courseId);
     }
 
-    // Thuy - Kiem tra user đã đăng ký học hay chưa
+
+    // Thuy - Kiểm tra user đã đăng ký học hay chưa
     @GetMapping("/checkEnrollment")
     public ResponseEntity<Boolean> checkEnrollment(
             @RequestParam int userId,

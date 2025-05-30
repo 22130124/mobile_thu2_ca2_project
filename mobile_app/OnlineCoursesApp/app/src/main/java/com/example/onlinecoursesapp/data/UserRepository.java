@@ -15,6 +15,8 @@ import com.example.onlinecoursesapp.utils.ImageUploadCallback;
 import com.example.onlinecoursesapp.utils.LoginCallback;
 import com.example.onlinecoursesapp.utils.ProfileUpdateCallback;
 import com.example.onlinecoursesapp.utils.RegisterCallback;
+import com.example.onlinecoursesapp.utils.UserCallback;
+import com.example.onlinecoursesapp.utils.UserListCallback;
 
 import org.json.JSONObject;
 
@@ -22,6 +24,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 import java.util.Objects;
 
 import okhttp3.MediaType;
@@ -205,6 +208,207 @@ public class UserRepository {
         inputStream.close();
 
         return tempFile;
+    }
+
+    // Method Quan ly user trong dashboard
+    public void getAllUsers(UserListCallback callback) {
+        apiService.getAllUsers().enqueue(new Callback<List<UserProgress>>() {
+            @Override
+            public void onResponse(@NonNull Call<List<UserProgress>> call, @NonNull Response<List<UserProgress>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    callback.onSuccess(response.body());
+                } else {
+                    try {
+                        String errorBody = response.errorBody() != null ? response.errorBody().string() : null;
+                        if (errorBody != null) {
+                            JSONObject jsonObject = new JSONObject(errorBody);
+                            String message = jsonObject.optString("message", "Failed to load users");
+                            callback.onFailure(message);
+                        } else {
+                            callback.onFailure("Failed to load users");
+                        }
+                    } catch (Exception e) {
+                        callback.onFailure("Error processing server response");
+                    }
+                }
+            }
+            @Override
+            public void onFailure(@NonNull Call<List<UserProgress>> call, @NonNull Throwable t) {
+                callback.onFailure("Network error: " + t.getMessage());
+            }
+        });
+    }
+
+    public void getUserById(int userId, UserCallback callback) {
+        apiService.getUserById(userId).enqueue(new Callback<UserProgress>() {
+            @Override
+            public void onResponse(@NonNull Call<UserProgress> call, @NonNull Response<UserProgress> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    callback.onSuccess(response.body());
+                } else {
+                    try {
+                        String errorBody = response.errorBody() != null ? response.errorBody().string() : null;
+                        if (errorBody != null) {
+                            JSONObject jsonObject = new JSONObject(errorBody);
+                            String message = jsonObject.optString("message", "Failed to get user details");
+                            callback.onFailure(message);
+                        } else {
+                            callback.onFailure("Failed to get user details");
+                        }
+                    } catch (Exception e) {
+                        callback.onFailure("Error processing server response");
+                    }
+                }
+            }
+            @Override
+            public void onFailure(@NonNull Call<UserProgress> call, @NonNull Throwable t) {
+                callback.onFailure("Network error: " + t.getMessage());
+            }
+        });
+    }
+
+    public void addUser(UserProgress user, UserCallback callback) {
+        apiService.addUser(user).enqueue(new Callback<UserProgress>() {
+            @Override
+            public void onResponse(@NonNull Call<UserProgress> call, @NonNull Response<UserProgress> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    callback.onSuccess(response.body());
+                } else {
+                    try {
+                        String errorBody = response.errorBody() != null ? response.errorBody().string() : null;
+                        if (errorBody != null) {
+                            JSONObject jsonObject = new JSONObject(errorBody);
+                            String message = jsonObject.optString("message", "Failed to create user");
+                            callback.onFailure(message);
+                        } else {
+                            callback.onFailure("Failed to create user");
+                        }
+                    } catch (Exception e) {
+                        callback.onFailure("Error processing server response");
+                    }
+                }
+            }
+            @Override
+            public void onFailure(@NonNull Call<UserProgress> call, @NonNull Throwable t) {
+                callback.onFailure("Network error: " + t.getMessage());
+            }
+        });
+    }
+
+    public void updateUser(int userId, UserProgress user, UserCallback callback) {
+        apiService.updateUser(userId, user).enqueue(new Callback<UserProgress>() {
+            @Override
+            public void onResponse(@NonNull Call<UserProgress> call, @NonNull Response<UserProgress> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    callback.onSuccess(response.body());
+                } else {
+                    try {
+                        String errorBody = response.errorBody() != null ? response.errorBody().string() : null;
+                        if (errorBody != null) {
+                            JSONObject jsonObject = new JSONObject(errorBody);
+                            String message = jsonObject.optString("message", "Failed to update user");
+                            callback.onFailure(message);
+                        } else {
+                            callback.onFailure("Failed to update user");
+                        }
+                    } catch (Exception e) {
+                        callback.onFailure("Error processing server response");
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<UserProgress> call, @NonNull Throwable t) {
+                callback.onFailure("Network error: " + t.getMessage());
+            }
+        });
+    }
+
+    public void updateUserStatus(int userId, boolean active, UserCallback callback) {
+        apiService.updateUserStatus(userId, active).enqueue(new Callback<UserProgress>() {
+            @Override
+            public void onResponse(@NonNull Call<UserProgress> call, @NonNull Response<UserProgress> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    callback.onSuccess(response.body());
+                } else {
+                    try {
+                        String errorBody = response.errorBody() != null ? response.errorBody().string() : null;
+                        if (errorBody != null) {
+                            JSONObject jsonObject = new JSONObject(errorBody);
+                            String message = jsonObject.optString("message", "Failed to update user status");
+                            callback.onFailure(message);
+                        } else {
+                            callback.onFailure("Failed to update user status");
+                        }
+                    } catch (Exception e) {
+                        callback.onFailure("Error processing server response");
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<UserProgress> call, @NonNull Throwable t) {
+                callback.onFailure("Network error: " + t.getMessage());
+            }
+        });
+    }
+
+    public void searchUsers(String query, UserListCallback callback) {
+        apiService.searchUsers(query).enqueue(new Callback<List<UserProgress>>() {
+            @Override
+            public void onResponse(@NonNull Call<List<UserProgress>> call, @NonNull Response<List<UserProgress>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    callback.onSuccess(response.body());
+                } else {
+                    try {
+                        String errorBody = response.errorBody() != null ? response.errorBody().string() : null;
+                        if (errorBody != null) {
+                            JSONObject jsonObject = new JSONObject(errorBody);
+                            String message = jsonObject.optString("message", "Failed to search users");
+                            callback.onFailure(message);
+                        } else {
+                            callback.onFailure("Failed to search users");
+                        }
+                    } catch (Exception e) {
+                        callback.onFailure("Error processing server response");
+                    }
+                }
+            }
+            @Override
+            public void onFailure(@NonNull Call<List<UserProgress>> call, @NonNull Throwable t) {
+                callback.onFailure("Network error: " + t.getMessage());
+            }
+        });
+    }
+
+    public void filterUsersByStatus(boolean active, UserListCallback callback) {
+        apiService.filterUsersByStatus(active).enqueue(new Callback<List<UserProgress>>() {
+            @Override
+            public void onResponse(@NonNull Call<List<UserProgress>> call, @NonNull Response<List<UserProgress>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    System.out.println("Kết quả cho lọc: ");
+                    System.out.println(response.body());
+                    callback.onSuccess(response.body());
+                } else {
+                    try {
+                        String errorBody = response.errorBody() != null ? response.errorBody().string() : null;
+                        if (errorBody != null) {
+                            JSONObject jsonObject = new JSONObject(errorBody);
+                            String message = jsonObject.optString("message", "Failed to filter users");
+                            callback.onFailure(message);
+                        } else {
+                            callback.onFailure("Failed to filter users");
+                        }
+                    } catch (Exception e) {
+                        callback.onFailure("Error processing server response");
+                    }
+                }
+            }
+            @Override
+            public void onFailure(@NonNull Call<List<UserProgress>> call, @NonNull Throwable t) {
+                callback.onFailure("Network error: " + t.getMessage());
+            }
+        });
     }
 
 //    public void changePassword(int userId, String oldPassword, String newPassword, PasswordChangeCallback callback) {
