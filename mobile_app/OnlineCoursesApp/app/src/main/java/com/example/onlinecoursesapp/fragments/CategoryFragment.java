@@ -54,7 +54,7 @@ public class CategoryFragment extends Fragment implements CategoryAdapter.OnCate
 
         categoryRepository = CategoryRepository.getInstance(requireContext());
 
-        adapter = new CategoryAdapter(requireContext(), filteredList, this);
+        adapter = new CategoryAdapter(requireContext(), this);
         rvCategories.setLayoutManager(new LinearLayoutManager(requireContext()));
         rvCategories.setAdapter(adapter);
 
@@ -133,7 +133,7 @@ public class CategoryFragment extends Fragment implements CategoryAdapter.OnCate
                 filteredList.addAll(categories);
 
                 if (getActivity() == null) return;
-                getActivity().runOnUiThread(() -> adapter.notifyDataSetChanged());
+                getActivity().runOnUiThread(() -> adapter.setCategoryList(filteredList));
             }
 
             @Override
@@ -231,5 +231,15 @@ public class CategoryFragment extends Fragment implements CategoryAdapter.OnCate
                 );
             }
         });
+    }
+    @Override
+    public void onCategoryClick(Category category) {
+        // Mở CoursesFragment và truyền ID danh mục
+        CoursesManagementFragment coursesFragment = CoursesManagementFragment.newInstance(category.getId());
+        requireActivity().getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.fragment_container, coursesFragment)
+                .addToBackStack(null)
+                .commit();
     }
 }

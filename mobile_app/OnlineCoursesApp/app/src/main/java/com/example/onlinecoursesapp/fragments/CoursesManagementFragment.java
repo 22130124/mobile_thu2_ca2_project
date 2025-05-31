@@ -10,8 +10,6 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -21,7 +19,6 @@ import com.example.onlinecoursesapp.adapter.CourseManagementAdapter;
 import com.example.onlinecoursesapp.api.ApiClient;
 import com.example.onlinecoursesapp.api.CourseApiService;
 import com.example.onlinecoursesapp.models.Course;
-import com.example.onlinecoursesapp.models.course_progress.StatisticsResponse;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.List;
@@ -36,34 +33,39 @@ public class CoursesManagementFragment extends Fragment implements CourseManagem
     private CourseManagementAdapter adapter;
     private FloatingActionButton fabAddCourse;
     private CourseApiService courseApiService;
+    private static final String ARG_CATEGORY_ID = "category_id";
+    private int categoryId;
 
+    public static CoursesManagementFragment newInstance(int categoryId) {
+        CoursesManagementFragment fragment = new CoursesManagementFragment();
+        Bundle args = new Bundle();
+        args.putInt(ARG_CATEGORY_ID, categoryId);
+        fragment.setArguments(args);
+        return fragment;
+    }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_courses_management, container, false);
 
-        // Khởi tạo API service
         courseApiService = ApiClient.getCourseApiService();
 
-        // Khởi tạo RecyclerView
         recyclerView = view.findViewById(R.id.recyclerViewCourses);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         adapter = new CourseManagementAdapter(getContext(), this);
         recyclerView.setAdapter(adapter);
 
-        // Khởi tạo FloatingActionButton
         fabAddCourse = view.findViewById(R.id.fabAddCourse);
         fabAddCourse.setOnClickListener(v -> showAddCourseDialog());
 
-        // Load danh sách khóa học
         loadCoursesFromApi();
 
         return view;
     }
 
     private void loadCoursesFromApi() {
-        Call<List<Course>> call = courseApiService.getAllCourses();
-        call.enqueue(new Callback<List<Course>>() {
+        int categoryId = requireArguments().getInt(ARG_CATEGORY_ID);
+        courseApiService.getCourseByCategoryId(categoryId).enqueue(new Callback<List<Course>>() {
             @Override
             public void onResponse(Call<List<Course>> call, Response<List<Course>> response) {
                 if (response.isSuccessful() && response.body() != null) {
@@ -88,7 +90,6 @@ public class CoursesManagementFragment extends Fragment implements CourseManagem
         Spinner spinnerDifficulty = dialogView.findViewById(R.id.spinnerDifficulty);
         EditText editTextImagePath = dialogView.findViewById(R.id.editTextImagePath);
 
-        // Setup spinner for difficulty levels
         ArrayAdapter<Course.Difficulty> difficultyAdapter = new ArrayAdapter<>(
                 requireContext(),
                 android.R.layout.simple_spinner_item,
@@ -101,13 +102,6 @@ public class CoursesManagementFragment extends Fragment implements CourseManagem
                 .setTitle("Thêm khóa học mới")
                 .setView(dialogView)
                 .setPositiveButton("Thêm", (dialog, which) -> {
-                    Course newCourse = new Course();
-                    newCourse.setTitle(editTextTitle.getText().toString());
-                    newCourse.setDescription(editTextDescription.getText().toString());
-                    newCourse.setNumberOfLessons(Integer.parseInt(editTextNumberOfLessons.getText().toString()));
-                    newCourse.setDifficulty((Course.Difficulty) spinnerDifficulty.getSelectedItem());
-                    newCourse.setImagePath(editTextImagePath.getText().toString());
-
                     String title = editTextTitle.getText().toString().trim();
                     String description = editTextDescription.getText().toString().trim();
                     String numberOfLessonsStr = editTextNumberOfLessons.getText().toString().trim();
@@ -118,7 +112,20 @@ public class CoursesManagementFragment extends Fragment implements CourseManagem
                         return;
                     }
 
-                    addCourse(newCourse);
+                    try {
+                        int numberOfLessons = Integer.parseInt(numberOfLessonsStr);
+
+                        Course newCourse = new Course();
+                        newCourse.setTitle(title);
+                        newCourse.setDescription(description);
+                        newCourse.setNumberOfLessons(numberOfLessons);
+                        newCourse.setDifficulty((Course.Difficulty) spinnerDifficulty.getSelectedItem());
+                        newCourse.setImagePath(imagePath);
+
+                        addCourse(newCourse);
+                    } catch (NumberFormatException e) {
+                        Toast.makeText(getContext(), "Số bài học không hợp lệ", Toast.LENGTH_SHORT).show();
+                    }
                 })
                 .setNegativeButton("Hủy", null)
                 .show();
@@ -132,13 +139,11 @@ public class CoursesManagementFragment extends Fragment implements CourseManagem
         Spinner spinnerDifficulty = dialogView.findViewById(R.id.spinnerDifficulty);
         EditText editTextImagePath = dialogView.findViewById(R.id.editTextImagePath);
 
-        // Fill current course data
         editTextTitle.setText(course.getTitle());
         editTextDescription.setText(course.getDescription());
         editTextNumberOfLessons.setText(String.valueOf(course.getNumberOfLessons()));
         editTextImagePath.setText(course.getImagePath());
 
-        // Setup spinner for difficulty levels
         ArrayAdapter<Course.Difficulty> difficultyAdapter = new ArrayAdapter<>(
                 requireContext(),
                 android.R.layout.simple_spinner_item,
@@ -152,20 +157,23 @@ public class CoursesManagementFragment extends Fragment implements CourseManagem
                 .setTitle("Chỉnh sửa khóa học")
                 .setView(dialogView)
                 .setPositiveButton("Lưu", (dialog, which) -> {
-                    course.setTitle(editTextTitle.getText().toString());
-                    course.setDescription(editTextDescription.getText().toString());
-                    course.setNumberOfLessons(Integer.parseInt(editTextNumberOfLessons.getText().toString()));
-                    course.setDifficulty((Course.Difficulty) spinnerDifficulty.getSelectedItem());
-                    course.setImagePath(editTextImagePath.getText().toString());
-                    updateCourse(course.getId(), course);
+                    try {
+                        course.setTitle(editTextTitle.getText().toString().trim());
+                        course.setDescription(editTextDescription.getText().toString().trim());
+                        course.setNumberOfLessons(Integer.parseInt(editTextNumberOfLessons.getText().toString().trim()));
+                        course.setDifficulty((Course.Difficulty) spinnerDifficulty.getSelectedItem());
+                        course.setImagePath(editTextImagePath.getText().toString().trim());
+                        updateCourse(course.getId(), course);
+                    } catch (NumberFormatException e) {
+                        Toast.makeText(getContext(), "Số bài học không hợp lệ", Toast.LENGTH_SHORT).show();
+                    }
                 })
                 .setNegativeButton("Hủy", null)
                 .show();
     }
 
     private void addCourse(Course newCourse) {
-        Call<Course> call = courseApiService.addCourse(newCourse);
-        call.enqueue(new Callback<Course>() {
+        courseApiService.addCourse(newCourse).enqueue(new Callback<Course>() {
             @Override
             public void onResponse(Call<Course> call, Response<Course> response) {
                 if (response.isSuccessful()) {
@@ -184,8 +192,7 @@ public class CoursesManagementFragment extends Fragment implements CourseManagem
     }
 
     private void updateCourse(int courseId, Course updatedCourse) {
-        Call<Course> call = courseApiService.updateCourse(courseId, updatedCourse);
-        call.enqueue(new Callback<Course>() {
+        courseApiService.updateCourse(courseId, updatedCourse).enqueue(new Callback<Course>() {
             @Override
             public void onResponse(Call<Course> call, Response<Course> response) {
                 if (response.isSuccessful()) {
@@ -204,8 +211,7 @@ public class CoursesManagementFragment extends Fragment implements CourseManagem
     }
 
     private void deleteCourse(int courseId) {
-        Call<Void> call = courseApiService.deleteCourse(courseId);
-        call.enqueue(new Callback<Void>() {
+        courseApiService.deleteCourse(courseId).enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
                 if (response.isSuccessful()) {
@@ -222,13 +228,6 @@ public class CoursesManagementFragment extends Fragment implements CourseManagem
             }
         });
     }
-
-//    @Override
-//            public void onFailure(Call<StatisticsResponse> call, Throwable t) {
-//                Toast.makeText(getContext(), "Lỗi kết nối: " + t.getMessage(), Toast.LENGTH_SHORT).show();
-//            }
-//        });
-//    }
 
     @Override
     public void onEditClick(Course course) {

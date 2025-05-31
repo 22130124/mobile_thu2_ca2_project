@@ -52,7 +52,8 @@ public class CourseManagementAdapter extends RecyclerView.Adapter<CourseManageme
         Course course = courseList.get(position);
         holder.textTitle.setText(course.getTitle());
         holder.textDesc.setText(course.getDescription());
-        holder.textNumLessons.setText(String.valueOf(course.getNumberOfLessons()));
+        holder.textNumLessons.setText("Số bài học: "+ String.valueOf(course.getNumberOfLessons()));
+        holder.textLevel.setText("Độ khó: " + course.getDifficulty());
 
         String imageUrl = ApiClient.getBaseUrl() + course.getImagePath();
         Glide.with(context).load(imageUrl).into(holder.imageCourse);
@@ -92,7 +93,7 @@ public class CourseManagementAdapter extends RecyclerView.Adapter<CourseManageme
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         ImageView imageCourse, iconEdit, iconDelete;
-        TextView textNumLessons, textTitle, textDesc;
+        TextView textNumLessons, textTitle, textDesc, textLevel;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -102,7 +103,12 @@ public class CourseManagementAdapter extends RecyclerView.Adapter<CourseManageme
             textDesc = itemView.findViewById(R.id.textDesc);
             iconEdit = itemView.findViewById(R.id.iconEdit);
             iconDelete = itemView.findViewById(R.id.iconDelete);
+            textLevel = itemView.findViewById(R.id.textLevel);
 
         }
     }
+
+
+
+
 }

@@ -16,23 +16,30 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.onlinecoursesapp.R;
 import com.example.onlinecoursesapp.models.Category;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.CategoryViewHolder> {
 
-    private Context context;
+    private final Context context;
     private List<Category> categoryList;
-    private OnCategoryActionListener listener;
+    private final OnCategoryActionListener listener;
 
     public interface OnCategoryActionListener {
         void onEdit(Category category);
         void onDelete(Category category);
+        void onCategoryClick(Category category);
     }
 
-    public CategoryAdapter(Context context, List<Category> categoryList, OnCategoryActionListener listener) {
+    public CategoryAdapter(Context context, OnCategoryActionListener listener) {
         this.context = context;
-        this.categoryList = categoryList;
         this.listener = listener;
+        this.categoryList = new ArrayList<>();
+    }
+
+    public void setCategoryList(List<Category> categoryList) {
+        this.categoryList = categoryList;
+        notifyDataSetChanged();
     }
 
     @NonNull
@@ -47,22 +54,11 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
         Category category = categoryList.get(position);
         holder.tvCategoryName.setText(category.getName());
 
-        holder.btnMore.setOnClickListener(v -> {
-            PopupMenu popupMenu = new PopupMenu(context, holder.btnMore);
-            MenuInflater inflater = popupMenu.getMenuInflater();
-            inflater.inflate(R.menu.menu_category_item, popupMenu.getMenu());
-            popupMenu.setOnMenuItemClickListener(item -> {
-                if (item.getItemId() == R.id.menuEdit) {
-                    listener.onEdit(category);
-                    return true;
-                } else if (item.getItemId() == R.id.menuDelete) {
-                    listener.onDelete(category);
-                    return true;
-                }
-                return false;
-            });
-            popupMenu.show();
-        });
+        // Set click listener for the entire category item
+        holder.itemView.setOnClickListener(v -> listener.onCategoryClick(category));
+
+        // Set click listener for the "More" button
+        holder.btnMore.setOnClickListener(v -> showPopupMenu(holder.btnMore, category));
     }
 
     @Override
@@ -70,14 +66,30 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
         return categoryList != null ? categoryList.size() : 0;
     }
 
-    public void setFilteredList(List<Category> filteredList) {
-        this.categoryList = filteredList;
-        notifyDataSetChanged();
+    private void showPopupMenu(View view, Category category) {
+        PopupMenu popupMenu = new PopupMenu(context, view);
+        MenuInflater inflater = popupMenu.getMenuInflater();
+        inflater.inflate(R.menu.menu_category_item, popupMenu.getMenu());
+
+        popupMenu.setOnMenuItemClickListener(item -> {
+            int id = item.getItemId();
+            if (id == R.id.menuEdit) {
+                listener.onEdit(category);
+                return true;
+            } else if (id == R.id.menuDelete) {
+                listener.onDelete(category);
+                return true;
+            } else {
+                return false;
+            }
+        });
+
+        popupMenu.show();
     }
 
     static class CategoryViewHolder extends RecyclerView.ViewHolder {
-        TextView tvCategoryName;
-        ImageButton btnMore;
+        final TextView tvCategoryName;
+        final ImageButton btnMore;
 
         public CategoryViewHolder(@NonNull View itemView) {
             super(itemView);

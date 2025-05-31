@@ -31,7 +31,7 @@ public class CategoryRepository {
         return instance;
     }
 
-    // Lấy tất cả category
+    // Lấy tất cả category - Huong
     public void getAllCategories(CategoryListCallback callback) {
         apiService.getAllCategories().enqueue(new Callback<List<Category>>() {
             @Override
@@ -50,7 +50,7 @@ public class CategoryRepository {
         });
     }
 
-    // Lấy category theo id
+    // Lấy category theo id - Huong
     public void getCategoryById(int id, CategoryCallback callback) {
         apiService.getCategoryById(id).enqueue(new Callback<Category>() {
             @Override
@@ -69,7 +69,7 @@ public class CategoryRepository {
         });
     }
 
-    // Tạo category mới
+    // Tạo category mới - Huong
     public void createCategory(Category category, CategoryCallback callback) {
         apiService.createCategory(category).enqueue(new Callback<Category>() {
             @Override
@@ -88,7 +88,7 @@ public class CategoryRepository {
         });
     }
 
-    // Cập nhật category
+    // Cập nhật category - Huong
     public void updateCategory(int id, Category updateCategory, CategoryCallback callback) {
         apiService.updateCategory(id, updateCategory).enqueue(new Callback<Category>() {
             @Override
@@ -107,7 +107,7 @@ public class CategoryRepository {
         });
     }
 
-    // Xóa category
+    // Xóa category - Huong
     public void deleteCategory(int id, CategoryCallback callback) {
         apiService.deleteCategory(id).enqueue(new Callback<Void>() {
             @Override
