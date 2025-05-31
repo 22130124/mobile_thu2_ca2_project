@@ -6,11 +6,14 @@ import android.net.Uri;
 import androidx.annotation.NonNull;
 
 import com.example.onlinecoursesapp.api.UserAPIService;
+import com.example.onlinecoursesapp.models.ChangePasswordRequest;
+import com.example.onlinecoursesapp.models.GenericResponse;
 import com.example.onlinecoursesapp.models.LoginRequest;
 import com.example.onlinecoursesapp.models.LoginResponse;
 import com.example.onlinecoursesapp.models.RegisterResponse;
 import com.example.onlinecoursesapp.models.UserProgress;
 import com.example.onlinecoursesapp.api.ApiClient;
+import com.example.onlinecoursesapp.utils.ChangePasswordCallback;
 import com.example.onlinecoursesapp.utils.ImageUploadCallback;
 import com.example.onlinecoursesapp.utils.LoginCallback;
 import com.example.onlinecoursesapp.utils.ProfileUpdateCallback;
@@ -108,6 +111,36 @@ public class UserRepository {
 
             @Override
             public void onFailure(Call<LoginResponse> call, Throwable t) {
+                callback.onFailure("Lỗi kết nối: " + t.getMessage());
+            }
+        });
+    }
+
+    public void changePassword(int userId, String oldPassword, String newPassword, ChangePasswordCallback callback) {
+        ChangePasswordRequest request = new ChangePasswordRequest(oldPassword, newPassword);
+        apiService.changePassword(userId, request).enqueue(new Callback<GenericResponse>() {
+            @Override
+            public void onResponse(Call<GenericResponse> call, Response<GenericResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    callback.onSuccess(response.body().getMessage());
+                } else {
+                    try {
+                        String errorBody = response.errorBody() != null ? response.errorBody().string() : null;
+                        if (errorBody != null) {
+                            JSONObject json = new JSONObject(errorBody);
+                            callback.onFailure(json.optString("message", "Lỗi đổi mật khẩu"));
+                        } else {
+                            callback.onFailure("Lỗi không xác định");
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        callback.onFailure("Lỗi xử lý phản hồi");
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<GenericResponse> call, Throwable t) {
                 callback.onFailure("Lỗi kết nối: " + t.getMessage());
             }
         });
@@ -410,22 +443,4 @@ public class UserRepository {
             }
         });
     }
-
-//    public void changePassword(int userId, String oldPassword, String newPassword, PasswordChangeCallback callback) {
-//        apiService.changePassword(userId, oldPassword, newPassword).enqueue(new Callback<Void>() {
-//            @Override
-//            public void onResponse(Call<Void> call, Response<Void> response) {
-//                if (response.isSuccessful()) {
-//                    callback.onSuccess();
-//                } else {
-//                    callback.onFailure("Đổi mật khẩu thất bại");
-//                }
-//            }
-//
-//            @Override
-//            public void onFailure(Call<Void> call, Throwable t) {
-//                callback.onFailure(t.getMessage());
-//            }
-//        });
-//    }
 }
