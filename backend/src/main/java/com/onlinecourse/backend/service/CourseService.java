@@ -2,6 +2,7 @@ package com.onlinecourse.backend.service;
 
 import com.onlinecourse.backend.dto.CourseOverview;
 import com.onlinecourse.backend.dto.LessonOverview;
+import com.onlinecourse.backend.model.Course;
 import com.onlinecourse.backend.repository.CourseRepository;
 import org.springframework.stereotype.Service;
 
