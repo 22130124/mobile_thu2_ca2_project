@@ -1,4 +1,4 @@
-package com.example.onlinecoursesapp.fragments;
+package com.example.onlinecoursesapp.fragments.admin;
 
 import android.graphics.Color;
 import android.os.Bundle;

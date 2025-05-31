@@ -1,4 +1,4 @@
-package com.example.onlinecoursesapp.activities.dashboard;
+package com.example.onlinecoursesapp.activities;
 
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -8,25 +8,26 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import com.example.onlinecoursesapp.R;
-import com.example.onlinecoursesapp.fragments.admin.CoursesManagementFragment;
-import com.example.onlinecoursesapp.fragments.admin.OverviewFragment;
-import com.example.onlinecoursesapp.fragments.admin.SettingsFragment;
-import com.example.onlinecoursesapp.fragments.admin.UsersManagementFragment;
+import com.example.onlinecoursesapp.fragments.home.CourseOverViewFragment;
+import com.example.onlinecoursesapp.fragments.home.HomeFragment;
+import com.example.onlinecoursesapp.fragments.home.ProfileFragment;
+import com.example.onlinecoursesapp.fragments.home.SearchFragment;
+import com.example.onlinecoursesapp.fragments.home.SettingHomeFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 @SuppressWarnings("deprecation")
-public class DashboardActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener {
+public class HomeMainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_dashboard);
+        setContentView(R.layout.activity_home_main);
 
         BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
         bottomNav.setOnNavigationItemSelectedListener(this);
 
         // Load default fragment
-        loadFragment(new OverviewFragment());
+        loadFragment(new HomeFragment());
     }
 
     @Override
@@ -34,14 +35,16 @@ public class DashboardActivity extends AppCompatActivity implements BottomNaviga
         Fragment fragment;
 
         int id = item.getItemId();
-        if (id == R.id.nav_overview) {
-            fragment = new OverviewFragment();
+        if (id == R.id.nav_home) {
+            fragment = new HomeFragment();
         } else if (id == R.id.nav_courses) {
-            fragment = new CoursesManagementFragment();
+            fragment = new CourseOverViewFragment();
         } else if (id == R.id.nav_users) {
-            fragment = new UsersManagementFragment();
+            fragment = new ProfileFragment();
+        } else if (id == R.id.nav_search) {
+            fragment = new SearchFragment();
         } else if (id == R.id.nav_settings) {
-            fragment = new SettingsFragment();
+            fragment = new SettingHomeFragment();
         } else {
             fragment = null;
         }
@@ -61,3 +64,4 @@ public class DashboardActivity extends AppCompatActivity implements BottomNaviga
         return false;
     }
 }
+
