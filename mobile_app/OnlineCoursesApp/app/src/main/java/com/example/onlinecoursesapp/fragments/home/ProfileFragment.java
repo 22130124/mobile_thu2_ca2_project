@@ -1,10 +1,12 @@
-package com.example.onlinecoursesapp.activities;
+package com.example.onlinecoursesapp.fragments.home;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -13,10 +15,13 @@ import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
 import com.example.onlinecoursesapp.R;
+import com.example.onlinecoursesapp.activities.LoginActivity;
 import com.example.onlinecoursesapp.activities.course_progress.CourseProgressActivity;
 import com.example.onlinecoursesapp.data.UserRepository;
 import com.example.onlinecoursesapp.models.UserProgress;
@@ -27,11 +32,11 @@ import com.google.android.material.textfield.TextInputEditText;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class ProfileActivity extends AppCompatActivity {
+public class ProfileFragment extends Fragment {
     private final String baseUrl = "http://10.0.2.2:8080";
     private UserRepository userRepository;
     private ImageView imgView;
-    private Button myCoursesButton, logoutButton;
+    private Button myCoursesButton;
     private TextView nameTextDisplay;
     private TextView emailTextDisplay;
     private LinearLayout layoutInfoDisplay;
@@ -45,26 +50,26 @@ public class ProfileActivity extends AppCompatActivity {
 
     private ActivityResultLauncher<String> pickImageLauncher;
 
+    @Nullable
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_profile);
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_profile, container, false);
 
-        userRepository = UserRepository.getInstance(this);
+        userRepository = UserRepository.getInstance(requireContext());
 
-        imgView = findViewById(R.id.imgView);
-        myCoursesButton = findViewById(R.id.myCoursesButton);
-        ivEditIcon = findViewById(R.id.iv_edit_icon);
+        imgView = view.findViewById(R.id.imgView);
+        myCoursesButton = view.findViewById(R.id.myCoursesButton);
+        ivEditIcon = view.findViewById(R.id.iv_edit_icon);
 
-        nameTextDisplay = findViewById(R.id.nameText_display);
-        emailTextDisplay = findViewById(R.id.emailText_display);
-        layoutInfoDisplay = findViewById(R.id.layout_info_display);
+        nameTextDisplay = view.findViewById(R.id.nameText_display);
+        emailTextDisplay = view.findViewById(R.id.emailText_display);
+        layoutInfoDisplay = view.findViewById(R.id.layout_info_display);
 
-        btnUploadImage = findViewById(R.id.btn_upload_image);
-        etName = findViewById(R.id.et_name);
-        etEmail = findViewById(R.id.et_email);
-        layoutInfoEdit = findViewById(R.id.layout_info_edit);
-        btnSaveProfile = findViewById(R.id.btn_save_profile);
+        btnUploadImage = view.findViewById(R.id.btn_upload_image);
+        etName = view.findViewById(R.id.et_name);
+        etEmail = view.findViewById(R.id.et_email);
+        layoutInfoEdit = view.findViewById(R.id.layout_info_edit);
+        btnSaveProfile = view.findViewById(R.id.btn_save_profile);
 
         pickImageLauncher = registerForActivityResult(
                 new ActivityResultContracts.GetContent(),
@@ -79,16 +84,8 @@ public class ProfileActivity extends AppCompatActivity {
         setEditMode(false);
 
         myCoursesButton.setOnClickListener(v -> {
-            Intent intent = new Intent(ProfileActivity.this, CourseProgressActivity.class);
+            Intent intent = new Intent(requireContext(), CourseProgressActivity.class);
             startActivity(intent);
-        });
-
-        logoutButton.setOnClickListener(v -> {
-            SharedPreferences sharedPref = getSharedPreferences("UserPrefs", MODE_PRIVATE);
-            sharedPref.edit().clear().apply();
-            Intent intent = new Intent(ProfileActivity.this, LoginActivity.class);
-            startActivity(intent);
-            finish();
         });
 
         ivEditIcon.setOnClickListener(v -> {
@@ -102,10 +99,12 @@ public class ProfileActivity extends AppCompatActivity {
         btnSaveProfile.setOnClickListener(v -> {
             saveUserProfileData();
         });
+
+        return view;
     }
 
     private void loadUserProfileData() {
-        SharedPreferences sharedPref = getSharedPreferences("UserPrefs", MODE_PRIVATE);
+        SharedPreferences sharedPref = requireActivity().getSharedPreferences("UserPrefs", 0);
         String name = sharedPref.getString("userName", "Không rõ");
         String email = sharedPref.getString("userEmail", "Không có email");
         String img = sharedPref.getString("img", "");
@@ -113,7 +112,6 @@ public class ProfileActivity extends AppCompatActivity {
         emailTextDisplay.setText(email);
         etName.setText(name);
         etEmail.setText(email);
-        System.out.println("Hello");
         if (!img.isEmpty()) {
             Glide.with(this)
                     .load(baseUrl + img)
@@ -121,11 +119,7 @@ public class ProfileActivity extends AppCompatActivity {
                     .error(R.drawable.placeholder_image)
                     .circleCrop()
                     .into(imgView);
-
-            System.out.println("Có img nha");
-            System.out.println(baseUrl + img);
         } else {
-            System.out.println("Không có img");
             imgView.setImageResource(R.drawable.placeholder_image);
         }
     }
@@ -133,22 +127,22 @@ public class ProfileActivity extends AppCompatActivity {
     private void saveUserProfileData() {
         String name = etName.getText().toString();
         String email = etEmail.getText().toString();
-        SharedPreferences sharedPref = getSharedPreferences("UserPrefs", MODE_PRIVATE);
+        SharedPreferences sharedPref = requireActivity().getSharedPreferences("UserPrefs", 0);
         int userId = sharedPref.getInt("userId", -1);
         if (userId == -1) {
-            Toast.makeText(this, "User ID not found", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "User ID not found", Toast.LENGTH_SHORT).show();
             return;
         }
 
         UserProgress updatedUser = new UserProgress();
-        updatedUser.setId((int) userId);
+        updatedUser.setId(userId);
         updatedUser.setName(name);
         updatedUser.setEmail(email);
 
         userRepository.updateUserProfileData(userId, updatedUser, new ProfileUpdateCallback() {
             @Override
             public void onSuccess(UserProgress user) {
-                Toast.makeText(ProfileActivity.this, "Cập nhật thông tin thành công", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Cập nhật thông tin thành công", Toast.LENGTH_SHORT).show();
                 nameTextDisplay.setText(user.getName());
                 emailTextDisplay.setText(user.getEmail());
 
@@ -161,10 +155,9 @@ public class ProfileActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(String message) {
-                Toast.makeText(ProfileActivity.this, "Cập nhật thông tin thất bại: " + message, Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Cập nhật thông tin thất bại: " + message, Toast.LENGTH_SHORT).show();
             }
         });
-
     }
 
     private void toggleEditMode() {
@@ -186,10 +179,10 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     private void uploadImage(Uri imageUri) {
-        SharedPreferences sharedPref = getSharedPreferences("UserPrefs", MODE_PRIVATE);
+        SharedPreferences sharedPref = requireActivity().getSharedPreferences("UserPrefs", 0);
         int userId = sharedPref.getInt("userId", -1);
         if (userId == -1) {
-            Toast.makeText(this, "User ID not found", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "User ID not found", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -205,22 +198,22 @@ public class ProfileActivity extends AppCompatActivity {
                     editor.apply();
 
                     String fullImageUrl = baseUrl + imageUrl;
-                    Glide.with(ProfileActivity.this)
+                    Glide.with(ProfileFragment.this)
                             .load(fullImageUrl)
                             .placeholder(R.drawable.placeholder_image)
                             .error(R.drawable.placeholder_image)
                             .circleCrop()
                             .into(imgView);
-                    Toast.makeText(ProfileActivity.this, "Tải ảnh lên thành công", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Tải ảnh lên thành công", Toast.LENGTH_SHORT).show();
                 } catch (JSONException e) {
                     e.printStackTrace();
-                    Toast.makeText(ProfileActivity.this, "Lỗi phân tích phản hồi từ server: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Lỗi phân tích phản hồi từ server: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(String message) {
-                Toast.makeText(ProfileActivity.this, "Tải ảnh lên thất bại: " + message, Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Tải ảnh lên thất bại: " + message, Toast.LENGTH_SHORT).show();
             }
         });
     }

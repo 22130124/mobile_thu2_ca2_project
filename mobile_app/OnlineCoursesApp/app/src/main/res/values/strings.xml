@@ -2,4 +2,6 @@
     <string name="app_name">OnlineCoursesApp</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="search_icon_desc">Search icon</string>
+    <string name="search_hint">What do you want to learn?</string>
 </resources>
