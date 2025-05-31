@@ -5,10 +5,13 @@ import com.onlinecourse.backend.dto.LessonOverview;
 import com.onlinecourse.backend.model.Course;
 import com.onlinecourse.backend.repository.CourseRepository;
 import com.onlinecourse.backend.service.CourseService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/courses")
@@ -71,4 +74,16 @@ public class CourseContr {
         return ResponseEntity.status(201).body(savedCourse);
     }
 
+    //Lấy khóa học theo category - Hương
+    @GetMapping("/category/{id}")
+    public List<Course> getCourseByCategoryId(@PathVariable("id") int categoryId) {
+        return courseRepository.findByCategoryId(categoryId);
+    }
+    // Huong - Lấy khoá học theo ID
+    @GetMapping("/management/{id}")
+    public ResponseEntity<Course> getManagementCourseById(@PathVariable int id) {
+        Optional<Course> course = courseRepository.findById(id);
+        return course.map(ResponseEntity::ok)
+                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+    }
 }

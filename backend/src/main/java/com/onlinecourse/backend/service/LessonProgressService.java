@@ -35,7 +35,6 @@ public class LessonProgressService {
         progress.setCompletedAt(LocalDateTime.now());
 
         enrollmentRepository.save(enrollment);
-
         return ResponseEntity.ok("Đã hoàn thành bài học.");
     }
 
@@ -51,7 +50,7 @@ public class LessonProgressService {
                 .orElse(null);
 
         if (progress == null) return ResponseEntity.badRequest().body(false);
-
         return ResponseEntity.ok(progress.isCompleted());
     }
 }
+
