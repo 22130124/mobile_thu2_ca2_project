@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="120dp"
+    android:height="100dp"
+    android:viewportWidth="120"
+    android:viewportHeight="100">
+
+    <!-- Books Stack -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M20,60 L35,60 L35,75 L20,75 Z"
+        android:alpha="0.9"/>
+
+    <path
+        android:fillColor="#E3F2FD"
+        android:pathData="M25,55 L40,55 L40,70 L25,70 Z"
+        android:alpha="0.9"/>
+
+    <path
+        android:fillColor="#BBDEFB"
+        android:pathData="M30,50 L45,50 L45,65 L30,65 Z"
+        android:alpha="0.9"/>
+
+    <!-- Laptop -->
+    <path
+        android:fillColor="#37474F"
+        android:pathData="M60,45 L90,45 L90,65 L60,65 Z"/>
+
+    <path
+        android:fillColor="#263238"
+        android:pathData="M62,47 L88,47 L88,60 L62,60 Z"/>
+
+
+    <path
+        android:fillColor="#FF7043"
+        android:pathData="M70,35 L80,35 L80,50 L75,50 L75,45 L70,45 Z"/>
+
+</vector>

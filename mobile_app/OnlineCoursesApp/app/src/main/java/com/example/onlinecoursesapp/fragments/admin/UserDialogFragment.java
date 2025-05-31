@@ -1,4 +1,4 @@
-package com.example.onlinecoursesapp.fragments;
+package com.example.onlinecoursesapp.fragments.admin;
 
 import android.app.Dialog;
 import android.os.Bundle;
@@ -20,6 +20,7 @@ import com.example.onlinecoursesapp.utils.UserCallback;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 
+//kieu - dialog cho them va sua
 public class UserDialogFragment extends DialogFragment {
     public interface UserDialogListener {
         void onUserSaved(UserProgress user, boolean isEdit);

@@ -17,6 +17,7 @@ import androidx.fragment.app.FragmentManager;
 
 import com.example.onlinecoursesapp.R;
 import com.example.onlinecoursesapp.data.UserRepository;
+import com.example.onlinecoursesapp.fragments.admin.SettingsFragment;
 import com.example.onlinecoursesapp.utils.ChangePasswordCallback;
 
 public class ChangePasswordFragment extends Fragment {
