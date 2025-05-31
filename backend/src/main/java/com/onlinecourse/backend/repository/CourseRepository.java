@@ -8,4 +8,6 @@ import java.util.List;
 public interface CourseRepository extends JpaRepository<Course, Integer> {
 
     List<Course> findByTitleContainingIgnoreCase(String query);
+
+    List<Course> findByCategoryId(int categoryId);
 }

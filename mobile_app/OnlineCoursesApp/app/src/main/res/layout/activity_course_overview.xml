@@ -174,16 +174,16 @@
                 </LinearLayout>
 
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Danh sách bài học"
-                    android:textSize="18sp"
-                    android:textColor="#333333"
-                    android:layout_marginTop="15dp"
-                    android:layout_marginBottom="15dp" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Danh sách bài học"
+                        android:textSize="18sp"
+                        android:textColor="#333333"
+                        android:layout_marginTop="15dp"
+                        android:layout_marginBottom="15dp" />
 
-                <!--                Danh sach bai hoc-->
+<!--                Danh sach bai hoc-->
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/lessons"
                     android:layout_width="match_parent"

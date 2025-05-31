@@ -30,7 +30,7 @@ public interface CourseApiService {
         Call<List<CourseProgress>> getUserCourseProgress(@Path("userId") int userId);
 
         /**
-         * Tìm kiếm khóa học theo từ khóa
+         * Tìm kiếm khóa học theo từ khóa - Huong
          */
         @GET("/courses/search")
         Call<List<Course>> searchCourses(@Query("query") String query);
@@ -47,5 +47,28 @@ public interface CourseApiService {
         @GET("/enrollments/{userId}/progress/{courseId}")
         Call<CourseProgress> getCourseProgressByUserAndCourse(@Path("userId") int userId,@Path("courseId") int courseId);
 
+        /**
+         * Cập nhật khóa học - Hương
+         */
+        @PUT("/courses/{id}")
+        Call<Course> updateCourse (@Path("id") int courseId, @Body Course course);
+
+
+//         Xóa khóa học - Hương
+        @DELETE("/courses/{id}")
+        Call<Void> deleteCourse (@Path("id") int courseId);
+
+        //         Them khóa học - Hương
+        @POST("/courses")
+        Call<Course> addCourse(@Body Course course);
+
+        //         Lấy khóa học theo category - Hương
+        @GET ("/courses/category/{id}")
+        Call<List<Course>> getCourseByCategoryId(@Path("id") int categoryId);
+        /**
+         * Huong - Lấy khóa học theo ID - admin
+         */
+        @GET("/courses/management/{id}")
+        Call<Course> getManagementCourseById(@Path("id") int courseId);
 
 }

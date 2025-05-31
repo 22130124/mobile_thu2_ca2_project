@@ -1,5 +1,11 @@
 package com.example.onlinecoursesapp.api;
 
+import com.example.onlinecoursesapp.adapter.LocalDateTimeAdapter;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
+import java.time.LocalDateTime;
+
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
@@ -20,6 +26,11 @@ public class ApiClient {
 
     public static Retrofit getClient() {
         if (retrofit == null) {
+            Gson gson = new GsonBuilder()
+                    .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
+                    .create();
+
+
             retrofit = new Retrofit.Builder()
                     .baseUrl(BASE_URL)
                     .addConverterFactory(GsonConverterFactory.create())
@@ -27,6 +38,7 @@ public class ApiClient {
         }
         return retrofit;
     }
+
 
     public static CourseApiService getCourseApiService() {
         return getClient().create(CourseApiService.class);
@@ -46,5 +58,8 @@ public class ApiClient {
 
     public static DashboardApiService getDashboardApiService(){
         return getClient().create(DashboardApiService.class);
+    }
+    public static CategoryApiService getCategoryApiService() {
+        return getClient().create(CategoryApiService.class);
     }
 }

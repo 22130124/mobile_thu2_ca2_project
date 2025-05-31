@@ -39,4 +39,27 @@ public class Lesson {
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
+    public void setLesson(Lesson lesson) {
+        if (lesson.getTitle() != null) {
+            this.title = lesson.getTitle();
+        }
+        if (lesson.getContent() != null) {
+            this.content = lesson.getContent();
+        }
+        if (lesson.getYoutubeVideoUrl() != null) {
+            this.youtubeVideoUrl = lesson.getYoutubeVideoUrl();
+        }
+        if (lesson.getDurationMinutes() > 0) {
+            this.durationMinutes = lesson.getDurationMinutes();
+        }
+    }
+    /*
+       Hương: Khi ngày có giá trị null, cập nhật giá trị là now
+        */
+    @PrePersist
+    protected void onCreate() {
+        if (createdAt == null) {
+            createdAt = LocalDateTime.now();
+        }
+    }
 }

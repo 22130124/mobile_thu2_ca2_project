@@ -1,6 +1,7 @@
 package com.example.onlinecoursesapp.models;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class Course {
     private int id;
@@ -10,7 +11,14 @@ public class Course {
     private String imagePath;
     private int numberOfLessons;
     private Difficulty difficulty;
-    private LocalDateTime createdAt;
+    private List<Integer> createdAt;
+
+    public String getCreatedAtFormatted() {
+        if (createdAt != null && createdAt.size() >= 3) {
+            return String.format("%02d/%02d/%d", createdAt.get(2), createdAt.get(1), createdAt.get(0));
+        }
+        return "Không rõ";
+    }
 
     public int getId() {
         return id;
@@ -68,11 +76,11 @@ public class Course {
         this.difficulty = difficulty;
     }
 
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
+    public List<Integer> getCreatedAt() {
+        return this.createdAt;
     }
 
-    public void setCreatedAt(LocalDateTime createdAt) {
+    public void setCreatedAt(List<Integer> createdAt) {
         this.createdAt = createdAt;
     }
 

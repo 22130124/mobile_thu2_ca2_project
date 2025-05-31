@@ -12,6 +12,7 @@ import com.example.onlinecoursesapp.fragments.admin.CoursesManagementFragment;
 import com.example.onlinecoursesapp.fragments.admin.OverviewFragment;
 import com.example.onlinecoursesapp.fragments.admin.SettingsFragment;
 import com.example.onlinecoursesapp.fragments.admin.UsersManagementFragment;
+import com.example.onlinecoursesapp.fragments.CategoryFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 @SuppressWarnings("deprecation")
@@ -37,7 +38,7 @@ public class DashboardActivity extends AppCompatActivity implements BottomNaviga
         if (id == R.id.nav_overview) {
             fragment = new OverviewFragment();
         } else if (id == R.id.nav_courses) {
-            fragment = new CoursesManagementFragment();
+            fragment = new CategoryFragment();
         } else if (id == R.id.nav_users) {
             fragment = new UsersManagementFragment();
         } else if (id == R.id.nav_settings) {
