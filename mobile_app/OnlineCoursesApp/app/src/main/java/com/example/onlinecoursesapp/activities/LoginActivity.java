@@ -14,6 +14,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.onlinecoursesapp.R;
+import com.example.onlinecoursesapp.activities.dashboard.DashboardActivity;
 import com.example.onlinecoursesapp.data.UserRepository;
 import com.example.onlinecoursesapp.models.UserProgress;
 import com.example.onlinecoursesapp.utils.LoginCallback;
@@ -88,7 +89,7 @@ public class LoginActivity extends AppCompatActivity {
         });
 
         signupButton.setOnClickListener(v -> {
-            Intent intent = new Intent(LoginActivity.this, SignUpActivity.class);
+            Intent intent = new Intent(LoginActivity.this, DashboardActivity.class);
             startActivity(intent);
         });
     }

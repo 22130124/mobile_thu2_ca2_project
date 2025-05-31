@@ -1,11 +1,14 @@
 package com.example.onlinecoursesapp.fragments;
 
+import android.app.AlertDialog;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.InputType;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
@@ -56,8 +59,7 @@ public class CategoryFragment extends Fragment implements CategoryAdapter.OnCate
         rvCategories.setAdapter(adapter);
 
         btnAddCategory.setOnClickListener(v -> {
-            // TODO: Mở dialog nhập tên category mới và gọi createCategory API
-            Toast.makeText(getContext(), "Bạn muốn thêm thể loại mới", Toast.LENGTH_SHORT).show();
+            showAddCategoryDialog();
         });
 
         edtSearchCategory.addTextChangedListener(new TextWatcher() {
@@ -80,6 +82,43 @@ public class CategoryFragment extends Fragment implements CategoryAdapter.OnCate
         loadCategoriesFromApi();
 
         return view;
+    }
+
+    private void showAddCategoryDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle("Thêm thể loại");
+
+        final EditText input = new EditText(getContext());
+        input.setHint("Nhập tên thể loại");
+        input.setInputType(InputType.TYPE_CLASS_TEXT);
+        builder.setView(input);
+
+        builder.setPositiveButton("Lưu", (dialog, which) -> {
+            String categoryName = input.getText().toString().trim();
+
+            if (!categoryName.isEmpty()) {
+                categoryRepository.createCategory(new Category(categoryName), new CategoryCallback() {
+                    @Override
+                    public void onSuccess(Category category) {
+                        categoryList.add(category);
+                        adapter.notifyItemInserted(categoryList.size() - 1);
+                        Toast.makeText(getContext(), "Đã thêm thể loại thành công", Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onFailure(String message) {
+                        // Thông báo lỗi
+                        Toast.makeText(getContext(), "Lỗi: " + message, Toast.LENGTH_SHORT).show();
+                    }
+                });
+            } else {
+                Toast.makeText(getContext(), "Vui lòng nhập tên thể loại", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        builder.setNegativeButton("Hủy", (dialog, which) -> dialog.cancel());
+
+        builder.show();
     }
 
     // Gọi API lấy danh sách category
@@ -124,12 +163,47 @@ public class CategoryFragment extends Fragment implements CategoryAdapter.OnCate
         adapter.notifyDataSetChanged();
     }
 
-    @Override
     public void onEdit(Category category) {
-        Toast.makeText(getContext(), "Sửa thể loại: " + category.getName(), Toast.LENGTH_SHORT).show();
-        // TODO: Mở dialog sửa category, gọi updateCategory API rồi cập nhật danh sách
-    }
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle("Chỉnh sửa thể loại");
 
+        final EditText input = new EditText(getContext());
+        input.setHint("Nhập tên thể loại");
+        input.setInputType(InputType.TYPE_CLASS_TEXT);
+        input.setText(category.getName()); // Hiển thị tên hiện tại
+        builder.setView(input);
+
+        builder.setPositiveButton("Lưu", (dialog, which) -> {
+            String newCategoryName = input.getText().toString().trim();
+
+            if (!newCategoryName.isEmpty()) {
+                Category updatedCategory = new Category(category.getId(),newCategoryName);
+
+                categoryRepository.updateCategory(category.getId(), updatedCategory, new CategoryCallback() {
+                    @Override
+                    public void onSuccess(Category updated) {
+                        int index = categoryList.indexOf(category);
+                        if (index != -1) {
+                            categoryList.set(index, updated);
+                            adapter.notifyItemChanged(index);
+                        }
+                        Toast.makeText(getContext(), "Đã cập nhật thể loại thành công", Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onFailure(String message) {
+                        Toast.makeText(getContext(), "Lỗi: " + message, Toast.LENGTH_SHORT).show();
+                    }
+                });
+            } else {
+                Toast.makeText(getContext(), "Vui lòng nhập tên thể loại", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        builder.setNegativeButton("Hủy", (dialog, which) -> dialog.cancel());
+
+        builder.show();
+    }
     @Override
     public void onDelete(Category category) {
         // Gọi API xóa category
