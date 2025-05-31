@@ -5,3 +5,5 @@
         <base-config cleartextTrafficPermitted="true" />
     </domain-config>
 </network-security-config>
+
+

@@ -5,10 +5,6 @@
         android:icon="@drawable/ic_dashboard"
         android:title="Home" />
     <item
-        android:id="@+id/nav_courses"
-        android:icon="@drawable/ic_courses"
-        android:title="Khoá học" />
-    <item
         android:id="@+id/nav_users"
         android:icon="@drawable/ic_user_profile"
         android:title="profile" />

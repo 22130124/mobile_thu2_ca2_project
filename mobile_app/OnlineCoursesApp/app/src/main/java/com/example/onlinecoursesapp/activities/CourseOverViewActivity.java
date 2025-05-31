@@ -41,7 +41,14 @@ public class CourseOverViewActivity extends AppCompatActivity {
         SharedPreferences prefs = getSharedPreferences("UserPrefs", MODE_PRIVATE);
         String username = prefs.getString("userName", "Khách");
         int userId = prefs.getInt("userId", -1);
-        int courseId = 1; // giả sử cố định là 1
+
+        int courseId = getIntent().getIntExtra("courseId", -1);
+        if (courseId != -1) {
+            getCourseById(courseId);
+        } else {
+            Toast.makeText(this, "Không tìm thấy khóa học", Toast.LENGTH_SHORT).show();
+            finish();
+        }
 
         TextView tvWelcome = findViewById(R.id.tvWelcome);
         title = findViewById(R.id.title);
@@ -52,8 +59,7 @@ public class CourseOverViewActivity extends AppCompatActivity {
         lessonsRecyclerView = findViewById(R.id.lessons);
         btnRegister = findViewById(R.id.btnRegister);
 
-
-        tvWelcome.setText("Xin chào, " + username + " ! " + userId);
+        tvWelcome.setText("Xin chào, " + username);
 
         getCourseById(courseId);
 
