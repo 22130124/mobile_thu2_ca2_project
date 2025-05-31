@@ -8,7 +8,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import com.example.onlinecoursesapp.R;
-import com.example.onlinecoursesapp.fragments.home.CourseOverViewFragment;
 import com.example.onlinecoursesapp.fragments.home.HomeFragment;
 import com.example.onlinecoursesapp.fragments.home.ProfileFragment;
 import com.example.onlinecoursesapp.fragments.home.SearchFragment;
@@ -37,8 +36,6 @@ public class HomeMainActivity extends AppCompatActivity implements BottomNavigat
         int id = item.getItemId();
         if (id == R.id.nav_home) {
             fragment = new HomeFragment();
-        } else if (id == R.id.nav_courses) {
-            fragment = new CourseOverViewFragment();
         } else if (id == R.id.nav_users) {
             fragment = new ProfileFragment();
         } else if (id == R.id.nav_search) {
