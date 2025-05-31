@@ -1,5 +1,6 @@
 package com.onlinecourse.backend.controller;
 
+import com.onlinecourse.backend.dto.ChangePasswordRequest;
 import com.onlinecourse.backend.dto.LoginRequest;
 import com.onlinecourse.backend.dto.UserProgress;
 import com.onlinecourse.backend.dto.VerificationRequest;
@@ -90,6 +91,16 @@ public class UserContr {
         // Gửi lại mã
         userService.generateAndSendVerificationCode(email);
         return ResponseEntity.ok(Collections.singletonMap("message", "Mã xác minh đã được gửi lại"));
+    }
+
+    @PutMapping("/{id}/change-password")
+    public ResponseEntity<?> changePassword(@PathVariable int id, @RequestBody ChangePasswordRequest request) {
+        try {
+            userService.changePassword(id, request.getOldPassword(), request.getNewPassword());
+            return ResponseEntity.ok(Collections.singletonMap("message", "Đổi mật khẩu thành công"));
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(Collections.singletonMap("message", e.getMessage()));
+        }
     }
 
     // Hàm upload ảnh user

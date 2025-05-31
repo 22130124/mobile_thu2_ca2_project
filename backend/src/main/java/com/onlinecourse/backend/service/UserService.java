@@ -90,6 +90,26 @@ public class UserService {
         return convertToDTO(user);
     }
 
+    @Transactional
+    public void changePassword(int userId, String oldPassword, String newPassword) {
+        Optional<User> userOpt = userRepository.findById(userId);
+        if (userOpt.isEmpty()) {
+            throw new RuntimeException("Người dùng không tồn tại");
+        }
+        User user = userOpt.get();
+
+        // Kiểm tra mật khẩu cũ
+        if (!passwordEncoder.matches(oldPassword, user.getPassword())) {
+            throw new RuntimeException("Mật khẩu cũ không đúng");
+        }
+
+        // Mã hóa mật khẩu mới và lưu lại
+        String encodedNewPassword = passwordEncoder.encode(newPassword);
+        user.setPassword(encodedNewPassword);
+        user.setUpdatedAt(LocalDateTime.now());
+        userRepository.save(user);
+    }
+
     private UserProgress convertToDTO(User user) {
         return new UserProgress(
                 user.getId(),
