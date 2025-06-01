@@ -8,11 +8,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import com.example.onlinecoursesapp.R;
-import com.example.onlinecoursesapp.fragments.admin.CoursesManagementFragment;
+import com.example.onlinecoursesapp.fragments.admin.LessonManagementFragment;
 import com.example.onlinecoursesapp.fragments.admin.OverviewFragment;
 import com.example.onlinecoursesapp.fragments.admin.SettingsFragment;
 import com.example.onlinecoursesapp.fragments.admin.UsersManagementFragment;
-import com.example.onlinecoursesapp.fragments.CategoryFragment;
+import com.example.onlinecoursesapp.fragments.admin.CategoryFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 @SuppressWarnings("deprecation")

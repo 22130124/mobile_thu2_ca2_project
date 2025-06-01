@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- Tiêu đề bài học -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Tiêu đề"
+            android:textStyle="bold" />
+        <EditText
+            android:id="@+id/etTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Nhập tiêu đề bài học"
+            android:inputType="text" />
+
+        <!-- Nội dung bài học -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:text="Nội dung"
+            android:textStyle="bold" />
+        <EditText
+            android:id="@+id/etContent"
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:hint="Nhập nội dung bài học"
+            android:inputType="textMultiLine"
+            android:gravity="top"
+            android:minLines="5" />
+
+        <!-- Spinner chọn khóa học -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Chọn khóa học"
+            android:textStyle="bold" />
+        <Spinner
+            android:id="@+id/spinnerCourses"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp" />
+
+
+        <!-- Link video YouTube -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:text="Link YouTube"
+            android:textStyle="bold" />
+        <EditText
+            android:id="@+id/etYoutubeUrl"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="https://youtube.com/..."
+            android:inputType="textUri" />
+
+        <!-- Thời lượng -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:text="Thời lượng (phút)"
+            android:textStyle="bold" />
+        <EditText
+            android:id="@+id/etDuration"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Nhập số phút"
+            android:inputType="numberDecimal" />
+
+        <!-- Button Lưu -->
+        <Button
+            android:id="@+id/btnSaveLesson"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Lưu bài học"
+            android:layout_marginTop="24dp"
+            android:backgroundTint="@color/primary" />
+    </LinearLayout>
+</ScrollView>

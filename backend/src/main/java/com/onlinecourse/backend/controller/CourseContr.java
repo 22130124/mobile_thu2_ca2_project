@@ -1,17 +1,23 @@
 package com.onlinecourse.backend.controller;
 
+
 import com.onlinecourse.backend.dto.CourseOverview;
-import com.onlinecourse.backend.dto.LessonOverview;
 import com.onlinecourse.backend.model.Course;
 import com.onlinecourse.backend.repository.CourseRepository;
 import com.onlinecourse.backend.service.CourseService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.beans.factory.annotation.Value;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/courses")
@@ -20,6 +26,8 @@ public class CourseContr {
     private final CourseRepository courseRepository;
     private final CourseService courseService;
 
+    @Value("${file.upload-base-dir}")
+    private String uploadDir;
     public CourseContr(CourseRepository courseRepository, CourseService courseService) {
         this.courseRepository = courseRepository;
         this.courseService = courseService;
@@ -85,5 +93,31 @@ public class CourseContr {
         Optional<Course> course = courseRepository.findById(id);
         return course.map(ResponseEntity::ok)
                 .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+    }
+    // Upload ảnh khóa học
+    @PostMapping("/upload-image")
+    public ResponseEntity<?> uploadCourseImage(@RequestParam("file") MultipartFile file) {
+        try {
+            // Tạo thư mục nếu chưa tồn tại
+            File directory = new File(uploadDir);
+            if (!directory.exists()) {
+                directory.mkdirs();
+            }
+
+            // Tạo tên file ngẫu nhiên
+            String originalFilename = file.getOriginalFilename();
+            String extension = originalFilename.substring(originalFilename.lastIndexOf("."));
+            String newFilename = UUID.randomUUID().toString() + extension;
+
+            // Lưu file
+            Path filePath = Paths.get(uploadDir, newFilename);
+            Files.copy(file.getInputStream(), filePath);
+
+            // Trả về đường dẫn file
+            String fileUrl = "/uploads/" + newFilename;
+            return ResponseEntity.ok(fileUrl);
+        } catch (IOException e) {
+            return ResponseEntity.badRequest().body("Failed to upload image: " + e.getMessage());
+        }
     }
 }

@@ -7,6 +7,8 @@ import com.example.onlinecoursesapp.models.CourseOverview;
 
 import java.util.List;
 
+import okhttp3.MultipartBody;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.*;
 
@@ -70,5 +72,9 @@ public interface CourseApiService {
          */
         @GET("/courses/management/{id}")
         Call<Course> getManagementCourseById(@Path("id") int courseId);
+
+        @Multipart
+        @POST("courses/upload-image")
+        Call<ResponseBody> uploadCourseImage(@Part MultipartBody.Part file);
 
 }

@@ -23,10 +23,11 @@ public class LessonOverviewAdapter extends RecyclerView.Adapter<LessonOverviewAd
 
     private List<LessonOverview> lessonList;
     private boolean isEnrolled;
-
-    public LessonOverviewAdapter(List<LessonOverview> lessonList, boolean isEnrolled) {
+    private int courseId;
+    public LessonOverviewAdapter(List<LessonOverview> lessonList, boolean isEnrolled, int courseId) {
         this.lessonList = lessonList;
         this.isEnrolled = isEnrolled;
+        this.courseId = courseId;
     }
 
     @NonNull
@@ -52,6 +53,7 @@ public class LessonOverviewAdapter extends RecyclerView.Adapter<LessonOverviewAd
             Intent intent = new Intent(v.getContext(), VideoActivity.class);
             intent.putExtra("videoId", videoId);
             intent.putExtra("lessonId", lesson.getId());
+            intent.putExtra("courseId", courseId);
             v.getContext().startActivity(intent);
         });
     }
