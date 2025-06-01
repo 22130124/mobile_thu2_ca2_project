@@ -1,19 +1,24 @@
 package com.example.onlinecoursesapp.fragments.admin;
 
 import android.app.AlertDialog;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.onlinecoursesapp.R;
 import com.example.onlinecoursesapp.adapter.CourseManagementAdapter;
 import com.example.onlinecoursesapp.api.ApiClient;
@@ -21,8 +26,16 @@ import com.example.onlinecoursesapp.api.CourseApiService;
 import com.example.onlinecoursesapp.models.Course;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -34,7 +47,9 @@ public class CoursesManagementFragment extends Fragment implements CourseManagem
     private FloatingActionButton fabAddCourse;
     private CourseApiService courseApiService;
     private static final String ARG_CATEGORY_ID = "category_id";
-    private int categoryId;
+    private ActivityResultLauncher<String> pickImageLauncher;
+    private Uri selectedImageUri;
+    private final String baseUrl = "http://10.0.2.2:8080";
 
     public static CoursesManagementFragment newInstance(int categoryId) {
         CoursesManagementFragment fragment = new CoursesManagementFragment();
@@ -57,7 +72,21 @@ public class CoursesManagementFragment extends Fragment implements CourseManagem
 
         fabAddCourse = view.findViewById(R.id.fabAddCourse);
         fabAddCourse.setOnClickListener(v -> showAddCourseDialog());
-
+        pickImageLauncher = registerForActivityResult(
+                new ActivityResultContracts.GetContent(),
+                uri -> {
+                    if (uri != null) {
+                        selectedImageUri = uri;
+                        // Update the image preview
+                        ImageView imagePreview = requireView().findViewById(R.id.iv_course_image);
+                        Glide.with(this)
+                                .load(uri)
+                                .placeholder(R.drawable.placeholder_image)
+                                .error(R.drawable.placeholder_image)
+                                .into(imagePreview);
+                    }
+                }
+        );
         loadCoursesFromApi();
 
         return view;
@@ -88,7 +117,8 @@ public class CoursesManagementFragment extends Fragment implements CourseManagem
         EditText editTextDescription = dialogView.findViewById(R.id.editTextDescription);
         EditText editTextNumberOfLessons = dialogView.findViewById(R.id.editTextNumberOfLessons);
         Spinner spinnerDifficulty = dialogView.findViewById(R.id.spinnerDifficulty);
-        EditText editTextImagePath = dialogView.findViewById(R.id.editTextImagePath);
+        ImageView imagePreview = dialogView.findViewById(R.id.iv_course_image);
+        View btnUploadImage = dialogView.findViewById(R.id.btn_upload_image);
 
         ArrayAdapter<Course.Difficulty> difficultyAdapter = new ArrayAdapter<>(
                 requireContext(),
@@ -97,7 +127,7 @@ public class CoursesManagementFragment extends Fragment implements CourseManagem
         );
         difficultyAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerDifficulty.setAdapter(difficultyAdapter);
-
+        btnUploadImage.setOnClickListener(v -> pickImageLauncher.launch("image/*"));
         new AlertDialog.Builder(requireContext())
                 .setTitle("Thêm khóa học mới")
                 .setView(dialogView)
@@ -105,10 +135,8 @@ public class CoursesManagementFragment extends Fragment implements CourseManagem
                     String title = editTextTitle.getText().toString().trim();
                     String description = editTextDescription.getText().toString().trim();
                     String numberOfLessonsStr = editTextNumberOfLessons.getText().toString().trim();
-                    String imagePath = editTextImagePath.getText().toString().trim();
-
-                    if (title.isEmpty() || description.isEmpty() || numberOfLessonsStr.isEmpty() || imagePath.isEmpty()) {
-                        Toast.makeText(getContext(), "Vui lòng nhập đầy đủ thông tin", Toast.LENGTH_SHORT).show();
+                    if (title.isEmpty() || description.isEmpty() || numberOfLessonsStr.isEmpty() || selectedImageUri == null) {
+                        Toast.makeText(getContext(), "Vui lòng nhập đầy đủ thông tin và chọn ảnh", Toast.LENGTH_SHORT).show();
                         return;
                     }
 
@@ -120,9 +148,7 @@ public class CoursesManagementFragment extends Fragment implements CourseManagem
                         newCourse.setDescription(description);
                         newCourse.setNumberOfLessons(numberOfLessons);
                         newCourse.setDifficulty((Course.Difficulty) spinnerDifficulty.getSelectedItem());
-                        newCourse.setImagePath(imagePath);
-
-                        addCourse(newCourse);
+                        uploadImageAndAddCourse(newCourse);
                     } catch (NumberFormatException e) {
                         Toast.makeText(getContext(), "Số bài học không hợp lệ", Toast.LENGTH_SHORT).show();
                     }
@@ -130,7 +156,60 @@ public class CoursesManagementFragment extends Fragment implements CourseManagem
                 .setNegativeButton("Hủy", null)
                 .show();
     }
+    private void uploadImageAndAddCourse(Course newCourse) {
+        try {
+            File imageFile = getFileFromUri(selectedImageUri);
+            RequestBody requestFile = RequestBody.create(MediaType.parse(requireContext().getContentResolver().getType(selectedImageUri)), imageFile);
+            MultipartBody.Part body = MultipartBody.Part.createFormData("file", imageFile.getName(), requestFile);
 
+            courseApiService.uploadCourseImage(body).enqueue(new Callback<ResponseBody>() {
+                @Override
+                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                    if (response.isSuccessful() && response.body() != null) {
+                        try {
+                            String imageUrl = response.body().string();
+                            newCourse.setImagePath(imageUrl);
+                            addCourse(newCourse);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                            Toast.makeText(getContext(), "Lỗi xử lý phản hồi từ server", Toast.LENGTH_SHORT).show();
+                        }
+                    } else {
+                        Toast.makeText(getContext(), "Lỗi tải ảnh lên", Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<ResponseBody> call, Throwable t) {
+                    Toast.makeText(getContext(), "Lỗi kết nối: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            });
+        } catch (IOException e) {
+            e.printStackTrace();
+            Toast.makeText(getContext(), "Lỗi xử lý file ảnh", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private File getFileFromUri(Uri uri) throws IOException {
+        InputStream inputStream = requireContext().getContentResolver().openInputStream(uri);
+        if (inputStream == null) {
+            throw new IOException("Unable to get InputStream from URI");
+        }
+        String fileName = "upload_" + System.currentTimeMillis();
+        File tempFile = File.createTempFile(fileName, null, requireContext().getCacheDir());
+        tempFile.deleteOnExit();
+
+        FileOutputStream outputStream = new FileOutputStream(tempFile);
+        byte[] buffer = new byte[1024];
+        int bytesRead;
+        while ((bytesRead = inputStream.read(buffer)) != -1) {
+            outputStream.write(buffer, 0, bytesRead);
+        }
+        outputStream.close();
+        inputStream.close();
+
+        return tempFile;
+    }
     private void showEditCourseDialog(Course course) {
         View dialogView = getLayoutInflater().inflate(R.layout.edit_course_management, null);
         EditText editTextTitle = dialogView.findViewById(R.id.editTextTitle);
@@ -246,6 +325,14 @@ public class CoursesManagementFragment extends Fragment implements CourseManagem
 
     @Override
     public void onCourseClick(Course course) {
-        Toast.makeText(getContext(), "Chọn khóa học: " + course.getTitle(), Toast.LENGTH_SHORT).show();
+        Fragment lessonManagementFragment = new LessonManagementFragment();
+        Bundle args = new Bundle();
+        args.putInt("course_id", course.getId());
+        lessonManagementFragment.setArguments(args);
+
+        requireActivity().getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragment_container, lessonManagementFragment)
+                .addToBackStack(null)
+                .commit();
     }
 }

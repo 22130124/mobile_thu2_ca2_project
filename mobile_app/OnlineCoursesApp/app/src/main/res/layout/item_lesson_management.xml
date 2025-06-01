@@ -1,0 +1,102 @@
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    android:elevation="4dp"
+    android:padding="16dp"
+    android:backgroundTint="#F9F9F9"
+    android:radius="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- Tiêu đề bài học -->
+        <TextView
+            android:id="@+id/tvLessonTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Java 01. Vì sao học lập trình Java"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="#1E88E5"
+            android:ellipsize="end"
+            android:maxLines="1" />
+
+        <!-- Nội dung bài học -->
+        <TextView
+            android:id="@+id/tvContent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Nội dung tóm tắt bài học"
+            android:textSize="14sp"
+            android:textColor="#666666"
+            android:layout_marginTop="6dp"
+            android:ellipsize="end"
+            android:maxLines="2" />
+
+        <!-- Link Youtube -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="12dp"
+            android:gravity="center_vertical">
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_youtube_activity"
+                android:tint="#FF0000" />
+
+            <TextView
+                android:id="@+id/tvYoutubeUrl"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Xem video"
+                android:autoLink="web"
+                android:textColor="#1E88E5"
+                android:layout_marginStart="8dp"
+                android:textSize="14sp"
+                android:fontFamily="sans-serif-medium" />
+        </LinearLayout>
+
+        <!-- Thời lượng -->
+        <TextView
+            android:id="@+id/tvDuration"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Thời lượng: 18.27 phút"
+            android:textSize="13sp"
+            android:textColor="#757575"
+            android:layout_marginTop="8dp" />
+
+        <!-- Nút chức năng -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:gravity="end"
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:id="@+id/iconEdit"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_marginEnd="8dp"
+                android:src="@drawable/edit_course"
+                android:background="@android:color/transparent"
+                android:contentDescription="Edit" />
+
+            <ImageButton
+                android:id="@+id/iconDelete"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:src="@drawable/delete_courses"
+                android:background="@android:color/transparent"
+                android:contentDescription="Delete" />
+        </LinearLayout>
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>

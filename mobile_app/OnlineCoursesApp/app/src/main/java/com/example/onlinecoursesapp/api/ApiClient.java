@@ -62,4 +62,8 @@ public class ApiClient {
     public static CategoryApiService getCategoryApiService() {
         return getClient().create(CategoryApiService.class);
     }
+
+    public static LessonManagementApiService getLessonManagementApiService() {
+        return  getClient().create(LessonManagementApiService.class);
+    }
 }
