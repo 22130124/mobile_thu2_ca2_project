@@ -141,10 +141,10 @@ public class CourseOverViewActivity extends AppCompatActivity {
                     @Override
                     public void onResult(boolean enrolled) {
                         isEnrolled = enrolled;
-
+                        int courseId = getIntent().getIntExtra("courseId", -1);
                         btnRegister.setVisibility(enrolled ? View.GONE : View.VISIBLE);
 
-                        LessonOverviewAdapter adapter = new LessonOverviewAdapter(courseOverview.getLessons(), isEnrolled);
+                        LessonOverviewAdapter adapter = new LessonOverviewAdapter(courseOverview.getLessons(), isEnrolled, courseId);
                         lessonsRecyclerView.setLayoutManager(new LinearLayoutManager(CourseOverViewActivity.this));
                         lessonsRecyclerView.setAdapter(adapter);
                     }

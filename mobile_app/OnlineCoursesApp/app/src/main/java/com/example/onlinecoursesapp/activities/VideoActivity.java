@@ -26,8 +26,7 @@ public class VideoActivity extends AppCompatActivity {
     private WebView webView;
     private ProgressBar loadingIndicator;
     private Button btnComplete;
-    private int userId, lessonId;
-    private int courseId = 1; // giả sử
+    private int userId, lessonId, courseId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +39,7 @@ public class VideoActivity extends AppCompatActivity {
 
         String videoId = getIntent().getStringExtra("videoId");
         lessonId = getIntent().getIntExtra("lessonId", -1);
+        courseId = getIntent().getIntExtra("courseId", -1);
 
         SharedPreferences prefs = getSharedPreferences("UserSession", MODE_PRIVATE);
         userId = prefs.getInt("userId", -1);
