@@ -61,6 +61,7 @@ dependencies {
     implementation("com.squareup.retrofit2:converter-gson:2.11.0")
     implementation ("com.github.bumptech.glide:glide:4.16.0")
     annotationProcessor ("com.github.bumptech.glide:compiler:4.16.0")
+    implementation ("com.pierfrancescosoffritti.androidyoutubeplayer:core:11.1.0")
 
     implementation ("com.google.api-client:google-api-client-android:1.34.0")
     implementation ("com.google.apis:google-api-services-youtube:v3-rev222-1.25.0")
