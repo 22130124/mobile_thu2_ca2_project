@@ -39,6 +39,9 @@
             android:name=".activities.VerificationActivity"
             android:exported="true"/>
         <activity
+            android:name=".activities.dashboard.ChangePasswordActivity"
+            android:exported="true"/>
+        <activity
             android:name=".activities.LoginActivity"
             android:exported="true">
             <intent-filter>

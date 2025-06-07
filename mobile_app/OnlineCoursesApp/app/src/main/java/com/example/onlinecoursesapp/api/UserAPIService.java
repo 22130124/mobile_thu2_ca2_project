@@ -5,6 +5,7 @@ import com.example.onlinecoursesapp.models.GenericResponse;
 import com.example.onlinecoursesapp.models.LoginRequest;
 import com.example.onlinecoursesapp.models.LoginResponse;
 import com.example.onlinecoursesapp.models.RegisterResponse;
+import com.example.onlinecoursesapp.models.ResetPasswordRequest;
 import com.example.onlinecoursesapp.models.UserProgress;
 import com.example.onlinecoursesapp.models.VerifyCodeRequest;
 
@@ -71,4 +72,6 @@ public interface UserAPIService {
     @GET("users/filter")
     Call<List<UserProgress>> filterUsersByStatus(@Query("is_active") boolean active);
 
+    @PUT("users/reset-password")
+    Call<GenericResponse> resetPassword(@Body ResetPasswordRequest request);
 }

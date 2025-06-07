@@ -14,11 +14,13 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.onlinecoursesapp.R;
+import com.example.onlinecoursesapp.activities.dashboard.ChangePasswordActivity;
 import com.example.onlinecoursesapp.api.ApiClient;
 import com.example.onlinecoursesapp.api.UserAPIService;
 import com.example.onlinecoursesapp.models.GenericResponse;
 import com.example.onlinecoursesapp.models.ResendCodeRequest;
 import com.example.onlinecoursesapp.models.VerifyCodeRequest;
+import com.google.gson.Gson;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -28,19 +30,21 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class VerificationActivity extends AppCompatActivity {
-
     private EditText codeEditText;
     private TextView errorTextView, resendCodeTextView;
     private Button verifyButton;
-
-    private String userEmail; // Email người dùng (cần truyền từ màn đăng ký hoặc đăng nhập)
-
+    private String userEmail;
     private UserAPIService apiService;
+    boolean isPasswordReset;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_verification);
+
+        isPasswordReset = getIntent().getBooleanExtra("isPasswordReset", false);
+        Log.d("DEBUG", "isPasswordReset = " + isPasswordReset);
+
 
         codeEditText = findViewById(R.id.codeEditText);
         errorTextView = findViewById(R.id.errorTextView);
@@ -79,13 +83,18 @@ public class VerificationActivity extends AppCompatActivity {
             public void onResponse(Call<GenericResponse> call, Response<GenericResponse> response) {
                 verifyButton.setEnabled(true);
                 if (response.isSuccessful() && response.body() != null) {
+                    Log.d("API_RESPONSE", new Gson().toJson(response.body()));
                     Toast.makeText(VerificationActivity.this, "Xác minh thành công!", Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(VerificationActivity.this, LoginActivity.class);
-                    startActivity(intent);
+                    if (isPasswordReset) {
+                        Intent intent = new Intent(VerificationActivity.this, ChangePasswordActivity.class);
+                        intent.putExtra("email", userEmail); // chuyển email sang
+                        intent.putExtra("isReset", true);
+                        startActivity(intent);
+                    } else {
+                        Intent intent = new Intent(VerificationActivity.this, LoginActivity.class);
+                        startActivity(intent);
+                    }
                     finish();
-                } else {
-                    errorTextView.setText("Mã xác minh không đúng hoặc đã hết hạn");
-                    errorTextView.setVisibility(View.VISIBLE);
                 }
             }
 
