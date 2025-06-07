@@ -1,9 +1,6 @@
 package com.onlinecourse.backend.controller;
 
-import com.onlinecourse.backend.dto.ChangePasswordRequest;
-import com.onlinecourse.backend.dto.LoginRequest;
-import com.onlinecourse.backend.dto.UserProgress;
-import com.onlinecourse.backend.dto.VerificationRequest;
+import com.onlinecourse.backend.dto.*;
 import com.onlinecourse.backend.model.User;
 import com.onlinecourse.backend.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +15,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -76,21 +74,22 @@ public class UserContr {
     }
 
     @PostMapping("/resend")
-    public ResponseEntity<?> resendVerificationCode(@RequestBody Map<String, String> payload) {
-        String email = payload.get("email");
+    public ResponseEntity<?> resendVerificationCode(@RequestBody Map<String, Object> payload) {
+        String email = (String) payload.get("email");
+        boolean isPasswordReset = Boolean.parseBoolean(payload.getOrDefault("isPasswordReset", "false").toString());
 
         User user = userService.getUserByEmail(email);
         if (user == null) {
             return ResponseEntity.badRequest().body(Collections.singletonMap("message", "Email không tồn tại"));
         }
 
-        if (user.isActive()) {
+        // Nếu là đặt lại mật khẩu thì không cần kiểm tra isActive
+        if (!isPasswordReset && user.isActive()) {
             return ResponseEntity.badRequest().body(Collections.singletonMap("message", "Tài khoản đã được xác minh"));
         }
 
-        // Gửi lại mã
         userService.generateAndSendVerificationCode(email);
-        return ResponseEntity.ok(Collections.singletonMap("message", "Mã xác minh đã được gửi lại"));
+        return ResponseEntity.ok(Collections.singletonMap("message", "Mã xác minh đã được gửi"));
     }
 
     @PutMapping("/{id}/change-password")
@@ -98,6 +97,17 @@ public class UserContr {
         try {
             userService.changePassword(id, request.getOldPassword(), request.getNewPassword());
             return ResponseEntity.ok(Collections.singletonMap("message", "Đổi mật khẩu thành công"));
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(Collections.singletonMap("message", e.getMessage()));
+        }
+    }
+
+    @PutMapping("/reset-password")
+    public ResponseEntity<?> resetPassword(@RequestBody ResetPasswordRequest request) {
+        try {
+            System.out.println("Đang thay đổi mật khẩu");
+            userService.resetPassword(request.getEmail(), request.getNewPassword());
+            return ResponseEntity.ok(Collections.singletonMap("message", "Đặt lại mật khẩu thành công"));
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(Collections.singletonMap("message", e.getMessage()));
         }

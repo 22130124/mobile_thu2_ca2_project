@@ -2,6 +2,7 @@ package com.example.onlinecoursesapp.data;
 
 import android.content.Context;
 import android.net.Uri;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -11,6 +12,7 @@ import com.example.onlinecoursesapp.models.GenericResponse;
 import com.example.onlinecoursesapp.models.LoginRequest;
 import com.example.onlinecoursesapp.models.LoginResponse;
 import com.example.onlinecoursesapp.models.RegisterResponse;
+import com.example.onlinecoursesapp.models.ResetPasswordRequest;
 import com.example.onlinecoursesapp.models.UserProgress;
 import com.example.onlinecoursesapp.api.ApiClient;
 import com.example.onlinecoursesapp.utils.ChangePasswordCallback;
@@ -136,6 +138,27 @@ public class UserRepository {
                         e.printStackTrace();
                         callback.onFailure("Lỗi xử lý phản hồi");
                     }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<GenericResponse> call, Throwable t) {
+                callback.onFailure("Lỗi kết nối: " + t.getMessage());
+            }
+        });
+    }
+
+    public void resetPassword(String email, String newPassword, ChangePasswordCallback callback) {
+        ResetPasswordRequest request = new ResetPasswordRequest(email, newPassword);
+        apiService.resetPassword(request).enqueue(new Callback<GenericResponse>() {
+            @Override
+            public void onResponse(Call<GenericResponse> call, Response<GenericResponse> response) {
+                if (response.isSuccessful()) {
+                    callback.onSuccess("Đặt lại mật khẩu thành công");
+                    Log.d("RESETPASSWORD", "resetPassword called with email = " + email + ", newPassword = " + newPassword);
+                } else {
+                    callback.onFailure("Thất bại: " + response.message());
+                    Log.e("RESETPASSWORD_FAIL", "Code: " + response.code() + ", ErrorBody: " + response.errorBody());
                 }
             }
 

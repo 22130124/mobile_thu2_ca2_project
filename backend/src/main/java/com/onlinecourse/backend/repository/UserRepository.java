@@ -2,12 +2,14 @@ package com.onlinecourse.backend.repository;
 
 import com.onlinecourse.backend.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 public interface UserRepository extends JpaRepository<User, Integer> {
-    User findByEmail(String email);
+    User findByEmail(@Param("email") String email);
     // Find users by role
     List<User> findByRole(String role);
 

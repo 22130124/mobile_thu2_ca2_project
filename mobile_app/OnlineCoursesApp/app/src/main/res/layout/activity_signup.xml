@@ -25,7 +25,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="10dp"
-            android:text="SIGN UP"
+            android:text="ĐĂNG KÝ"
             android:textAlignment="center"
             android:textSize="24sp"
             android:textStyle="bold" />
@@ -39,7 +39,7 @@
             android:layout_marginBottom="10dp"
             android:background="@drawable/rounded_stroke_border"
             android:ems="10"
-            android:hint="Name"
+            android:hint="Họ tên"
             android:inputType="text"
             android:minWidth="48dp"
             android:minHeight="48dp" />
@@ -67,7 +67,7 @@
             android:layout_marginBottom="10dp"
             android:background="@drawable/rounded_stroke_border"
             android:ems="10"
-            android:hint="Password"
+            android:hint="Mật khẩu"
             android:inputType="textPassword"
             android:minWidth="48dp"
             android:minHeight="48dp" />
@@ -90,7 +90,7 @@
             android:layout_gravity="center"
             android:layout_marginTop="10dp"
             android:backgroundTint="#E3562A"
-            android:text="Sign up" />
+            android:text="Đăng ký" />
 
         <Button
             android:id="@+id/loginButton"
@@ -98,6 +98,6 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginBottom="10dp"
-            android:text="Login" />
+            android:text="Quay về trang đăng nhập" />
     </LinearLayout>
 </FrameLayout>

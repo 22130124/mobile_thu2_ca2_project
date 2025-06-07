@@ -110,6 +110,18 @@ public class UserService {
         userRepository.save(user);
     }
 
+    public void resetPassword(String email, String newPassword) {
+        User user = userRepository.findByEmail(email);
+        if (user == null) {
+            throw new RuntimeException("Email không tồn tại");
+        }
+
+        String encodedPassword = passwordEncoder.encode(newPassword);
+        user.setPassword(encodedPassword);
+        user.setUpdatedAt(LocalDateTime.now());
+        userRepository.save(user);
+    }
+
     private UserProgress convertToDTO(User user) {
         return new UserProgress(
                 user.getId(),
@@ -146,13 +158,15 @@ public class UserService {
     }
 
     public User getUserByEmail(String email) {
-        return userRepository.findByEmail(email);
+        String cleanEmail = email.trim().toLowerCase();
+        return userRepository.findByEmail(cleanEmail);
     }
 
     public void generateAndSendVerificationCode(String email) {
+        String cleanEmail = email.trim().toLowerCase();
         String code = String.format("%06d", new Random().nextInt(999999));
-        verificationCodes.put(email, code);
-        emailService.sendVerificationCode(email, code);
+        verificationCodes.put(cleanEmail, code);
+        emailService.sendVerificationCode(cleanEmail, code);
     }
 
     //upload va update hinh va thong tin user
