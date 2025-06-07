@@ -1,6 +1,7 @@
 package com.example.onlinecoursesapp.api;
 
 import com.example.onlinecoursesapp.models.Course;
+import com.example.onlinecoursesapp.models.UserProgress;
 import com.example.onlinecoursesapp.models.course_progress.CourseProgress;
 import com.example.onlinecoursesapp.models.course_progress.StatisticsResponse;
 import com.example.onlinecoursesapp.models.CourseOverview;
@@ -53,7 +54,7 @@ public interface CourseApiService {
          * Cập nhật khóa học - Hương
          */
         @PUT("/courses/{id}")
-        Call<Course> updateCourse (@Path("id") int courseId, @Body Course course);
+        Call<Course> updateCourse(@Path("id") int id, @Body Course course);
 
 
 //         Xóa khóa học - Hương
@@ -63,6 +64,7 @@ public interface CourseApiService {
         //         Them khóa học - Hương
         @POST("/courses")
         Call<Course> addCourse(@Body Course course);
+
 
         //         Lấy khóa học theo category - Hương
         @GET ("/courses/category/{id}")
@@ -74,7 +76,11 @@ public interface CourseApiService {
         Call<Course> getManagementCourseById(@Path("id") int courseId);
 
         @Multipart
-        @POST("courses/upload-image")
-        Call<ResponseBody> uploadCourseImage(@Part MultipartBody.Part file);
+        @POST("/courses/upload-image/{id}")
+        Call<ResponseBody> uploadCourseImage(
+                @Path("id") int courseId,
+                @Part MultipartBody.Part body
+        );
+
 
 }

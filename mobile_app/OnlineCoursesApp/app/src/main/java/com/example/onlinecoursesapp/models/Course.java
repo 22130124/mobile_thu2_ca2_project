@@ -84,6 +84,7 @@ public class Course {
         this.createdAt = createdAt;
     }
 
+
     public enum Difficulty {
         EASY, MEDIUM, HARD
     }

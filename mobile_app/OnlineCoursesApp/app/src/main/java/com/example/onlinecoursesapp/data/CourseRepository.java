@@ -36,7 +36,6 @@ public class CourseRepository {
         }
         return instance;
     }
-
     private int getUserIdFromPrefs() {
         SharedPreferences prefs = context.getSharedPreferences("UserPrefs", Context.MODE_PRIVATE);
         return prefs.getInt("userId", -1);
