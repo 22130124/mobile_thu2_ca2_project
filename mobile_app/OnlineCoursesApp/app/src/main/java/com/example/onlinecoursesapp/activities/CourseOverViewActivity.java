@@ -38,18 +38,6 @@ public class CourseOverViewActivity extends AppCompatActivity {
 
         courseRepository = CourseRepository.getInstance(this);
 
-        SharedPreferences prefs = getSharedPreferences("UserPrefs", MODE_PRIVATE);
-        String username = prefs.getString("userName", "Khách");
-        int userId = prefs.getInt("userId", -1);
-
-        int courseId = getIntent().getIntExtra("courseId", -1);
-        if (courseId != -1) {
-            getCourseById(courseId);
-        } else {
-            Toast.makeText(this, "Không tìm thấy khóa học", Toast.LENGTH_SHORT).show();
-            finish();
-        }
-
         TextView tvWelcome = findViewById(R.id.tvWelcome);
         title = findViewById(R.id.title);
         description = findViewById(R.id.description);
@@ -59,12 +47,23 @@ public class CourseOverViewActivity extends AppCompatActivity {
         lessonsRecyclerView = findViewById(R.id.lessons);
         btnRegister = findViewById(R.id.btnRegister);
 
+        SharedPreferences prefs = getSharedPreferences("UserPrefs", MODE_PRIVATE);
+        String username = prefs.getString("userName", "Khách");
+        int userId = prefs.getInt("userId", -1);
         tvWelcome.setText("Xin chào, " + username);
 
-        getCourseById(courseId);
+        int courseId = getIntent().getIntExtra("courseId", -1);
+        if (courseId != -1) {
+            getCourseById(courseId);
+        } else {
+            Toast.makeText(this, "Không tìm thấy khóa học", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
 
         btnRegister.setOnClickListener(v -> handleEnrollment(userId, courseId));
     }
+
 
 
     // Xử lý nút Đăng ký học
@@ -75,6 +74,8 @@ public class CourseOverViewActivity extends AppCompatActivity {
         }
 
         EnrollmentRepository enrollmentRepo = EnrollmentRepository.getInstance(this);
+
+        // Đăng ký khóa học cho người dùng
         enrollmentRepo.enrollUser(userId, courseId, new EnrollmentCallback() {
             @Override
             public void onSuccess() {
@@ -124,9 +125,10 @@ public class CourseOverViewActivity extends AppCompatActivity {
                         .into(imagePath);
 
                 EnrollmentRepository enrollmentRepo = EnrollmentRepository.getInstance(CourseOverViewActivity.this);
-                SharedPreferences prefs = getSharedPreferences("UserSession", MODE_PRIVATE);
+                SharedPreferences prefs = getSharedPreferences("UserPrefs", MODE_PRIVATE);
                 int userId = prefs.getInt("userId", -1);
 
+                // Kiểm tra đăng ký khóa học chưa
                 enrollmentRepo.checkEnrollment(userId, courseId, new EnrollmentCallback() {
                     @Override
                     public void onSuccess() {

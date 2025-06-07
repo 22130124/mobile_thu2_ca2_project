@@ -46,7 +46,7 @@ public class CourseService {
 
     private String formatDurationFromMinutes(double totalMinutes) {
         int hours = (int) (totalMinutes / 60);
-        int minutes = (int) (Math.round(totalMinutes) % 60); // Làm tròn để tránh sai số như 59.999
+        int minutes = (int) (Math.round(totalMinutes) % 60);
 
         return String.format("%dh%02d", hours, minutes);
     }
