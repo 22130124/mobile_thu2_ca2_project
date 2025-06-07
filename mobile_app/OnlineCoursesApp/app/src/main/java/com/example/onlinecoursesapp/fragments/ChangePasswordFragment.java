@@ -52,6 +52,7 @@ public class ChangePasswordFragment extends Fragment {
             String oldPass = oldPassword.getText().toString().trim();
             String newPass = newPassword.getText().toString().trim();
             String confirmPass = confirmPassword.getText().toString().trim();
+            String role = prefs.getString("userRole", "user");
 
             if (oldPass.isEmpty() || newPass.isEmpty() || confirmPass.isEmpty()) {
                 Toast.makeText(getContext(), "Vui lòng nhập đủ thông tin", Toast.LENGTH_SHORT).show();
@@ -68,7 +69,17 @@ public class ChangePasswordFragment extends Fragment {
                 public void onSuccess(String message) {
                     requireActivity().runOnUiThread(() -> {
                         Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
-                        Fragment newFragment = new SettingsFragment();
+
+                        SharedPreferences prefs = requireContext().getSharedPreferences("UserPrefs", Context.MODE_PRIVATE);
+                        String role = prefs.getString("userRole", "user");
+
+                        Fragment newFragment;
+                        if ("admin".equalsIgnoreCase(role)) {
+                            newFragment = new com.example.onlinecoursesapp.fragments.admin.SettingsFragment();
+                        } else {
+                            newFragment = new com.example.onlinecoursesapp.fragments.home.SettingHomeFragment();
+                        }
+
                         FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
                         fragmentManager.beginTransaction()
                                 .replace(R.id.fragment_container, newFragment)

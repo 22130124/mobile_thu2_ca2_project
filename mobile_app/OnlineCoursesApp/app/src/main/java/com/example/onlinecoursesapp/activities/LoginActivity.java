@@ -126,7 +126,13 @@ public class LoginActivity extends AppCompatActivity {
 
                         Toast.makeText(LoginActivity.this, "Đăng nhập thành công!", Toast.LENGTH_SHORT).show();
 
-                        Intent intent = new Intent(LoginActivity.this, DashboardActivity.class);
+                        Intent intent;
+                        if ("ADMIN".equalsIgnoreCase(user.getRole())) {
+                            intent = new Intent(LoginActivity.this, DashboardActivity.class);
+                        } else {
+                            // Chuyển sang màn hình user thường
+                            intent = new Intent(LoginActivity.this, MainActivity.class);
+                        }
                         startActivity(intent);
                         finish();
                     }

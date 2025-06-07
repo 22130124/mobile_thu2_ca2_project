@@ -66,7 +66,7 @@ public class SignUpActivity extends AppCompatActivity {
                 }
 
                 // Tạo đối tượng UserProgress (hoặc một lớp DTO khác cho request đăng ký)
-                UserProgress newUser = new UserProgress(0, name, email, password, "user", true,"");
+                UserProgress newUser = new UserProgress(0, name, email, password, "USER", true,"");
 
                 newUser.setPassword(password);
 
