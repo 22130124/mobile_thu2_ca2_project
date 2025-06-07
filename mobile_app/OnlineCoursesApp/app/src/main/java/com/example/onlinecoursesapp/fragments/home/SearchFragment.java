@@ -12,6 +12,7 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -42,7 +43,6 @@ public class SearchFragment extends Fragment {
     private TextView tvPopularSearches;
     private TextView tvNoResults;
     private ProgressBar progressBar;
-
     private PopularSearchAdapter popularSearchAdapter;
     private SearchResultAdapter searchResultAdapter;
 
@@ -121,26 +121,35 @@ public class SearchFragment extends Fragment {
 
     private void setupSearchResults() {
         searchResultAdapter = new SearchResultAdapter(getContext());
-        searchResultAdapter.setOnItemClickListener(course -> {
-            // Handle course click - navigate to course detail
-            // TODO: Navigate to CourseDetailFragment or CourseDetailActivity
-            Log.d(TAG, "Course clicked: " + course.getTitle());
+        searchResultAdapter.setOnItemClickListener(new SearchResultAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(Course course) {
+                // Tạo fragment và truyền dữ liệu
+                CourseOverviewFragment fragment = new CourseOverviewFragment();
+                Bundle bundle = new Bundle();
+                bundle.putInt("courseId", course.getId());
+                fragment.setArguments(bundle);
 
-            // Example navigation:
-            // Intent intent = new Intent(getContext(), CourseDetailActivity.class);
-            // intent.putExtra("course_id", course.getId());
-            // startActivity(intent);
+                requireActivity()
+                        .getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.fragment_container, fragment) // ID của FrameLayout
+                        .addToBackStack(null)
+                        .commit();
+            }
         });
 
         rvSearchResults.setLayoutManager(new LinearLayoutManager(getContext()));
         rvSearchResults.setAdapter(searchResultAdapter);
     }
 
+
     private void setupSearchListener() {
         // Text change listener with debounce
         etSearch.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
@@ -160,7 +169,8 @@ public class SearchFragment extends Fragment {
             }
 
             @Override
-            public void afterTextChanged(Editable s) {}
+            public void afterTextChanged(Editable s) {
+            }
         });
 
         // Search action on keyboard
