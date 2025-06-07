@@ -1,4 +1,4 @@
-package com.example.onlinecoursesapp.fragments;
+package com.example.onlinecoursesapp.fragments.home;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
