@@ -27,6 +27,8 @@ public class Course {
     @Column(name = "category_id")
     private int categoryId;
 
+    //Cho phép null vì khi add course sẽ thực hiện add trước
+    // -> Nếu thành công mới setImg
     @Column(name = "image_path")
     private String imagePath;
 

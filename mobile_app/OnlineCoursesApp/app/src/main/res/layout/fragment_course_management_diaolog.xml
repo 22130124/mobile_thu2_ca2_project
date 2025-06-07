@@ -22,13 +22,6 @@
         android:minLines="3"
         android:layout_marginBottom="8dp"/>
 
-    <EditText
-        android:id="@+id/editTextNumberOfLessons"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Số bài học"
-        android:inputType="number"
-        android:layout_marginBottom="8dp"/>
 
     <Spinner
         android:id="@+id/spinnerDifficulty"
@@ -53,6 +46,14 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginBottom="16dp"
         android:text="Tải ảnh khóa học lên" />
+    <Button
+        android:id="@+id/btn_save"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="16dp"
+        android:backgroundTint="#FF5722"
+        android:text="Lưu" />
 
 
 </LinearLayout>
