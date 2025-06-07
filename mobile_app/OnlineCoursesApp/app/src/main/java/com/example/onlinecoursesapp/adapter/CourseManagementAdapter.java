@@ -1,7 +1,6 @@
 package com.example.onlinecoursesapp.adapter;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,7 +18,7 @@ import com.example.onlinecoursesapp.models.Course;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CourseManagementAdapter extends RecyclerView.Adapter<CourseManagementAdapter.ViewHolder> {
+public class CourseManagementAdapter extends RecyclerView.Adapter<CourseManagementAdapter.CourseViewHolder> {
 
     public interface OnCourseItemClickListener {
         void onEditClick(Course course);
@@ -27,88 +26,94 @@ public class CourseManagementAdapter extends RecyclerView.Adapter<CourseManageme
         void onCourseClick(Course course);
     }
 
-    private Context context;
     private List<Course> courseList;
-    private OnCourseItemClickListener listener;
+    private final OnCourseItemClickListener listener;
 
-    public CourseManagementAdapter(Context context, OnCourseItemClickListener listener) {
-        this.context = context;
-        this.listener = listener;
-        this.courseList = new ArrayList<>();
-    }
-
-    public void setCourseList(List<Course> courseList) {
+    public CourseManagementAdapter(List<Course> courseList, OnCourseItemClickListener listener) {
         this.courseList = (courseList != null) ? courseList : new ArrayList<>();
-        notifyDataSetChanged();
+        this.listener = listener;
+    }
+
+    @NonNull
+    @Override
+    public CourseViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.item_course_management, parent, false);
+        return new CourseViewHolder(view);
     }
 
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.item_course_management, parent, false);
-        return new ViewHolder(view);
-    }
-    @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull CourseViewHolder holder, int position) {
         Course course = courseList.get(position);
-        holder.textTitle.setText(course.getTitle());
-        holder.textDesc.setText(course.getDescription());
-        holder.textNumLessons.setText("Số bài học: "+ String.valueOf(course.getNumberOfLessons()));
-        holder.textLevel.setText("Độ khó: " + course.getDifficulty());
-
-        String imageUrl = ApiClient.getBaseUrl() + course.getImagePath();
-        Glide.with(context).load(imageUrl).into(holder.imageCourse);
-
-        holder.iconEdit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (listener != null) {
-                    listener.onEditClick(course);
-                }
-            }
-        });
-
-        holder.iconDelete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (listener != null) {
-                    listener.onDeleteClick(course);
-                }
-            }
-        });
-
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (listener != null) {
-                    listener.onCourseClick(course);
-                }
-            }
-        });
+        holder.bind(course);
     }
 
     @Override
     public int getItemCount() {
-        return (courseList != null) ? courseList.size() : 0;
+        return courseList.size();
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
-        ImageView imageCourse, iconEdit, iconDelete;
-        TextView textNumLessons, textTitle, textDesc, textLevel;
+    public void updateCourses(List<Course> newCourses) {
+        this.courseList = (newCourses != null) ? newCourses : new ArrayList<>();
+        notifyDataSetChanged();
+    }
 
-        public ViewHolder(View itemView) {
-            super(itemView);
-            imageCourse = itemView.findViewById(R.id.imageCourse);
-            textNumLessons = itemView.findViewById(R.id.textNumLessons);
-            textTitle = itemView.findViewById(R.id.textTitle);
-            textDesc = itemView.findViewById(R.id.textDesc);
-            iconEdit = itemView.findViewById(R.id.iconEdit);
-            iconDelete = itemView.findViewById(R.id.iconDelete);
-            textLevel = itemView.findViewById(R.id.textLevel);
-
+    public void updateCourses(Course updatedCourse) {
+        for (int i = 0; i < courseList.size(); i++) {
+            if (courseList.get(i).getId() == updatedCourse.getId()) {
+                courseList.set(i, updatedCourse);
+                notifyItemChanged(i);
+                break;
+            }
         }
     }
 
+    class CourseViewHolder extends RecyclerView.ViewHolder {
 
+        private final ImageView imageCourse, iconEdit, iconDelete;
+        private final TextView textTitle, textDesc, textNumLessons, textLevel;
 
+        public CourseViewHolder(@NonNull View itemView) {
+            super(itemView);
+            imageCourse = itemView.findViewById(R.id.imageCourse);
+            iconEdit = itemView.findViewById(R.id.iconEdit);
+            iconDelete = itemView.findViewById(R.id.iconDelete);
+            textTitle = itemView.findViewById(R.id.textTitle);
+            textDesc = itemView.findViewById(R.id.textDesc);
+            textNumLessons = itemView.findViewById(R.id.textNumLessons);
+            textLevel = itemView.findViewById(R.id.textLevel);
+        }
 
+        public void bind(Course course) {
+            textTitle.setText(course.getTitle());
+            textDesc.setText(course.getDescription());
+            textNumLessons.setText("Số bài học: " + course.getNumberOfLessons());
+            textLevel.setText("Độ khó: " + course.getDifficulty());
+
+            String imageUrl = ApiClient.getBaseUrl() + course.getImagePath();
+            Glide.with(itemView.getContext())
+                    .load(imageUrl)
+                    .placeholder(R.drawable.placeholder_image) // thay bằng ảnh placeholder của bạn
+                    .error(R.drawable.placeholder_image)
+                    .into(imageCourse);
+
+            iconEdit.setOnClickListener(v -> {
+                if (listener != null) {
+                    listener.onEditClick(course);
+                }
+            });
+
+            iconDelete.setOnClickListener(v -> {
+                if (listener != null) {
+                    listener.onDeleteClick(course);
+                }
+            });
+
+            itemView.setOnClickListener(v -> {
+                if (listener != null) {
+                    listener.onCourseClick(course);
+                }
+            });
+        }
+    }
 }

@@ -3,6 +3,7 @@ package com.onlinecourse.backend.controller;
 
 import com.onlinecourse.backend.dto.CourseOverview;
 import com.onlinecourse.backend.model.Course;
+import com.onlinecourse.backend.model.User;
 import com.onlinecourse.backend.repository.CourseRepository;
 import com.onlinecourse.backend.service.CourseService;
 import org.springframework.http.HttpStatus;
@@ -15,7 +16,10 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -55,6 +59,7 @@ public class CourseContr {
     //Chỉnh sửa khóa học - Huong
     @PutMapping("/{id}")
     public ResponseEntity<Course> updateCourse(@PathVariable int id, @RequestBody Course course) {
+        System.out.println(course.toString());
         return courseRepository.findById(id)
                 .map(existingCourse -> {
                    existingCourse.setCourse(course);
@@ -95,29 +100,45 @@ public class CourseContr {
                 .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
     // Upload ảnh khóa học
-    @PostMapping("/upload-image")
-    public ResponseEntity<?> uploadCourseImage(@RequestParam("file") MultipartFile file) {
+    @PostMapping("/upload-image/{id}")
+    public ResponseEntity<?> uploadCourseImage(@PathVariable int id, @RequestParam("file") MultipartFile file) {
         try {
-            // Tạo thư mục nếu chưa tồn tại
-            File directory = new File(uploadDir);
-            if (!directory.exists()) {
-                directory.mkdirs();
+            Optional<Course> courseOpt = courseRepository.findById(id);
+            if (courseOpt.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Course not found");
             }
 
-            // Tạo tên file ngẫu nhiên
-            String originalFilename = file.getOriginalFilename();
-            String extension = originalFilename.substring(originalFilename.lastIndexOf("."));
-            String newFilename = UUID.randomUUID().toString() + extension;
+            Course course = courseOpt.get();
+            String courseImgDir = uploadDir + "/course_img";
+            Path uploadPath = Paths.get(courseImgDir);
 
-            // Lưu file
-            Path filePath = Paths.get(uploadDir, newFilename);
-            Files.copy(file.getInputStream(), filePath);
+            // Tạo thư mục nếu chưa tồn tại
+            if (!Files.exists(uploadPath)) {
+                Files.createDirectories(uploadPath);
+            }
 
-            // Trả về đường dẫn file
-            String fileUrl = "/uploads/" + newFilename;
-            return ResponseEntity.ok(fileUrl);
+            // Xoá ảnh cũ nếu có
+            if (course.getImagePath() != null && !course.getImagePath().isEmpty()) {
+                Path oldFilePath = Paths.get(uploadDir, course.getImagePath());
+                Files.deleteIfExists(oldFilePath);
+            }
+
+            // Lưu ảnh mới
+            String fileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
+            Path filePath = uploadPath.resolve(fileName);
+            Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+
+            // Cập nhật đường dẫn ảnh
+            String fileUrl = "/course_img/" + fileName;
+            System.out.println(fileUrl);
+            course.setImagePath(fileUrl);
+            courseRepository.save(course);
+            return ResponseEntity.ok().body(Map.of("imagePath", fileUrl));
         } catch (IOException e) {
-            return ResponseEntity.badRequest().body("Failed to upload image: " + e.getMessage());
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to upload image");
         }
     }
+
+
 }

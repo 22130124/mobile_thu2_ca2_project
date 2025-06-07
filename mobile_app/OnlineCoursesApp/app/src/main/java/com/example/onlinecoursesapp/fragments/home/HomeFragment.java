@@ -101,12 +101,8 @@ public class HomeFragment extends Fragment {
                 // Handle tutorial item click
                 Toast.makeText(getContext(), "Opening: " + course.getTitle(), Toast.LENGTH_SHORT).show();
 
-                // TODO: Navigate to CourseDetailActivity or CoursePlayerActivity
-                // Intent intent = new Intent(getContext(), CourseDetailActivity.class);
-                // intent.putExtra("course_id", course.getId());
-                // startActivity(intent);
                 Intent intent = new Intent(getContext(), CourseOverViewActivity.class);
-                intent.putExtra("courseId", course.getId()); // Gửi ID qua intent
+                intent.putExtra("courseId", course.getId());
                 startActivity(intent);
             }
         });
