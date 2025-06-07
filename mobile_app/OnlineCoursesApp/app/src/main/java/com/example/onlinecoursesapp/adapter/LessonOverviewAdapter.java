@@ -1,4 +1,4 @@
-// com.example.onlinecoursesapp.adapter.LessonAdapter
+
 package com.example.onlinecoursesapp.adapter;
 
 import android.content.Intent;
@@ -14,7 +14,7 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.onlinecoursesapp.R;
-import com.example.onlinecoursesapp.fragments.VideoFragment;
+import com.example.onlinecoursesapp.fragments.home.VideoFragment;
 import com.example.onlinecoursesapp.models.LessonOverview;
 
 import java.util.List;
