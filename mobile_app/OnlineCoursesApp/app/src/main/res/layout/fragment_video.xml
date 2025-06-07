@@ -30,16 +30,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Hoàn thành bài học"
+        android:textColor="#FFFFFF"
+        android:textStyle="bold"
         android:layout_margin="16dp"
-        android:backgroundTint="#2196F3"/>
+        android:backgroundTint="#FF5722"
+        app:cornerRadius="16dp" />
 
-    <!-- Bottom Navigation -->
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/bottomNav"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="?android:attr/windowBackground"
-        app:menu="@menu/bottom_navigation_menu"
-        app:itemIconTint="@color/bottom_nav_item_color"
-        app:itemTextColor="@color/bottom_nav_item_color"/>
 </LinearLayout>

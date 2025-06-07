@@ -43,6 +43,7 @@
                     android:textColor="#333333" />
 
                 <ImageView
+                    android:id="@+id/Search"
                     android:layout_width="32dp"
                     android:layout_height="32dp"
                     android:src="@drawable/ic_search"
@@ -50,6 +51,7 @@
                     android:background="?attr/selectableItemBackgroundBorderless" />
 
                 <ImageView
+                    android:id="@+id/imgAvatar"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:src="@drawable/profile_placeholder"
@@ -202,22 +204,9 @@
         android:textColor="#FFFFFF"
         android:backgroundTint="#2196F3"
         app:cornerRadius="16dp"
-        app:layout_constraintBottom_toTopOf="@id/bottomNav"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_margin="16dp" />
-
-    <!-- Bottom Navigation -->
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/bottomNav"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:background="?android:attr/windowBackground"
-        app:menu="@menu/bottom_navigation_menu"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:itemIconTint="@color/bottom_nav_item_color"
-        app:itemTextColor="@color/bottom_nav_item_color"/>
+        android:layout_margin="16dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

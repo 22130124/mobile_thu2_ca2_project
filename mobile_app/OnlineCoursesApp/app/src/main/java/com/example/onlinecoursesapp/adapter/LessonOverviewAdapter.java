@@ -10,10 +10,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.onlinecoursesapp.R;
-import com.example.onlinecoursesapp.activities.VideoActivity;
+import com.example.onlinecoursesapp.fragments.VideoFragment;
 import com.example.onlinecoursesapp.models.LessonOverview;
 
 import java.util.List;
@@ -50,12 +51,16 @@ public class LessonOverviewAdapter extends RecyclerView.Adapter<LessonOverviewAd
             }
 
             String videoId = extractVideoId(lesson.getYoutubeVideoUrl());
-            Intent intent = new Intent(v.getContext(), VideoActivity.class);
-            intent.putExtra("videoId", videoId);
-            intent.putExtra("lessonId", lesson.getId());
-            intent.putExtra("courseId", courseId);
-            v.getContext().startActivity(intent);
+            VideoFragment videoFragment = VideoFragment.newInstance(videoId, lesson.getId(), courseId);
+
+            FragmentActivity activity = (FragmentActivity) v.getContext();
+            activity.getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fragment_container, videoFragment) // Đảm bảo bạn có FrameLayout với id này
+                    .addToBackStack(null)
+                    .commit();
         });
+
     }
 
     @Override
