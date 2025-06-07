@@ -1,5 +1,6 @@
 package com.example.onlinecoursesapp.fragments.home;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.onlinecoursesapp.R;
+import com.example.onlinecoursesapp.activities.CourseOverViewActivity;
 import com.example.onlinecoursesapp.adapter.TutorialAdapter;
 import com.example.onlinecoursesapp.api.ApiClient;
 import com.example.onlinecoursesapp.api.CourseApiService;
@@ -98,10 +100,10 @@ public class HomeFragment extends Fragment {
             public void onItemClick(Course course) {
                 // Handle tutorial item click
                 Toast.makeText(getContext(), "Opening: " + course.getTitle(), Toast.LENGTH_SHORT).show();
-                // TODO: Navigate to CourseDetailActivity or CoursePlayerActivity
-                // Intent intent = new Intent(getContext(), CourseDetailActivity.class);
-                // intent.putExtra("course_id", course.getId());
-                // startActivity(intent);
+
+                Intent intent = new Intent(getContext(), CourseOverViewActivity.class);
+                intent.putExtra("courseId", course.getId());
+                startActivity(intent);
             }
         });
     }
