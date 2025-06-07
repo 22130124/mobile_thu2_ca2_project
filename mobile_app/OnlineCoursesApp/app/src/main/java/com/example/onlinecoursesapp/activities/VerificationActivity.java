@@ -95,6 +95,9 @@ public class VerificationActivity extends AppCompatActivity {
                         startActivity(intent);
                     }
                     finish();
+                } else {
+                    errorTextView.setText("Mã xác minh không chính xác hoặc đã hết hạn.");
+                    errorTextView.setVisibility(View.VISIBLE);
                 }
             }
 
@@ -112,6 +115,7 @@ public class VerificationActivity extends AppCompatActivity {
 
         Map<String, String> payload = new HashMap<>();
         payload.put("email", email);
+        payload.put("isPasswordReset", String.valueOf(isPasswordReset));
 
         apiService.resendVerificationCode(payload).enqueue(new Callback<GenericResponse>() {
             @Override
