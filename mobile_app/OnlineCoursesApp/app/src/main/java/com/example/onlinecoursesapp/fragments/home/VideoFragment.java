@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -30,7 +31,6 @@ public class VideoFragment extends Fragment {
     private Button btnComplete;
     private int userId, lessonId, courseId;
     private String videoId;
-
     public static VideoFragment newInstance(String videoId, int lessonId, int courseId) {
         VideoFragment fragment = new VideoFragment();
         Bundle args = new Bundle();
