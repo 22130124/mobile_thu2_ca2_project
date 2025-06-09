@@ -32,7 +32,6 @@ import java.util.List;
 public class CategoryFragment extends Fragment implements CategoryAdapter.OnCategoryActionListener {
 
     private ImageButton btnAddCategory;
-    private TextInputEditText edtSearchCategory;
     private RecyclerView rvCategories;
     private CategoryAdapter adapter;
 
@@ -49,7 +48,6 @@ public class CategoryFragment extends Fragment implements CategoryAdapter.OnCate
         View view = inflater.inflate(R.layout.fragment_category, container, false);
 
         btnAddCategory = view.findViewById(R.id.btnAddCategory);
-        edtSearchCategory = view.findViewById(R.id.edtSearchCategory);
         rvCategories = view.findViewById(R.id.rvCategories);
 
         categoryRepository = CategoryRepository.getInstance(requireContext());
@@ -62,22 +60,6 @@ public class CategoryFragment extends Fragment implements CategoryAdapter.OnCate
             showAddCategoryDialog();
         });
 
-        edtSearchCategory.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                // Không cần xử lý
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                filterCategoryList(s.toString());
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                // Không cần xử lý
-            }
-        });
 
         loadCategoriesFromApi();
 
@@ -214,9 +196,6 @@ public class CategoryFragment extends Fragment implements CategoryAdapter.OnCate
 
                 // Xóa khỏi danh sách local
                 categoryList.remove(category);
-
-                // Cập nhật lại danh sách hiển thị theo từ khóa tìm kiếm hiện tại
-                filterCategoryList(edtSearchCategory.getText() != null ? edtSearchCategory.getText().toString() : "");
 
                 getActivity().runOnUiThread(() ->
                         Toast.makeText(getContext(), "Xóa thành công", Toast.LENGTH_SHORT).show()

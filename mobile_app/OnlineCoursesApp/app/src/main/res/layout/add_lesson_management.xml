@@ -66,27 +66,5 @@
             android:hint="https://youtube.com/..."
             android:inputType="textUri" />
 
-        <!-- Thời lượng -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:text="Thời lượng (phút)"
-            android:textStyle="bold" />
-        <EditText
-            android:id="@+id/etDuration"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Nhập số phút"
-            android:inputType="numberDecimal" />
-
-        <!-- Button Lưu -->
-        <Button
-            android:id="@+id/btnSaveLesson"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Lưu bài học"
-            android:layout_marginTop="24dp"
-            android:backgroundTint="@color/primary" />
     </LinearLayout>
 </ScrollView>

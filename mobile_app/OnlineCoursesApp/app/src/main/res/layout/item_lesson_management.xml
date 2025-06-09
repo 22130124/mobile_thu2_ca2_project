@@ -1,102 +1,95 @@
 <com.google.android.material.card.MaterialCardView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
-    android:elevation="4dp"
-    android:padding="16dp"
-    android:backgroundTint="#F9F9F9"
-    android:radius="16dp">
+    app:cardCornerRadius="16dp"
+    app:cardElevation="6dp"
+    app:strokeWidth="1dp"
+    app:strokeColor="@color/gray"
+    android:backgroundTint="@android:color/white">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:padding="12dp">
 
         <!-- Tiêu đề bài học -->
         <TextView
-            android:id="@+id/tvLessonTitle"
+            android:id="@+id/titleTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Java 01. Vì sao học lập trình Java"
-            android:textSize="18sp"
+            android:textColor="@color/primary"
             android:textStyle="bold"
-            android:textColor="#1E88E5"
-            android:ellipsize="end"
-            android:maxLines="1" />
+            android:textSize="18sp" />
 
-        <!-- Nội dung bài học -->
-        <TextView
-            android:id="@+id/tvContent"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Nội dung tóm tắt bài học"
-            android:textSize="14sp"
-            android:textColor="#666666"
-            android:layout_marginTop="6dp"
-            android:ellipsize="end"
-            android:maxLines="2" />
-
-        <!-- Link Youtube -->
+        <!-- Link video YouTube -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginTop="12dp"
+            android:layout_marginTop="8dp"
             android:gravity="center_vertical">
 
             <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
                 android:src="@drawable/ic_youtube_activity"
-                android:tint="#FF0000" />
+                android:layout_marginEnd="4dp" />
 
             <TextView
-                android:id="@+id/tvYoutubeUrl"
-                android:layout_width="wrap_content"
+                android:id="@+id/youtubePlayerView"
+                android:layout_width="0dp"
+                android:layout_weight="1"
                 android:layout_height="wrap_content"
-                android:text="Xem video"
                 android:autoLink="web"
                 android:textColor="#1E88E5"
-                android:layout_marginStart="8dp"
                 android:textSize="14sp"
-                android:fontFamily="sans-serif-medium" />
+                android:maxLines="2"
+                android:ellipsize="end"
+                android:text="https://www.youtube.com/watch?v=1234567890abcdefghijk"
+                android:textIsSelectable="true"
+                android:longClickable="true"
+                />
         </LinearLayout>
 
         <!-- Thời lượng -->
         <TextView
             android:id="@+id/tvDuration"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Thời lượng: 18.27 phút"
-            android:textSize="13sp"
-            android:textColor="#757575"
-            android:layout_marginTop="8dp" />
+            android:textSize="14sp"
+            android:textColor="@color/gray"
+            android:layout_marginTop="6dp" />
 
-        <!-- Nút chức năng -->
+        <!-- Các nút chức năng -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
+            android:orientation="horizontal"
             android:gravity="end"
-            android:orientation="horizontal">
+            android:layout_marginTop="8dp">
 
             <ImageButton
                 android:id="@+id/iconEdit"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:layout_marginEnd="8dp"
-                android:src="@drawable/edit_course"
-                android:background="@android:color/transparent"
-                android:contentDescription="Edit" />
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_edit"
+                android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Chỉnh sửa" />
 
             <ImageButton
                 android:id="@+id/iconDelete"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:src="@drawable/delete_courses"
-                android:background="@android:color/transparent"
-                android:contentDescription="Delete" />
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Xóa"
+                android:layout_marginStart="8dp" />
         </LinearLayout>
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

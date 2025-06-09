@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -41,6 +42,7 @@ public class LessonManagementFragment extends Fragment {
     private List<Course> courseList;
     private int selectedCourseId;
     private static final String ARG_COURSE_ID = "course_id";
+    private ImageButton btnback;
 
     @Nullable
     @Override
@@ -55,6 +57,14 @@ public class LessonManagementFragment extends Fragment {
         recyclerView = view.findViewById(R.id.recyclerViewLessons);
         fabAddLesson = view.findViewById(R.id.fabAddLesson);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        btnback = view.findViewById(R.id.btnBack);
+        btnback.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                requireActivity().getSupportFragmentManager().popBackStack();
+            }
+        });
+
         lessonList = new ArrayList<>();
         adapter = new LessonManagementAdapter(getContext(), lessonList, new LessonManagementAdapter.OnLessonActionListener() {
             @Override
@@ -117,18 +127,25 @@ public class LessonManagementFragment extends Fragment {
     }
 
     private void loadLessonsFromApi() {
-        int courseId = requireArguments().getInt(ARG_COURSE_ID);
+        int courseId = requireArguments().getInt(ARG_COURSE_ID, -1);
+        if (courseId == -1) return;
+
         lessonRepository.getLessonsByCourseId(courseId, new LessonListCallback() {
             @Override
             public void onSuccess(List<Lesson> lessons) {
                 lessonList.clear();
-                lessonList.addAll(lessons);
+                if (lessons != null && !lessons.isEmpty()) {
+                    lessonList.addAll(lessons);
+                }
                 adapter.notifyDataSetChanged();
+
             }
+
 
             @Override
             public void onFailure(String errorMessage) {
-                Toast.makeText(getContext(), "Lỗi tải bài học: " + errorMessage, Toast.LENGTH_SHORT).show();
+                // Chỉ hiển thị lỗi nếu là lỗi kết nối/API, không phải do danh sách rỗng
+                Toast.makeText(getContext(), "Chưa có bài học nào trong khóa học này.", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -139,27 +156,37 @@ public class LessonManagementFragment extends Fragment {
         EditText etTitle = dialogView.findViewById(R.id.etTitle);
         EditText etContent = dialogView.findViewById(R.id.etContent);
         EditText etYoutubeUrl = dialogView.findViewById(R.id.etYoutubeUrl);
-        EditText etDuration = dialogView.findViewById(R.id.etDuration);
         Spinner courseSpinner = dialogView.findViewById(R.id.spinnerCourses);
 
         ArrayAdapter<String> courseAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, getCourseNames());
         courseAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         courseSpinner.setAdapter(courseAdapter);
 
+        // Nếu là sửa, thì load dữ liệu từ bài học
         if (lesson != null) {
             etTitle.setText(lesson.getTitle());
             etContent.setText(lesson.getContent());
             etYoutubeUrl.setText(lesson.getYoutubeVideoUrl());
-            etDuration.setText(String.valueOf(lesson.getDurationMinutes()));
-            int position = getCoursePosition(selectedCourseId);
+
+            // Nếu lesson.getCourse() null
+            if (lesson.getCourse() != null) {
+                int position = getCoursePosition(lesson.getCourse().getId());
+                courseSpinner.setSelection(position);
+            }
+
+            courseSpinner.setEnabled(false); // Khóa lại spinner khi sửa
+        } else {
+            // Nếu thêm mới, chọn course theo ARG_COURSE_ID từ arguments
+            int courseId = requireArguments().getInt(ARG_COURSE_ID, -1);
+            int position = getCoursePosition(courseId);
             courseSpinner.setSelection(position);
-            courseSpinner.setEnabled(false);
+            courseSpinner.setEnabled(false); // Khóa spinner luôn khi thêm
         }
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setView(dialogView)
                 .setTitle(lesson == null ? "Thêm bài học mới" : "Chỉnh sửa bài học")
-                .setPositiveButton("Lưu", null) // Đặt null để override sau
+                .setPositiveButton("Lưu", null)
                 .setNegativeButton("Hủy", (dialog, which) -> dialog.dismiss());
 
         AlertDialog dialog = builder.create();
@@ -169,14 +196,6 @@ public class LessonManagementFragment extends Fragment {
                 String title = etTitle.getText().toString().trim();
                 String content = etContent.getText().toString().trim();
                 String youtubeUrl = etYoutubeUrl.getText().toString().trim();
-                double duration;
-
-                try {
-                    duration = Double.parseDouble(etDuration.getText().toString().trim());
-                } catch (NumberFormatException e) {
-                    Toast.makeText(getContext(), "Thời lượng không hợp lệ", Toast.LENGTH_SHORT).show();
-                    return;
-                }
 
                 if (title.isEmpty() || content.isEmpty() || youtubeUrl.isEmpty()) {
                     Toast.makeText(getContext(), "Vui lòng điền đầy đủ thông tin", Toast.LENGTH_SHORT).show();
@@ -185,14 +204,12 @@ public class LessonManagementFragment extends Fragment {
 
                 Course selectedCourse = courseList.get(courseSpinner.getSelectedItemPosition());
 
-                // Hiện dialog xác nhận
                 new AlertDialog.Builder(getContext())
                         .setTitle("Xác nhận")
                         .setMessage(lesson == null ? "Bạn có chắc muốn thêm bài học này?" : "Bạn có chắc muốn cập nhật bài học này?")
                         .setPositiveButton("Đồng ý", (confirmDialog, whichButton) -> {
                             if (lesson == null) {
-                                // Thêm bài học mới
-                                Lesson newLesson = new Lesson(title, content, youtubeUrl, duration);
+                                Lesson newLesson = new Lesson(title, content, youtubeUrl, 14.2);
                                 newLesson.setCourse(selectedCourse);
                                 lessonRepository.addLesson(newLesson, new LessonCallback() {
                                     @Override
@@ -208,11 +225,10 @@ public class LessonManagementFragment extends Fragment {
                                     }
                                 });
                             } else {
-                                // Cập nhật bài học
                                 lesson.setTitle(title);
                                 lesson.setContent(content);
                                 lesson.setYoutubeVideoUrl(youtubeUrl);
-                                lesson.setDurationMinutes(duration);
+                                lesson.setDurationMinutes(14.2);
                                 lesson.setCourse(selectedCourse);
 
                                 lessonRepository.updateLesson(lesson.getId(), lesson, new LessonCallback() {
@@ -230,15 +246,14 @@ public class LessonManagementFragment extends Fragment {
                                 });
                             }
                         })
-                        .setNegativeButton("Hủy", (confirmDialog, whichButton) -> {
-                            // Không làm gì, chỉ đóng dialog xác nhận
-                        })
+                        .setNegativeButton("Hủy", null)
                         .show();
             });
         });
 
         dialog.show();
     }
+
 
     private List<String> getCourseNames() {
         List<String> courseNames = new ArrayList<>();

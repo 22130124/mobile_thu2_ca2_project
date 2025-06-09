@@ -27,12 +27,7 @@
             android:src="@drawable/ic_add"
             android:background="@android:color/transparent" />
     </RelativeLayout>
-    <com.google.android.material.textfield.TextInputEditText
-        android:id="@+id/edtSearchCategory"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:inputType="text"
-        android:hint="Tìm kiếm thể loại"/>
+
     <!-- RecyclerView danh sách -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvCategories"
