@@ -6,8 +6,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.widget.TooltipCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.onlinecoursesapp.R;
@@ -42,9 +44,11 @@ public class LessonManagementAdapter extends RecyclerView.Adapter<LessonManageme
         Lesson lesson = lessonList.get(position);
 
         holder.tvTitle.setText(lesson.getTitle());
-        holder.tvContent.setText(lesson.getContent());
         holder.tvYoutubeUrl.setText("Link video: " + lesson.getYoutubeVideoUrl());
         holder.tvDuration.setText("Thời lượng: " + lesson.getDurationMinutes() + " phút");
+        holder.tvYoutubeUrl.setText(lesson.getYoutubeVideoUrl());
+
+        TooltipCompat.setTooltipText(holder.tvYoutubeUrl, lesson.getYoutubeVideoUrl());
 
         holder.btnEdit.setOnClickListener(v -> listener.onEdit(lesson));
         holder.btnDelete.setOnClickListener(v -> listener.onDelete(lesson));
@@ -57,14 +61,13 @@ public class LessonManagementAdapter extends RecyclerView.Adapter<LessonManageme
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
-        TextView tvTitle, tvContent, tvYoutubeUrl, tvDuration, tvCreatedAt;
+        TextView tvTitle,  tvYoutubeUrl, tvDuration, tvCreatedAt;
         ImageButton btnEdit, btnDelete;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            tvTitle = itemView.findViewById(R.id.tvLessonTitle);
-            tvContent = itemView.findViewById(R.id.tvContent);
-            tvYoutubeUrl = itemView.findViewById(R.id.tvYoutubeUrl);
+            tvTitle = itemView.findViewById(R.id.titleTextView);
+            tvYoutubeUrl = itemView.findViewById(R.id.youtubePlayerView);
             tvDuration = itemView.findViewById(R.id.tvDuration);
             btnEdit = itemView.findViewById(R.id.iconEdit);
             btnDelete = itemView.findViewById(R.id.iconDelete);}
